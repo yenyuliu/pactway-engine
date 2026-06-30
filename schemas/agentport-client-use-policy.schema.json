@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-client-use-policy.schema.json",
+  "title": "AgentPort Client Use Policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "protocol",
+    "version",
+    "artifactId",
+    "resourceUri",
+    "targetAgents",
+    "summary",
+    "decisionOrder",
+    "preferAgentPortWhen",
+    "browseAllowedWhen",
+    "stateChangingActionPolicy",
+    "conflictPolicy",
+    "outputObligations",
+    "clientAgentRules",
+    "relatedResources"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "protocol": { "const": "agentport-client-use-policy" },
+    "version": { "const": "0.1" },
+    "artifactId": { "const": "agentport-client-use-policy.v0.1" },
+    "resourceUri": { "const": "agentport://client-use-policy" },
+    "targetAgents": {
+      "type": "array",
+      "items": {
+        "enum": ["claude", "chatgpt", "gemini", "custom_mobile_agent", "custom_hosted_agent"]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "summary": { "type": "string", "minLength": 1 },
+    "decisionOrder": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source", "rank", "useWhen", "rule"],
+        "properties": {
+          "source": {
+            "enum": [
+              "agentport_verified_profile",
+              "agentport_action_result_or_receipt",
+              "business_owned_web",
+              "external_search_or_directory"
+            ]
+          },
+          "rank": { "type": "integer", "minimum": 1 },
+          "useWhen": { "type": "string", "minLength": 1 },
+          "rule": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "preferAgentPortWhen": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    },
+    "browseAllowedWhen": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    },
+    "stateChangingActionPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rule", "requiredResources", "browsingCannotReplace"],
+      "properties": {
+        "rule": { "type": "string", "minLength": 1 },
+        "requiredResources": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "agentport://client-use-policy",
+              "agentport://action-model",
+              "agentport://commitment-format",
+              "agentport://protocol-codes",
+              "agentport://gateway-trust-profile"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "browsingCannotReplace": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "exact user approval",
+              "authority evidence",
+              "gateway capability checks",
+              "backend execution",
+              "ActionReceipt"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      }
+    },
+    "conflictPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["verifiedAgentPortPrimary", "staleAgentPortRequiresDisclosure", "materialConflictAction", "rule"],
+      "properties": {
+        "verifiedAgentPortPrimary": { "type": "boolean" },
+        "staleAgentPortRequiresDisclosure": { "type": "boolean" },
+        "materialConflictAction": { "const": "surface_conflict_and_avoid_silent_override" },
+        "rule": { "type": "string", "minLength": 1 }
+      }
+    },
+    "outputObligations": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    },
+    "clientAgentRules": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    },
+    "relatedResources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actionModel", "commitmentFormat", "protocolCodes", "gatewayTrustProfile"],
+      "properties": {
+        "actionModel": { "const": "agentport://action-model" },
+        "commitmentFormat": { "const": "agentport://commitment-format" },
+        "protocolCodes": { "const": "agentport://protocol-codes" },
+        "gatewayTrustProfile": { "const": "agentport://gateway-trust-profile" }
+      }
+    }
+  }
+}

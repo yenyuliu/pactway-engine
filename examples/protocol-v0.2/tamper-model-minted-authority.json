@@ -1,0 +1,85 @@
+{
+  "$schema": "../../schemas/agentport-protocol-trace.v0.2.schema.json",
+  "protocol": "agentport-protocol-trace",
+  "version": "0.2",
+  "traceId": "tamper-model-minted-authority",
+  "kind": "tamper",
+  "scenario": "frontier model self-issues authority instead of external evidence",
+  "expectedFailureCheckId": "authority_evidence_not_model_minted",
+  "roles": {
+    "frontierHost": { "role": "frontier_host", "holdsCurrentTicketTruth": false },
+    "plugin": { "role": "plugin", "lifecycleAuthority": false, "mintsAuthority": false },
+    "businessPortEndpoint": { "role": "business_port_endpoint", "systemOfRecord": false },
+    "gateway": { "role": "gateway", "derivesAllowedActions": true },
+    "adapter": { "role": "adapter", "selfAssertsVerification": false },
+    "commitmentRegistry": { "role": "commitment_registry", "lifecycleAuthority": true },
+    "businessBackend": { "role": "business_backend", "systemOfRecord": true }
+  },
+  "objects": {
+    "commitment": {
+      "protocol": "agentport-commitment",
+      "version": "0.2",
+      "commitmentId": "commitment_v02_demo_001",
+      "status": "active",
+      "backend": { "systemOfRecord": true, "agentPortOwnsBackendLedger": false },
+      "authority": {
+        "assurance": "signed",
+        "evidenceRefs": ["model-memory:self-issued-approval"],
+        "consentId": "consent_chatgpt_smoke",
+        "mintedByAgentPort": false,
+        "mintedByModel": true,
+        "modelSelfIssued": true
+      },
+      "allowedActions": [{ "action": "send_ticket", "derivedByGateway": true, "requiresConsent": true, "backendMutation": false }],
+      "registry": { "lifecycleAuthority": true, "frontierHostIsAuthority": false, "pluginWalletIsAuthority": false },
+      "events": [{ "eventId": "event_v02_created", "type": "created", "actorRole": "business_backend" }],
+      "receiptRefs": ["delivery-receipt:delivery_v02_001"]
+    },
+    "actionIntent": {
+      "protocol": "agentport-action-intent",
+      "version": "0.2",
+      "intentId": "intent_v02_send_ticket_001",
+      "action": "send_ticket",
+      "target": { "commitmentId": "commitment_v02_demo_001", "destinationRef": "agentport://business-port/verified-spa/front-desk" },
+      "approval": {
+        "required": true,
+        "exactSummaryShown": true,
+        "approvalPhrase": "Yes",
+        "consentStatement": "User approved: Yes. Send ticket proof for AP-DEMO-1234 to the front desk. Backend changed: no.",
+        "userConsentAttachedAfterApproval": true,
+        "modelClaimedConsentOnly": true
+      },
+      "bounds": { "singleUse": true, "backendMutation": false },
+      "status": "executed"
+    },
+    "deliveryReceipt": {
+      "protocol": "agentport-delivery-receipt",
+      "version": "0.2",
+      "deliveryId": "delivery_v02_001",
+      "commitmentId": "commitment_v02_demo_001",
+      "result": "sent",
+      "backendMutation": false,
+      "actors": {
+        "requestedActor": { "actorKind": "plugin_host", "principalId": "AgentPort Ticket Manager" },
+        "customerActor": { "actorKind": "customer_holder", "principalId": "customer_holder:chatgpt-demo" },
+        "gatewayActor": { "actorKind": "gateway", "principalId": "agentport-gateway" }
+      },
+      "issuedBy": "agentport-gateway",
+      "receiptRef": "delivery-receipt:delivery_v02_001",
+      "authorityEvidenceRefs": ["model-memory:self-issued-approval"],
+      "consentId": "consent_chatgpt_smoke",
+      "outcomeRef": "delivery-receipt:delivery_v02_001"
+    }
+  },
+  "steps": [
+    { "id": "restore_wallet_first", "from": "frontier_host", "to": "plugin", "action": "locate_wallet_tickets" },
+    { "id": "registry_status_read", "from": "gateway", "to": "commitment_registry", "action": "get_ticket_status" },
+    { "id": "route_proof", "from": "gateway", "to": "business_port_endpoint", "action": "send_ticket" }
+  ],
+  "claims": {
+    "agentPortCompatible": true,
+    "agentPortCertified": false,
+    "agentPortVerifiedBusiness": false,
+    "realBusinessProof": false
+  }
+}

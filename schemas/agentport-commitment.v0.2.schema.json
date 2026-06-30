@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-commitment.v0.2.schema.json",
+  "title": "AgentPort Commitment v0.2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "protocol",
+    "version",
+    "commitmentId",
+    "status",
+    "holder",
+    "business",
+    "backend",
+    "authority",
+    "allowedActions",
+    "recoveryPolicy",
+    "registry",
+    "events",
+    "receiptRefs"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "protocol": { "const": "agentport-commitment" },
+    "version": { "const": "0.2" },
+    "commitmentId": { "type": "string", "minLength": 1 },
+    "status": {
+      "enum": ["active", "cancelled", "rescheduled", "expired", "released", "failed", "handoff"]
+    },
+    "holder": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["holderRef"],
+      "properties": {
+        "holderRef": { "type": "string", "minLength": 1 },
+        "customerActorRef": { "type": "string", "minLength": 1 }
+      }
+    },
+    "business": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["businessId", "serviceId"],
+      "properties": {
+        "businessId": { "type": "string", "minLength": 1 },
+        "serviceId": { "type": "string", "minLength": 1 },
+        "bindingId": { "type": "string", "minLength": 1 },
+        "businessPortRef": { "type": "string", "minLength": 1 }
+      }
+    },
+    "backend": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "confirmationRef", "systemOfRecord"],
+      "properties": {
+        "source": { "type": "string", "minLength": 1 },
+        "confirmationRef": { "type": "string", "minLength": 1 },
+        "systemOfRecord": { "const": true },
+        "agentPortOwnsBackendLedger": { "const": false }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assurance", "evidenceRefs", "mintedByAgentPort"],
+      "properties": {
+        "assurance": { "enum": ["none", "local-profile", "signed", "verified-mandate"] },
+        "evidenceRefs": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "consentId": { "type": "string", "minLength": 1 },
+        "mintedByAgentPort": { "const": false }
+      }
+    },
+    "allowedActions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["action", "derivedByGateway", "backendMutation"],
+        "properties": {
+          "action": {
+            "enum": ["verify_ticket", "get_ticket_status", "get_allowed_ticket_actions", "send_ticket", "cancel_ticket", "reschedule_ticket", "transfer_ticket"]
+          },
+          "derivedByGateway": { "const": true },
+          "requiresConsent": { "type": "boolean" },
+          "backendMutation": { "type": "boolean" }
+        }
+      },
+      "minItems": 1
+    },
+    "recoveryPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "fallbackAction"],
+      "properties": {
+        "mode": { "enum": ["registry_reverify", "business_backend", "agentport_handoff", "unavailable"] },
+        "fallbackAction": { "enum": ["reverify", "retry_backend", "handoff", "refuse"] },
+        "expiresAt": { "type": "string" }
+      }
+    },
+    "registry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["registryRef", "lifecycleAuthority"],
+      "properties": {
+        "registryRef": { "type": "string", "minLength": 1 },
+        "lifecycleAuthority": { "const": true },
+        "frontierHostIsAuthority": { "const": false },
+        "pluginWalletIsAuthority": { "const": false }
+      }
+    },
+    "events": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/event" },
+      "minItems": 1
+    },
+    "receiptRefs": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1,
+      "uniqueItems": true
+    }
+  },
+  "$defs": {
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["eventId", "type", "at", "actorRole"],
+      "properties": {
+        "eventId": { "type": "string", "minLength": 1 },
+        "type": {
+          "enum": ["created", "verified", "status_read", "allowed_actions_read", "proof_routed", "cancelled", "rescheduled", "expired", "recovered", "failed", "handoff"]
+        },
+        "at": { "type": "string" },
+        "actorRole": {
+          "enum": ["frontier_host", "plugin", "business_port", "gateway", "adapter", "commitment_registry", "business_backend", "customer_holder"]
+        },
+        "receiptRef": { "type": "string", "minLength": 1 },
+        "reason": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

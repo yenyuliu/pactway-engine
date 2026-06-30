@@ -1,0 +1,85 @@
+{
+  "type": "agentport.action_intent_negative_cases.v0.1",
+  "baseProofPack": "examples/action-intent-proof-pack",
+  "purpose": "Document known-bad action intent compatibility cases that external implementers should reproduce or avoid.",
+  "cases": [
+    {
+      "id": "schema_missing_payload_safety",
+      "file": "user-goal.json",
+      "mutation": "remove payloadSafety",
+      "expectedFailure": {
+        "validator": "schema",
+        "checkId": "schema_user_goal_valid"
+      }
+    },
+    {
+      "id": "early_user_consent",
+      "file": "user-goal.json",
+      "mutation": "set goal.userConsentPresent true before approval",
+      "expectedFailure": {
+        "area": "user_goal_capture",
+        "checkId": "user_goal_state_changing_without_consent"
+      }
+    },
+    {
+      "id": "missing_input_does_not_block_approval",
+      "file": "required-inputs.json",
+      "mutation": "set boundaries.finalApprovalBlocked false",
+      "expectedFailure": {
+        "area": "required_input_gating",
+        "checkId": "required_inputs_block_final_approval"
+      }
+    },
+    {
+      "id": "approval_execute_arg_drift",
+      "file": "approval-package.json",
+      "mutation": "change approvalPackage.execute.arguments.slotStart after compilation",
+      "expectedFailure": {
+        "area": "bounded_approval_package",
+        "checkId": "approval_execute_exact_args"
+      }
+    },
+    {
+      "id": "execution_accepts_arg_drift",
+      "file": "approved-execution.json",
+      "mutation": "set driftCheck.editedArgsRejected false",
+      "expectedFailure": {
+        "area": "approved_execution_binding",
+        "checkId": "argument_drift_rejected"
+      }
+    },
+    {
+      "id": "terminal_lifecycle_not_restorable",
+      "file": "lifecycle-result.json",
+      "mutation": "set read.readableAfterSession false",
+      "expectedFailure": {
+        "area": "lifecycle_and_result_delivery",
+        "checkId": "lifecycle_terminal_readable"
+      }
+    },
+    {
+      "id": "receipt_body_retained",
+      "file": "receipt-refs.json",
+      "mutation": "set retention.storesFullReceiptBody true",
+      "expectedFailure": {
+        "area": "receipt_refs_and_redaction",
+        "checkId": "receipt_body_not_stored"
+      }
+    },
+    {
+      "id": "false_gateway_authority_claim",
+      "file": "action-intent-proof-summary.json",
+      "mutation": "set boundaries.gatewayAuthority true",
+      "expectedFailure": {
+        "area": "role_and_claim_boundary",
+        "checkId": "summary_not_role_certification"
+      }
+    }
+  ],
+  "boundaries": {
+    "exampleOnly": true,
+    "realBusinessEvidence": false,
+    "certification": false,
+    "adapterCoverage": false
+  }
+}

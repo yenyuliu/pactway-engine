@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-gateway-trust-root-emergency-denylist.schema.json",
+  "title": "AgentPort Gateway Trust Root Emergency Deny List",
+  "oneOf": [
+    { "$ref": "#/$defs/denyList" },
+    { "$ref": "#/$defs/signedEnvelope" }
+  ],
+  "$defs": {
+    "denyList": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["protocol", "version"],
+      "properties": {
+        "protocol": { "const": "agentport-gateway-trust-root-emergency-denylist" },
+        "version": { "const": "0.1" },
+        "listId": { "type": "string", "minLength": 1 },
+        "sequence": { "type": "integer", "minimum": 0 },
+        "issuedAt": { "type": "string", "format": "date-time" },
+        "notBefore": { "type": "string", "format": "date-time" },
+        "expiresAt": { "type": "string", "format": "date-time" },
+        "blockedIssuers": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "blockedKeyIds": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "blockedBundleHashes": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "uniqueItems": true
+        },
+        "approval": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["changeHash", "approvalIds", "approvedBy"],
+          "properties": {
+            "changeHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+            "approvalIds": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string", "minLength": 1 },
+              "uniqueItems": true
+            },
+            "approvedBy": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string", "minLength": 1 },
+              "uniqueItems": true
+            },
+            "reason": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "signedEnvelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["protocol", "version", "denyList", "signature"],
+      "properties": {
+        "protocol": { "const": "agentport-gateway-trust-root-emergency-denylist-envelope" },
+        "version": { "const": "0.1" },
+        "denyList": { "$ref": "#/$defs/denyList" },
+        "signature": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["issuer", "keyId", "alg", "signature"],
+          "properties": {
+            "issuer": { "type": "string", "minLength": 1 },
+            "keyId": { "type": "string", "minLength": 1 },
+            "alg": { "const": "EdDSA" },
+            "signedAt": { "type": "string", "format": "date-time" },
+            "signature": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    }
+  }
+}

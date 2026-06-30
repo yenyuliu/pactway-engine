@@ -1,0 +1,136 @@
+export const commitmentFormatResourceUri = "agentport://commitment-format";
+
+export function createAgentPortCommitmentFormat() {
+  return {
+    protocol: "agentport-commitment-format",
+    version: "0.1",
+    artifactId: "agentport-commitment-format.v0.1",
+    resourceUri: commitmentFormatResourceUri,
+    schema: "schemas/agentport-commitment.schema.json",
+    summary: "Portable ticket/reservation commitment format for backend-backed agent actions.",
+    boundary: {
+      systemOfRecord: "business_backend",
+      agentPortRole: "trust_wrapper_and_lifecycle_reference",
+      rule: "A Commitment records the agent-visible state and proof references for a backend-backed outcome; it does not replace the backend booking, POS, ledger, or identity system."
+    },
+    requiredSections: [
+      "commitmentId",
+      "status",
+      "subject",
+      "business",
+      "backend",
+      "authority",
+      "rights",
+      "recoveryPolicy",
+      "events",
+      "receipts"
+    ],
+    statusValues: ["active", "cancelled", "rescheduled", "expired", "released", "failed"],
+    rights: {
+      ownerActions: ["verify", "cancel", "reschedule", "transfer"],
+      transferDefault: "disabled",
+      rule: "Rights describe what may be attempted; execution still requires consent, authority evidence, backend capability, and an action receipt."
+    },
+    eventTypes: [
+      "created",
+      "verified",
+      "cancel_requested",
+      "cancelled",
+      "reschedule_requested",
+      "rescheduled",
+      "transfer_requested",
+      "transferred",
+      "expired",
+      "recovered",
+      "failed"
+    ],
+    portableProof: {
+      requiredForExternalProof: ["receiptId", "payloadHash", "signature", "keyId"],
+      trustResource: "agentport://gateway-trust-profile",
+      rule: "The Commitment is portable only when its receipt refs can be verified against the gateway trust profile and the backend reference still matches the business backend."
+    },
+    retentionBoundary: {
+      keep: [
+        "business and service IDs",
+        "backend confirmation refs",
+        "authority and consent refs",
+        "holder subject refs",
+        "allowed action names",
+        "recovery mode",
+        "event IDs and receipt refs"
+      ],
+      neverKeep: [
+        "raw delegation tokens",
+        "raw token-confirmation tokens",
+        "credentials",
+        "card data",
+        "full customer objects",
+        "raw adapter payloads",
+        "chat transcripts",
+        "model reasoning"
+      ]
+    },
+    clientAgentRules: [
+      "Do not treat a Commitment as proof unless its receipt refs verify against the gateway trust profile.",
+      "Do not present a Commitment status as current if the gateway or backend reports a newer terminal event.",
+      "Do not transfer, cancel, or reschedule a Commitment without a fresh exact approval event and the relevant backend capability.",
+      "Do not infer identity details from holder.subjectRef; request only selective proofs or business-required fields.",
+      "Preserve backendConfirmationId and receipt refs when showing a ticket or reservation to the user or business."
+    ],
+    example: {
+      protocol: "agentport-commitment",
+      version: "0.1",
+      commitmentId: "cmt_123",
+      status: "active",
+      subject: {
+        holderRef: "user:hash_abc",
+        clientAgentId: "agent_example"
+      },
+      business: {
+        businessId: "biz_123",
+        serviceId: "svc_456",
+        bindingId: "square#0"
+      },
+      backend: {
+        source: "square",
+        confirmationId: "sq_789",
+        systemOfRecord: true
+      },
+      authority: {
+        assurance: "signed",
+        evidenceRefs: ["agentport-local-delegation:del_123"],
+        delegationId: "del_123",
+        consentId: "consent_123"
+      },
+      rights: {
+        allowedActions: ["verify", "cancel", "reschedule"],
+        transferable: false,
+        modificationRequiresConsent: true,
+        cancellationRequiresConsent: true
+      },
+      recoveryPolicy: {
+        mode: "business_backend",
+        fallbackAction: "handoff"
+      },
+      events: [
+        {
+          eventId: "evt_123",
+          type: "created",
+          at: "2026-06-20T00:00:00.000Z",
+          actor: "business_gateway",
+          receiptId: "rcpt_123"
+        }
+      ],
+      receipts: [
+        {
+          receiptId: "rcpt_123",
+          action: "book_service",
+          resultType: "confirmed",
+          payloadHash: "sha256:abc",
+          keyId: "gateway-key-1",
+          signature: "base64url-signature"
+        }
+      ]
+    }
+  };
+}

@@ -1,0 +1,59 @@
+{
+  "$schema": "../../schemas/agentport-protocol-publication.schema.json",
+  "type": "agentport.protocol_publication.v0.2",
+  "protocol": "agentport",
+  "version": "0.2",
+  "status": "stable_published",
+  "technicalFreeze": true,
+  "cutReadiness": true,
+  "stablePublication": true,
+  "packageRefs": {
+    "standardDraft": "docs/agentport-open-standard-v0.2-draft.md",
+    "technicalFreezeDoc": "docs/agentport-protocol-v0.2.md",
+    "cutManifest": "examples/implementer-kit/protocol-cut.v0.2.json",
+    "governancePolicy": "examples/implementer-kit/protocol-governance.v0.2.json",
+    "releaseNotes": "docs/agentport-open-standard-v0.2-release-notes.md",
+    "stableCutReview": "docs/agentport-open-standard-v0.2-stable-cut-review.md",
+    "externalReview": "examples/implementer-kit/protocol-external-review.v0.2.json",
+    "externalReviewResult": "examples/implementer-kit/protocol-external-review-result.v0.2.json",
+    "stablePublication": "examples/implementer-kit/protocol-stable-publication.v0.2.json"
+  },
+  "includedSurfaces": [
+    "frontier_host",
+    "plugin_wallet",
+    "business_port_endpoint",
+    "agent_gateway",
+    "adapter",
+    "commitment_registry",
+    "a2a_host_binding",
+    "action_intent",
+    "golden_traces",
+    "tamper_fixtures",
+    "cut_manifest",
+    "governance_policy"
+  ],
+  "gates": {
+    "manifestCommands": "passed",
+    "publicPackageAudit": "passed",
+    "conformance": "passed",
+    "tests": "passed",
+    "diffCheck": "passed"
+  },
+  "certification": {
+    "agentPortCertified": false,
+    "agentPortVerifiedBusiness": false,
+    "realBusinessProof": false,
+    "liveBackendProof": false,
+    "stablePublication": true
+  },
+  "stablePromotionBlockers": [],
+  "forbiddenClaims": [
+    "AgentPort Certified",
+    "AgentPort Verified business",
+    "real-business proof",
+    "live-backend proof",
+    "A2A replacement",
+    "gateway authority for plugins",
+    "backend confirmation authority for business ports"
+  ]
+}

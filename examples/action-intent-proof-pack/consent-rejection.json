@@ -1,0 +1,21 @@
+{
+  "type": "agentport.action_intent_consent_rejection.v0.1",
+  "rejection": {
+    "resultType": "rejected",
+    "reason": "consent_required",
+    "tool": "book_service"
+  },
+  "payloadSafety": {
+    "excludesCustomerPii": true,
+    "excludesRawAuthorityTokens": true,
+    "excludesReceiptBodies": true,
+    "excludesDeliveryBodies": true,
+    "excludesSignatures": true,
+    "excludesBackendCredentials": true
+  },
+  "boundaries": {
+    "backendExecuted": false,
+    "receiptIssued": false,
+    "policyFailure": true
+  }
+}

@@ -1,0 +1,811 @@
+import { pluginWalletForbiddenRawFields } from "../../core/src/index.js";
+
+export const pluginWalletContractResourceUri = "agentport://plugin-wallet";
+
+export function createAgentPortPluginWalletContract() {
+  return {
+    protocol: "agentport-plugin-wallet",
+    version: "0.1",
+    artifactId: "agentport-plugin-wallet.v0.1",
+    resourceUri: pluginWalletContractResourceUri,
+    summary: "Encrypted local wallet contract for frontier-side AgentPort plugins that need ticket memory beyond one agent session.",
+    roleSplit: {
+      frontierModel: "Talks to the user, reasons, explains, and requests approval.",
+      agentPortPlugin: "Stores encrypted local ticket refs, restores ticket context across sessions, and calls business ports or Agent Gateway tools.",
+      businessPortEndpoint: "Receives standardized ticket/action requests from frontier-side plugins.",
+      agentGateway: "Verifies, standardizes, routes, and manages lifecycle state.",
+      commitmentRegistry: "Authoritative hosted/minimal lifecycle state; the local wallet is not source of truth."
+    },
+    localWalletRecord: {
+      protocol: "agentport-plugin-wallet-ticket",
+      version: "0.1",
+      plaintextMetadata: [
+        "walletId",
+        "walletTicketId",
+        "commitmentId",
+        "payloadHash",
+        "createdAt",
+        "updatedAt",
+        "encryption.alg",
+        "encryption.keyId",
+        "encryption.nonce",
+        "encryption.tag"
+      ],
+      encryptedPayload: [
+        "commitment",
+        "receipt",
+        "label",
+        "receiptRefs",
+        "lastVerifiedStatus",
+        "lastVerifiedAt",
+        "pendingAction",
+        "destinationRefs",
+        "deliveryAttempts"
+      ],
+      encryption: {
+        referenceAlgorithm: "A256GCM",
+        walletKeyDerivation: "New records may derive wallet-scoped AES keys from an explicit gateway wallet root secret and the stable walletId.",
+        rotation: "A deployment may configure previous wallet root secrets for decrypt-only read-through while new writes use the active root secret.",
+        productionKeyCustody: [
+          "explicit_gateway_wallet_root_secret",
+          "platform_keychain",
+          "secure_enclave",
+          "passkey_bound_key",
+          "user_controlled_recovery_key"
+        ],
+        deterministicTestSupport: "Reference helpers allow injected nonce and clock for CI only."
+      },
+      forbiddenRawFields: pluginWalletForbiddenRawFields
+    },
+    invariants: [
+      "The local wallet stores last-known ticket context, not canonical current status.",
+      "A frontier plugin must re-verify through Agent Gateway or business port before presenting current ticket state.",
+      "Raw delegation tokens, token-confirmation secrets, chat transcripts, identity documents, card data, and full customer profiles must never be stored.",
+      "Reference wallet helpers reject forbidden raw field names before encryption and after decryption.",
+      "Commitment and receipt bodies are encrypted at rest in the local wallet.",
+      "Production runtimes must not use implicit default wallet secrets.",
+      "New records should use wallet-scoped data keys, not a single shared AES key for all wallets.",
+      "Wrong-key decryption must fail closed.",
+      "Session restore may return current only after a successful gateway status check; otherwise it must return last-known with reverify required.",
+      "Pending actions are local reminders, not durable consent; replay requires fresh user consent and gateway re-verification.",
+      "Expired pending actions require user review and must not be replayed automatically.",
+      "Delivery-attempt history is explanatory local context, not canonical lifecycle truth.",
+      "Delivery-attempt summaries may expose compact refs and reason codes, never raw receipt bodies or destination payloads.",
+      "Wallet search returns compact review summaries only; it must not return decrypted commitments, receipts, or raw payloads.",
+      "Needs-attention is a local review signal, not current lifecycle truth.",
+      "Core wallet callers should use a key provider boundary for production custody; the open engine does not own platform keys or recovery secrets.",
+      "Wallet export/import moves encrypted records only and must not include raw key material, decrypted ticket payloads, backend credentials, or hosted recovery secrets.",
+      "Wallet imports preserve the original wallet id because encrypted records are AAD-bound to wallet id, wallet ticket id, and commitment id.",
+      "AgentPort cannot recover encrypted wallet records without the user's platform key, passkey unwrap path, or user-controlled recovery key.",
+      "Host session ids bind restore attempts for correlation, but they do not grant authority or user consent.",
+      "Host restore may prepare pending actions after fresh consent and gateway re-verification, but it must not deliver or clear them by itself.",
+      "send_ticket routing state may be stored as pendingAction, but business-backend mutation is not implied."
+    ],
+    sessionRestore: {
+      helper: "rehydrateTicket",
+      gatewayMethod: "getTicketStatus",
+      currentStatusSource: "agent_gateway",
+      fallbackStatusSource: "local_last_known",
+      modelSummaryProtocol: "agentport-plugin-wallet-model-summary",
+      currentRule: "Only summaries refreshed through Agent Gateway may set verifiedCurrent true.",
+      failureRule: "Gateway rejection, failure, or transport errors keep the wallet unchanged and require re-verification before presenting current status."
+    },
+    pendingActions: {
+      helpers: [
+        "markPendingAction",
+        "clearPendingAction",
+        "listPendingActions",
+        "preparePendingActionReplay"
+      ],
+      summaryProtocol: "agentport-plugin-wallet-pending-action-summary",
+      consentRule: "Creating or replaying a pending outbound action requires explicit userConsent true.",
+      reverifyRule: "Replay preparation calls Agent Gateway status before returning a delivery-ready result.",
+      expiryRule: "Expired pending actions are marked userReviewRequired and are not replay-ready."
+    },
+    deliveryAudit: {
+      helpers: [
+        "recordDeliveryAttempt",
+        "listDeliveryAttempts"
+      ],
+      summaryProtocol: "agentport-plugin-wallet-delivery-attempt-summary",
+      encryptedPayloadField: "deliveryAttempts",
+      modelSafeFields: [
+        "walletId",
+        "walletTicketId",
+        "commitmentId",
+        "deliveryAttemptId",
+        "action",
+        "outcome",
+        "attemptedAt",
+        "destinationKind",
+        "destinationRef",
+        "deliveryId",
+        "deliveredAt",
+        "proofLevel",
+        "reason",
+        "backendMutation"
+      ],
+      boundary: "Delivery audit summaries explain local send/replay attempts; Agent Gateway remains lifecycle authority."
+    },
+    searchReview: {
+      helpers: [
+        "searchTickets",
+        "listNeedsAttention"
+      ],
+      summaryProtocol: "agentport-plugin-wallet-ticket-review-summary",
+      filters: [
+        "status",
+        "businessId",
+        "serviceId",
+        "hasPendingAction",
+        "pendingAction",
+        "destinationKind",
+        "needsAttention",
+        "updatedAfter",
+        "updatedBefore",
+        "staleAfter"
+      ],
+      attentionReasons: [
+        "pending_action",
+        "pending_action_expired",
+        "delivery_failed",
+        "delivery_handoff",
+        "delivery_rejected",
+        "status_unknown",
+        "verification_stale",
+        "reverify_required"
+      ],
+      duplicateRule: "Wallet ticket id is deterministic from wallet id and commitment id; saving the same commitment updates the existing ticket."
+    },
+    keyCustody: {
+      providerInterface: "PluginWalletKeyProvider",
+      cipherFactory: "pluginWalletCipherFromKeyProvider",
+      referenceProviders: [
+        "PassphrasePluginWalletKeyProvider",
+        "InjectedPluginWalletKeyProvider"
+      ],
+      exportProtocol: "agentport-plugin-wallet-export",
+      exportVersion: "0.1",
+      helpers: [
+        "exportWallet",
+        "importWallet"
+      ],
+      exportContains: [
+        "walletId",
+        "exportedAt",
+        "ticketCount",
+        "encryption metadata",
+        "recovery boundary notes",
+        "encrypted wallet records"
+      ],
+      exportForbids: [
+        "raw key material",
+        "decrypted commitments",
+        "decrypted receipts",
+        "ticket labels in plaintext",
+        "backend credentials",
+        "delegation tokens",
+        "hosted recovery secrets"
+      ],
+      recoveryOptions: [
+        "platform_keychain",
+        "secure_enclave",
+        "passkey_bound_key",
+        "user_controlled_recovery_key"
+      ],
+      recoveryBoundary: "AgentPort can describe recovery metadata, but cannot decrypt or recover exported wallet records without the user's key path.",
+      importRule: "Import preserves the exported wallet id; remapping is rejected because wallet record AAD binds the original wallet id."
+    },
+    hostIntegration: {
+      packetProtocol: "agentport-plugin-wallet-host-integration",
+      restoreProtocol: "agentport-plugin-wallet-host-restore",
+      helper: "restoreHostSession",
+      requiredHostState: [
+        "walletId",
+        "sessionId",
+        "hostRuntime",
+        "restoreCadence",
+        "consentUiHooks",
+        "recoveryWorker"
+      ],
+      restoreCadence: {
+        required: "on_session_start",
+        optional: [
+          "periodic",
+          "user_triggered"
+        ]
+      },
+      consentUiHooks: [
+        "show_pending_action",
+        "request_fresh_user_consent",
+        "show_reverify_required",
+        "show_expired_action_review"
+      ],
+      recoveryWorkerResponsibilities: [
+        "unlock_wallet_key_provider",
+        "run_session_restore",
+        "surface_model_safe_summaries",
+        "prepare_pending_action_after_consent",
+        "never_store_raw_recovery_secret"
+      ],
+      hostOwned: [
+        "wallet namespace",
+        "session binding",
+        "key unlock UX",
+        "consent UI",
+        "restore scheduling",
+        "local export/import UX"
+      ],
+      agentPortOwned: [
+        "gateway status verification",
+        "commitment lifecycle authority",
+        "backend outcome receipts"
+      ],
+      boundaries: {
+        localWalletDurable: true,
+        gatewayLifecycleAuthority: true,
+        sessionIdGrantsAuthority: false,
+        restoreDeliversPendingActions: false,
+        currentStateRequiresGateway: true
+      },
+      pendingActionResolution: [
+        "ready",
+        "reverify_required",
+        "rejected"
+      ],
+      restoreRule: "A host restore must call gateway status before presenting current state; local last-known summaries require reverifyRequired true.",
+      replayPreparationRule: "Pending actions become ready only after fresh host consent and gateway re-verification; delivery remains a separate step."
+    },
+    pilotScale: {
+      restorePaging: {
+        input: [
+          "page.limit",
+          "page.cursor",
+          "page.sort"
+        ],
+        output: [
+          "page.limit",
+          "page.nextCursor",
+          "page.hasMore",
+          "page.totalTicketCount",
+          "page.returnedTicketCount",
+          "page.offset"
+        ],
+        defaultSort: "updated_desc",
+        maxPageLimit: 100,
+        rule: "Hosts should restore bounded pages and continue with nextCursor rather than loading an entire large wallet into model context."
+      },
+      scheduling: {
+        helper: "recommendPluginWalletRestoreSchedule",
+        recommendations: [
+          "restore_now",
+          "defer",
+          "user_triggered_only"
+        ],
+        runtimeGuidance: {
+          browser: "Prefer on-session-start and user-triggered restore; background polling may be throttled.",
+          mobile: "Prefer foreground or user-triggered restore unless pending actions need review; respect low-power mode.",
+          desktop: "Periodic restore is acceptable, but still page large wallets and never deliver pending actions inside restore.",
+          server_test: "Use deterministic clocks and explicit inputs; do not sleep."
+        }
+      },
+      telemetry: {
+        protocol: "agentport-plugin-wallet-host-restore-telemetry",
+        payloadFieldsIncluded: [],
+        counts: [
+          "totalTicketCount",
+          "returnedTicketCount",
+          "currentCount",
+          "lastKnownCount",
+          "missingCount",
+          "pendingActionCount",
+          "pendingReadyCount",
+          "pendingReverifyRequiredCount",
+          "pendingRejectedCount",
+          "expiredPendingCount",
+          "consentRequiredCount",
+          "failedRestoreCount"
+        ],
+        rule: "Restore telemetry is operational count metadata only; it is not lifecycle truth and must not expose labels, commitments, receipts, destinations, signatures, or decrypted payloads."
+      }
+    },
+    pilotHostAdapters: {
+      adapterPacketProtocol: "agentport-plugin-wallet-host-adapter",
+      evidencePacketProtocol: "agentport-plugin-wallet-pilot-evidence",
+      helpers: [
+        "createPluginWalletPilotHostAdapterPacket",
+        "createPluginWalletPilotEvidencePacket"
+      ],
+      fixtureEvidence: "examples/plugin-wallet-pilot-evidence.v0.1.json",
+      runtimes: [
+        "browser",
+        "mobile",
+        "desktop",
+        "server_test",
+        "other"
+      ],
+      hostOwnedHooks: [
+        "keyProvider",
+        "walletStore",
+        "gatewayClient",
+        "consentUi",
+        "restoreScheduler",
+        "telemetrySink",
+        "exportImportUi"
+      ],
+      failureModes: [
+        "locked_wallet",
+        "gateway_unavailable",
+        "expired_pending_action",
+        "user_triggered_retry"
+      ],
+      evidencePayloadSafety: [
+        "excludesDecryptedLabels",
+        "excludesCommitments",
+        "excludesReceipts",
+        "excludesSignatures",
+        "excludesBackendConfirmations",
+        "excludesDestinationRefs",
+        "excludesRawKeyMaterial",
+        "excludesRecoverySecrets"
+      ],
+      boundaries: {
+        platformApisHostOwned: true,
+        keyCustodyHostOwned: true,
+        evidenceIsLifecycleTruth: false,
+        pendingActionsDeliveredByEvidence: false
+      },
+      rule: "Host adapter packets are copyable integration examples that keep platform storage, keychain, scheduling, consent UI, and telemetry sink implementation host-owned."
+    },
+    hostAdapterSmoke: {
+      resultProtocol: "agentport-plugin-wallet-host-adapter-smoke",
+      helper: "runPluginWalletHostAdapterSmoke",
+      modes: [
+        "success_restore",
+        "locked_wallet",
+        "gateway_failure",
+        "expired_pending_action",
+        "user_triggered_retry"
+      ],
+      injectedFakes: [
+        "walletStore",
+        "keyProvider",
+        "gatewayClient",
+        "consentUi",
+        "telemetrySink",
+        "clock"
+      ],
+      resultFields: [
+        "adapter",
+        "outcome",
+        "reason",
+        "hook call counts",
+        "restore page counts",
+        "schedule decision",
+        "telemetry counts",
+        "pending action resolution counts"
+      ],
+      forbids: [
+        "decrypted labels",
+        "commitment bodies",
+        "receipt bodies",
+        "signatures",
+        "destination refs",
+        "raw key material",
+        "recovery secrets",
+        "platform APIs",
+        "action delivery"
+      ],
+      boundaries: {
+        deterministicFakeHooksOnly: true,
+        platformApisHostOwned: true,
+        keyCustodyHostOwned: true,
+        gatewayLifecycleAuthority: true,
+        smokeDeliversPendingActions: false,
+        telemetryIsLifecycleTruth: false
+      },
+      rule: "Smoke results prove host adapter hooks are sufficient for restore and failure-mode checks; they do not become production platform adapters or lifecycle evidence."
+    },
+    pilotHostRunbook: {
+      protocol: "agentport-plugin-wallet-pilot-host-runbook",
+      fixture: "examples/plugin-wallet-pilot-host-runbook.v0.1.json",
+      protocolChain: [
+        "agentport-plugin-wallet-host-adapter",
+        "agentport-plugin-wallet-host-adapter-smoke",
+        "agentport-plugin-wallet-pilot-evidence"
+      ],
+      hostRuntimes: [
+        "browser",
+        "mobile",
+        "desktop"
+      ],
+      requiredEvidence: [
+        "adapter_packet",
+        "smoke_result",
+        "pilot_evidence"
+      ],
+      requiredSmokeModes: [
+        "success_restore",
+        "locked_wallet",
+        "gateway_failure",
+        "expired_pending_action",
+        "user_triggered_retry"
+      ],
+      hostOwnedResponsibilities: [
+        "key unlock UX",
+        "platform wallet store",
+        "restore cadence scheduling",
+        "pending action consent UI",
+        "telemetry sink retention",
+        "export/import UX",
+        "platform notification and background-worker policy"
+      ],
+      agentPortOwnedBoundaries: [
+        "gateway status verification",
+        "commitment lifecycle authority",
+        "backend outcome receipts",
+        "model-safe wallet contract"
+      ],
+      forbiddenClaims: [
+        "payment_wallet",
+        "booking_ledger",
+        "credential_vault",
+        "lifecycle_authority",
+        "agentport_key_recovery",
+        "automatic_pending_action_replay",
+        "platform_api_implemented_by_open_engine"
+      ],
+      rule: "A pilot host may claim wallet support only with adapter, smoke, and pilot evidence artifacts that preserve key custody, consent, gateway truth, and payload-safety boundaries."
+    },
+    virtualStorePilotEvidence: {
+      protocol: "agentport-plugin-wallet-virtual-store-pilot-evidence",
+      fixture: "examples/plugin-wallet-virtual-store-pilot-evidence.v0.1.json",
+      evidenceKind: "virtual_pilot_store",
+      realMarketProof: false,
+      store: {
+        businessId: "agentport-virtual-store",
+        name: "AgentPort Virtual Store",
+        tenantFixture: "examples/virtual-store-tenant.json",
+        actionValidationTest: "test/server/virtual-store-action.test.mjs",
+        walletLoopTest: "test/core/plugin-wallet.test.mjs",
+        backendSource: "fixture",
+        treatedAsStore: true,
+        usesRealStorePath: true
+      },
+      requiredPath: [
+        "read_agentport_action_model",
+        "find_verified_store",
+        "check_store_availability",
+        "render_user_approval_card",
+        "book_service_with_user_consent",
+        "receive_gateway_action_receipt",
+        "save_encrypted_wallet_ticket",
+        "close_session",
+        "restore_returned_session",
+        "gateway_reverify_current_state",
+        "render_returned_session_review"
+      ],
+      statusRules: [
+        "gateway_reverified_current",
+        "gateway_failure_last_known_reverify_required"
+      ],
+      rule: "Virtual Store evidence follows the same gateway and wallet path as a real store; only market proof and backend source remain fixture-labeled."
+    },
+    returnedSessionReview: {
+      protocol: "agentport-plugin-wallet-returned-session-review",
+      fixture: "examples/plugin-wallet-returned-session-review.v0.1.json",
+      helper: "createPluginWalletReturnedSessionReviewSurface",
+      sections: [
+        "current",
+        "lastKnown",
+        "needsAttention",
+        "pendingConsent",
+        "expiredReview",
+        "reverifyRequired"
+      ],
+      requiredCounts: [
+        "totalReturned",
+        "current",
+        "lastKnown",
+        "needsAttention",
+        "pendingConsent",
+        "expiredReview",
+        "reverifyRequired"
+      ],
+      forbids: [
+        "decrypted labels",
+        "commitment bodies",
+        "receipt bodies",
+        "signatures",
+        "backend confirmation ids",
+        "destination refs",
+        "raw key material",
+        "recovery secrets"
+      ],
+      boundaries: {
+        gatewayCurrentOnly: true,
+        localLastKnownRequiresReverify: true,
+        reviewDeliversPendingActions: false,
+        reviewIsLifecycleTruth: false
+      },
+      rule: "Returned-session review is a compact host-renderable surface; current state appears only when gateway verified, and local last-known entries require reverify."
+    },
+    virtualStoreReferenceHarness: {
+      protocol: "agentport-plugin-wallet-virtual-store-reference-harness",
+      fixture: "examples/plugin-wallet-virtual-store-reference-harness.v0.1.json",
+      helper: "createPluginWalletVirtualStoreReferenceHarnessResult",
+      canonicalReferenceBusiness: {
+        businessId: "agentport-virtual-store",
+        serviceId: "product_demo",
+        backendSource: "fixture",
+        realMarketProof: false
+      },
+      requiredScenarios: [
+        "success_restore",
+        "gateway_unavailable",
+        "pending_consent",
+        "expired_pending_action",
+        "locked_wallet",
+        "user_triggered_retry"
+      ],
+      scenarioFields: [
+        "outcome",
+        "gatewayStatusSource",
+        "reviewSection",
+        "gatewayReverifyRequired",
+        "walletMutation",
+        "consentRule",
+        "deliveryAttempted"
+      ],
+      boundaries: {
+        virtualStoreTreatedAsReferenceBusiness: true,
+        gatewayLifecycleAuthority: true,
+        currentRequiresGatewayReverify: true,
+        localLastKnownRequiresReverify: true,
+        referenceHarnessDeliversActions: false,
+        referenceHarnessOwnsFullVirtualStoreEnvironment: false,
+        paymentWallet: false,
+        credentialVault: false
+      },
+      rule: "Virtual Store is the canonical Agent Gateway wallet reference business; every wallet feature should prove itself here before real-business adaptation."
+    },
+    goldenTraceMatrix: {
+      protocol: "agentport-plugin-wallet-golden-trace-matrix",
+      fixture: "examples/plugin-wallet-golden-trace-matrix.v0.1.json",
+      helper: "createPluginWalletGoldenTraceMatrix",
+      sourceHarness: "examples/plugin-wallet-virtual-store-reference-harness.v0.1.json",
+      requiredScenarios: [
+        "success_restore",
+        "gateway_unavailable",
+        "stale_last_known",
+        "pending_consent",
+        "expired_pending_action",
+        "locked_wallet",
+        "user_triggered_retry",
+        "duplicate_commitment",
+        "export_import",
+        "wrong_key_restore"
+      ],
+      traceFields: [
+        "scenario",
+        "trigger",
+        "gatewayResult",
+        "walletMutation",
+        "mutationAllowed",
+        "mutationReason",
+        "reviewSection",
+        "modelVisibility",
+        "consentRule",
+        "payloadSafety",
+        "deliveryAttempted"
+      ],
+      boundaries: {
+        matrixIsLifecycleTruth: false,
+        gatewayCurrentOnly: true,
+        localLastKnownRequiresReverify: true,
+        retryRequiresFreshConsent: true,
+        lockedWalletCallsGateway: false,
+        wrongKeyRestoreCallsGateway: false,
+        matrixDeliversActions: false,
+        paymentWallet: false,
+        credentialVault: false
+      },
+      rule: "The golden trace matrix is an implementer audit artifact, not lifecycle truth; current visibility requires gateway verification and pending retry requires fresh consent."
+    },
+    hostAdoptionKit: {
+      protocol: "agentport-plugin-wallet-host-adoption-kit",
+      fixture: "examples/plugin-wallet-host-adoption-kit.v0.1.json",
+      helper: "createPluginWalletHostAdoptionKit",
+      requiredComponents: [
+        "gateway_wallet_contract",
+        "host_integration_packet",
+        "host_adapter_packets",
+        "host_adapter_smoke_harness",
+        "pilot_host_runbook",
+        "returned_session_review_surface",
+        "virtual_store_reference_harness",
+        "golden_trace_matrix",
+        "conformance_evidence"
+      ],
+      requiredMustPassChecks: [
+        "restore_success",
+        "locked_wallet_fails_closed",
+        "gateway_unavailable_last_known",
+        "expired_pending_action_review",
+        "user_triggered_retry_fresh_consent",
+        "golden_trace_comparison",
+        "returned_review_payload_safe",
+        "conformance_evidence_present"
+      ],
+      componentFields: [
+        "componentId",
+        "artifact",
+        "helper",
+        "owner",
+        "purpose",
+        "required"
+      ],
+      checkFields: [
+        "checkId",
+        "evidenceRef",
+        "expectation",
+        "blocksSupportClaim"
+      ],
+      sourceArtifacts: {
+        contract: "artifacts/agentport-plugin-wallet.v0.1.json",
+        hostIntegration: "artifacts/agentport-plugin-wallet.v0.1.json#hostIntegration",
+        hostAdapters: "artifacts/agentport-plugin-wallet.v0.1.json#pilotHostAdapters",
+        smokeHarness: "test/core/plugin-wallet.test.mjs#runPluginWalletHostAdapterSmoke",
+        runbook: "examples/plugin-wallet-pilot-host-runbook.v0.1.json",
+        returnedSessionReview: "examples/plugin-wallet-returned-session-review.v0.1.json",
+        referenceHarness: "examples/plugin-wallet-virtual-store-reference-harness.v0.1.json",
+        goldenTraceMatrix: "examples/plugin-wallet-golden-trace-matrix.v0.1.json",
+        conformance: "examples/conformance-report.v0.1.json#plugin-wallet"
+      },
+      hostOwnedResponsibilities: [
+        "key_unlock",
+        "local_wallet_store",
+        "consent_ui",
+        "restore_worker",
+        "telemetry_sink",
+        "export_import_ux"
+      ],
+      agentPortOwnedBoundaries: [
+        "gateway_current_truth",
+        "wallet_contract",
+        "reference_harness",
+        "golden_trace_matrix",
+        "payload_safety_rules",
+        "conformance_evidence"
+      ],
+      runtimeRequirements: {
+        liveCredentialsRequired: false,
+        networkRequired: false,
+        wallClockSleepsRequired: false,
+        platformApisRequired: false,
+        fullVirtualStoreEnvironmentRequired: false,
+        realBusinessRequired: false
+      },
+      boundaries: {
+        kitIsLifecycleTruth: false,
+        gatewayCurrentOnly: true,
+        retryRequiresFreshConsent: true,
+        hostOwnsKeyCustody: true,
+        agentPortOwnsGatewayTruth: true,
+        adoptionKitDeliversActions: false,
+        adoptionKitIsHostSdk: false,
+        paymentWallet: false,
+        credentialVault: false
+      },
+      rule: "The host adoption kit packages wallet implementer evidence and must-pass checks; it does not add platform APIs, network dependency, payment, ledger, credential vault, or lifecycle authority behavior."
+    },
+    realBusinessHandoff: {
+      protocol: "agentport-plugin-wallet-real-business-handoff",
+      fixture: "examples/plugin-wallet-real-business-handoff.v0.1.json",
+      helper: "createPluginWalletRealBusinessHandoffBoundary",
+      sourceKit: "examples/plugin-wallet-host-adoption-kit.v0.1.json",
+      requiredEvidenceIds: [
+        "owner_approved_business_profile",
+        "ownership_verification",
+        "real_backend_outcome",
+        "gateway_receipt",
+        "returned_session_restore",
+        "gateway_reverify",
+        "returned_session_review",
+        "redaction_manifest"
+      ],
+      requiredRedactionRuleIds: [
+        "no_customer_pii",
+        "no_owner_contact_details",
+        "no_decrypted_wallet_labels",
+        "no_commitment_bodies",
+        "no_receipt_bodies",
+        "no_signatures",
+        "no_backend_confirmation_ids",
+        "no_destination_refs",
+        "no_credentials_or_tokens",
+        "no_real_business_private_fixture_data"
+      ],
+      evidenceFields: [
+        "evidenceId",
+        "sourceOwner",
+        "requirement",
+        "proofRefPolicy",
+        "required",
+        "blocksRealPilotClaim"
+      ],
+      redactionRuleFields: [
+        "ruleId",
+        "appliesTo",
+        "requirement",
+        "replacement",
+        "required"
+      ],
+      deterministicFixturePolicy: {
+        realBusinessEvidenceAllowedInCiFixtures: false,
+        privateBusinessDataAllowedInCiFixtures: false,
+        realBackendConfirmationAllowedInCiFixtures: false,
+        realCustomerDataAllowedInCiFixtures: false,
+        fixtureMayContainRequirementRefs: true
+      },
+      boundaries: {
+        handoffBoundaryIsRealPilotEvidence: false,
+        realPilotRequiresOwnerApproval: true,
+        realPilotRequiresOwnershipVerification: true,
+        realPilotRequiresBackendOutcome: true,
+        realPilotRequiresGatewayReceipt: true,
+        realPilotRequiresReturnedSessionReview: true,
+        deterministicFixturesAreRealMarketProof: false,
+        supportingBranchOwnsRealBusinessOperations: false,
+        paymentWallet: false,
+        bookingLedger: false,
+        credentialVault: false,
+        systemOfRecord: false
+      },
+      rule: "The real-business handoff boundary defines what future pilot evidence must prove; it is not real-market proof and keeps real-business private data out of deterministic wallet fixtures."
+    },
+    relatedTools: [
+      "locate_wallet_tickets",
+      "verify_ticket",
+      "get_ticket_status",
+      "get_allowed_ticket_actions",
+      "send_ticket"
+    ],
+    exampleSummary: {
+      protocol: "agentport-plugin-wallet-ticket-summary",
+      version: "0.1",
+      walletId: "wallet:user-local-1",
+      walletTicketId: "wallet_ticket_123",
+      commitmentId: "commitment_123",
+      label: "Salon reservation for Friday",
+      lastVerifiedStatus: "active",
+      lastVerifiedAt: "2026-06-26T12:00:00.000Z",
+      businessId: "verified-spa",
+      serviceId: "massage",
+      pendingAction: {
+        action: "send_ticket",
+        destinationRef: "agentport://business-inbox/verified-spa",
+        requestedAt: "2026-06-26T12:01:00.000Z"
+      },
+      deliveryAttemptCount: 1,
+      lastDeliveryAttempt: {
+        protocol: "agentport-plugin-wallet-delivery-attempt-summary",
+        version: "0.1",
+        walletId: "wallet:user-local-1",
+        walletTicketId: "wallet_ticket_123",
+        commitmentId: "commitment_123",
+        deliveryAttemptId: "wallet_delivery_123",
+        action: "send_ticket",
+        outcome: "sent",
+        attemptedAt: "2026-06-26T12:02:00.000Z",
+        destinationKind: "business_inbox",
+        destinationRef: "agentport://business-inbox/verified-spa",
+        deliveryId: "delivery_123",
+        deliveredAt: "2026-06-26T12:02:01.000Z",
+        proofLevel: "cryptographic",
+        backendMutation: false
+      },
+      updatedAt: "2026-06-26T12:01:00.000Z"
+    }
+  };
+}

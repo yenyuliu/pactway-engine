@@ -1,0 +1,40 @@
+{
+  "type": "agentport.action_intent_compiled.v0.1",
+  "outcome": "compiled",
+  "intentId": "intent_action_intent_demo",
+  "agentSessionId": "session_action_intent_demo",
+  "actionIntent": {
+    "action": "book_service",
+    "businessId": "agentport-virtual-store",
+    "serviceId": "product_demo",
+    "bindingId": "fixture#0",
+    "requestedType": "confirmed",
+    "slotStart": "2026-07-01T16:00:00.000Z",
+    "customerFields": [
+      "name",
+      "email",
+      "phone"
+    ],
+    "consentText": [
+      "Book the virtual store product demo for the selected slot."
+    ],
+    "expiresAt": "2026-07-01T15:55:00.000Z"
+  },
+  "citations": [
+    "find_services",
+    "get_business_info"
+  ],
+  "payloadSafety": {
+    "excludesCustomerPii": true,
+    "excludesRawAuthorityTokens": true,
+    "excludesReceiptBodies": true,
+    "excludesDeliveryBodies": true,
+    "excludesSignatures": true,
+    "excludesBackendCredentials": true
+  },
+  "boundaries": {
+    "verifiedBusinessInfoOnly": true,
+    "userConsentPresent": false,
+    "clientMintsReceipt": false
+  }
+}

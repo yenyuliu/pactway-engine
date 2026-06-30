@@ -1,0 +1,63 @@
+{
+  "type": "agentport.plugin_wallet_proof_summary.v0.1",
+  "profile": "plugin-wallet",
+  "ok": true,
+  "checks": [
+    {
+      "id": "durable_ticket_refs",
+      "ok": true
+    },
+    {
+      "id": "returned_session_restore",
+      "ok": true
+    },
+    {
+      "id": "gateway_reverify_before_current",
+      "ok": true
+    },
+    {
+      "id": "fresh_consent_for_replay",
+      "ok": true
+    },
+    {
+      "id": "receipt_ref_retention",
+      "ok": true
+    },
+    {
+      "id": "redaction_boundary",
+      "ok": true
+    },
+    {
+      "id": "role_claim_boundary",
+      "ok": true
+    }
+  ],
+  "claims": {
+    "allowed": "Passes AgentPort Plugin Wallet protocol check.",
+    "forbidden": [
+      "AgentPort Certified",
+      "AgentPort Verified",
+      "Gateway compliant",
+      "Registry compliant",
+      "Real-business proof"
+    ]
+  },
+  "payloadSafety": {
+    "excludesDecryptedLabels": true,
+    "excludesRawAuthorityTokens": true,
+    "excludesReceiptBodies": true,
+    "excludesSignatures": true,
+    "excludesBackendCredentials": true,
+    "excludesCustomerPii": true
+  },
+  "boundaries": {
+    "pluginWalletOnly": true,
+    "gatewayAuthority": false,
+    "registryAuthority": false,
+    "lifecycleSourceOfTruth": false,
+    "realBusinessEvidence": false,
+    "paymentWallet": false,
+    "credentialVault": false,
+    "storesPrivatePayloads": false
+  }
+}

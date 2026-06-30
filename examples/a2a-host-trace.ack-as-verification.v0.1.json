@@ -1,0 +1,109 @@
+{
+  "$schema": "../schemas/agentport-a2a-host-trace.schema.json",
+  "type": "agentport.a2a_host_trace.v0.1",
+  "version": "0.1",
+  "id": "a2a_host_ack_as_verification",
+  "bindingArtifact": "artifacts/agentport-a2a-host-binding.v0.1.json",
+  "expectedStatus": "failed",
+  "expectedFailureIds": ["host_ack_is_not_receipt_verification"],
+  "scenario": "The host treats result-delivery acknowledgement as proof that a gateway receipt was verified.",
+  "events": [
+    {
+      "order": 1,
+      "actor": "frontier_host",
+      "phase": "classify_task",
+      "a2aTaskClass": "action.prepare",
+      "assertions": {
+        "realWorldServiceTask": true,
+        "hostSelectedBusinessPort": true
+      }
+    },
+    {
+      "order": 2,
+      "actor": "agentport_plugin",
+      "phase": "discover_gateway",
+      "a2aTaskClass": "business.info",
+      "agentPortPrimitive": "get_business_feed",
+      "assertions": {
+        "agentPortCalled": true
+      }
+    },
+    {
+      "order": 3,
+      "actor": "agentport_plugin",
+      "phase": "read_action_model",
+      "a2aTaskClass": "action.prepare",
+      "assertions": {
+        "actionModelRead": true
+      }
+    },
+    {
+      "order": 4,
+      "actor": "agentport_plugin",
+      "phase": "compile_action_intent",
+      "a2aTaskClass": "action.prepare",
+      "agentPortPrimitive": "compile_action_intent",
+      "preservedFields": ["intentId", "approvedActionIntentHash"],
+      "assertions": {
+        "intentId": "intent_ack_as_verification",
+        "approvedActionIntentHash": "sha256:ack-as-verification"
+      }
+    },
+    {
+      "order": 5,
+      "actor": "frontier_host",
+      "phase": "render_approval",
+      "a2aTaskClass": "action.prepare",
+      "assertions": {
+        "exactApprovalRendered": true,
+        "userConsent": true
+      }
+    },
+    {
+      "order": 6,
+      "actor": "agentport_gateway",
+      "phase": "execute_action",
+      "a2aTaskClass": "action.execute",
+      "agentPortPrimitive": "book_service",
+      "preservedFields": ["intentId", "approvedActionIntentHash", "userConsent"],
+      "assertions": {
+        "intentId": "intent_ack_as_verification",
+        "approvedActionIntentHash": "sha256:ack-as-verification",
+        "userConsent": true,
+        "exactApprovalRendered": true
+      }
+    },
+    {
+      "order": 7,
+      "actor": "agentport_gateway",
+      "phase": "receive_receipt",
+      "a2aTaskClass": "proof.receipt",
+      "agentPortPrimitive": "ActionReceipt",
+      "preservedFields": ["actionReceiptRef", "commitmentRef", "gatewayResultType"],
+      "assertions": {
+        "gatewayProducedReceipt": true,
+        "clientMintedReceipt": false,
+        "businessOutcomeFromGateway": true
+      }
+    },
+    {
+      "order": 8,
+      "actor": "agentport_plugin",
+      "phase": "ack_result_delivery",
+      "a2aTaskClass": "proof.receipt",
+      "agentPortPrimitive": "ack_action_intent_result_delivery",
+      "preservedFields": ["resultDeliveryId"],
+      "assertions": {
+        "resultDeliveryAcknowledged": true,
+        "deliveryAckTreatedAsReceiptVerification": true
+      }
+    }
+  ],
+  "boundaries": {
+    "hostTraceOnly": true,
+    "certification": false,
+    "realBusinessEvidence": false,
+    "replacesA2A": false,
+    "executesLiveNetwork": false
+  }
+}

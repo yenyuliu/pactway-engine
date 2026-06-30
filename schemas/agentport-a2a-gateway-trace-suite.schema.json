@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-a2a-gateway-trace-suite.schema.json",
+  "title": "AgentPort A2A Gateway Trace Suite",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["type", "version", "profileArtifact", "golden", "tamper", "boundaries"],
+  "properties": {
+    "type": { "const": "agentport.a2a_gateway_trace_suite.v0.1" },
+    "version": { "const": "0.1" },
+    "profileArtifact": { "const": "artifacts/agentport-a2a-gateway-profile.v0.1.json" },
+    "golden": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "steps", "assertions"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/step" }
+        },
+        "assertions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "tamper": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "mutation", "expectedRejection"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "mutation": { "type": "string", "minLength": 1 },
+          "expectedRejection": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "boundaries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["a2aProfileOnly", "certification", "realBusinessEvidence", "replacesA2A"],
+      "properties": {
+        "a2aProfileOnly": { "const": true },
+        "certification": { "const": false },
+        "realBusinessEvidence": { "const": false },
+        "replacesA2A": { "const": false }
+      }
+    }
+  },
+  "$defs": {
+    "step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["order", "a2aTaskClass", "agentPortPrimitive", "gate", "expected"],
+      "properties": {
+        "order": { "type": "integer", "minimum": 1 },
+        "a2aTaskClass": {
+          "enum": [
+            "business.info",
+            "action.prepare",
+            "action.lifecycle",
+            "action.execute",
+            "proof.receipt"
+          ]
+        },
+        "agentPortPrimitive": { "type": "string", "minLength": 1 },
+        "gate": { "type": "string", "minLength": 1 },
+        "expected": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

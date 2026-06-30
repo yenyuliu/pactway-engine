@@ -1,0 +1,62 @@
+{
+  "$schema": "../schemas/agentport-a2a-host-trace.schema.json",
+  "type": "agentport.a2a_host_trace.v0.1",
+  "version": "0.1",
+  "id": "a2a_host_direct_execute_without_compile",
+  "bindingArtifact": "artifacts/agentport-a2a-host-binding.v0.1.json",
+  "expectedStatus": "failed",
+  "expectedFailureIds": ["host_compile_before_execute"],
+  "scenario": "The host skips compile_action_intent and calls a state-changing gateway primitive directly.",
+  "events": [
+    {
+      "order": 1,
+      "actor": "frontier_host",
+      "phase": "classify_task",
+      "a2aTaskClass": "action.execute",
+      "assertions": {
+        "realWorldServiceTask": true,
+        "hostSelectedBusinessPort": true
+      }
+    },
+    {
+      "order": 2,
+      "actor": "agentport_plugin",
+      "phase": "discover_gateway",
+      "a2aTaskClass": "business.info",
+      "agentPortPrimitive": "get_business_feed",
+      "assertions": {
+        "agentPortCalled": true
+      }
+    },
+    {
+      "order": 3,
+      "actor": "agentport_plugin",
+      "phase": "read_action_model",
+      "a2aTaskClass": "action.prepare",
+      "assertions": {
+        "actionModelRead": true
+      }
+    },
+    {
+      "order": 4,
+      "actor": "agentport_gateway",
+      "phase": "execute_action",
+      "a2aTaskClass": "action.execute",
+      "agentPortPrimitive": "book_service",
+      "preservedFields": ["userConsent"],
+      "assertions": {
+        "intentId": "missing",
+        "approvedActionIntentHash": "missing",
+        "userConsent": true,
+        "exactApprovalRendered": true
+      }
+    }
+  ],
+  "boundaries": {
+    "hostTraceOnly": true,
+    "certification": false,
+    "realBusinessEvidence": false,
+    "replacesA2A": false,
+    "executesLiveNetwork": false
+  }
+}

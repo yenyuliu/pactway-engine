@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-protocol-governance.schema.json",
+  "title": "AgentPort Protocol Governance",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "protocol",
+    "version",
+    "status",
+    "extensionNamespaces",
+    "versionPolicy",
+    "deprecationPolicy",
+    "claimPolicy",
+    "securityPolicy",
+    "contributionPolicy",
+    "stableCutRequirements"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "type": { "const": "agentport.protocol_governance.v0.2" },
+    "protocol": { "const": "agentport" },
+    "version": { "const": "0.2" },
+    "status": { "const": "cut_readiness" },
+    "extensionNamespaces": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowedFieldLocations",
+        "thirdPartyIdFormat",
+        "reservedPrefixes",
+        "forbiddenOverrides"
+      ],
+      "properties": {
+        "allowedFieldLocations": {
+          "type": "array",
+          "items": { "enum": ["extensions", "x-*"] },
+          "minItems": 2,
+          "uniqueItems": true
+        },
+        "thirdPartyIdFormat": { "const": "reverse_dns_or_uri" },
+        "reservedPrefixes": {
+          "type": "array",
+          "items": { "enum": ["agentport.", "ap."] },
+          "minItems": 2,
+          "uniqueItems": true
+        },
+        "forbiddenOverrides": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "verification.status",
+              "verified",
+              "tag",
+              "readinessTier",
+              "bindingId",
+              "businessId",
+              "serviceId",
+              "backend.confirmationId",
+              "result.type",
+              "allowedActions",
+              "receipt",
+              "authority.assurance",
+              "lifecycle.status",
+              "consent",
+              "systemOfRecord"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      }
+    },
+    "versionPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["patchCompatible", "minorRequired", "breaking"],
+      "properties": {
+        "patchCompatible": { "$ref": "#/$defs/stringList" },
+        "minorRequired": { "$ref": "#/$defs/stringList" },
+        "breaking": { "$ref": "#/$defs/stringList" }
+      }
+    },
+    "deprecationPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requiresMigrationNote", "removalRequires", "mustNotWeakenFailClosed"],
+      "properties": {
+        "requiresMigrationNote": { "const": true },
+        "removalRequires": { "const": "major_version" },
+        "mustNotWeakenFailClosed": { "const": true }
+      }
+    },
+    "claimPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["allowedClaims", "forbiddenClaims", "officialMarksRequireSeparateProcess"],
+      "properties": {
+        "allowedClaims": { "$ref": "#/$defs/stringList" },
+        "forbiddenClaims": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "AgentPort Certified",
+              "AgentPort Gateway Certified",
+              "AgentPort Verified business",
+              "real-business proof",
+              "live-backend proof",
+              "A2A certification",
+              "A2A replacement",
+              "backend confirmation authority for business ports",
+              "gateway authority for plugins",
+              "registry authority for hosts or models"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "officialMarksRequireSeparateProcess": { "const": true }
+      }
+    },
+    "securityPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["conformanceBypass", "noBypassFor", "rawPrivateDataForbidden", "tighteningMayBeMinor"],
+      "properties": {
+        "conformanceBypass": { "const": "not_allowed_for_safety_or_role_boundary_failures" },
+        "noBypassFor": { "$ref": "#/$defs/stringList" },
+        "rawPrivateDataForbidden": { "const": true },
+        "tighteningMayBeMinor": { "const": true }
+      }
+    },
+    "contributionPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mustBeDeterministic", "mustBeCredentialFree", "networkRequiredInCi", "forbidden"],
+      "properties": {
+        "mustBeDeterministic": { "const": true },
+        "mustBeCredentialFree": { "const": true },
+        "networkRequiredInCi": { "const": false },
+        "forbidden": { "$ref": "#/$defs/stringList" }
+      }
+    },
+    "stableCutRequirements": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "protocol_cut_manifest_refs_exist",
+          "publication_status_refs_exist",
+          "npm run public-package-audit",
+          "all_manifest_commands_pass",
+          "npm run conformance",
+          "npm test",
+          "git diff --check",
+          "claim_boundaries_preserved"
+        ]
+      },
+      "minItems": 8,
+      "uniqueItems": true
+    }
+  },
+  "$defs": {
+    "stringList": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1,
+      "uniqueItems": true
+    }
+  }
+}

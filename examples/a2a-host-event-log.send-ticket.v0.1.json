@@ -1,0 +1,121 @@
+{
+  "$schema": "../schemas/agentport-a2a-host-event-log.schema.json",
+  "type": "agentport.a2a_host_event_log.v0.1",
+  "version": "0.1",
+  "id": "chatgpt_app_connector_send_ticket",
+  "bindingArtifact": "artifacts/agentport-a2a-host-binding.v0.1.json",
+  "expectedStatus": "passed",
+  "expectedFailureIds": [],
+  "scenario": "A ChatGPT-style app connector sends a service ticket through AgentPort after compiling intent and rendering exact approval.",
+  "events": [
+    {
+      "order": 1,
+      "actor": "frontier_host",
+      "phase": "classify_task",
+      "taskClass": "action.prepare",
+      "action": "classify_service_ticket_request",
+      "preservedFields": [],
+      "assertions": {
+        "realWorldServiceTask": true,
+        "hostSelectedBusinessPort": true,
+        "modelMemoryIsNotGatewayTruth": true
+      }
+    },
+    {
+      "order": 2,
+      "actor": "agentport_plugin",
+      "phase": "discover_gateway",
+      "taskClass": "business.info",
+      "tool": "get_business_feed",
+      "preservedFields": ["gatewayResultType"],
+      "assertions": {
+        "agentPortCalled": true,
+        "verifiedFactsFromGateway": true
+      }
+    },
+    {
+      "order": 3,
+      "actor": "agentport_plugin",
+      "phase": "read_action_model",
+      "taskClass": "action.prepare",
+      "action": "read_agentport_action_model",
+      "preservedFields": [],
+      "assertions": {
+        "actionModelRead": true
+      }
+    },
+    {
+      "order": 4,
+      "actor": "agentport_plugin",
+      "phase": "compile_action_intent",
+      "taskClass": "action.prepare",
+      "tool": "compile_action_intent",
+      "fields": ["intentId", "approvedActionIntentHash"],
+      "assertions": {
+        "intentId": "intent_send_ticket_001",
+        "approvedActionIntentHash": "sha256:send-ticket-approval",
+        "approvalPackageReady": true
+      }
+    },
+    {
+      "order": 5,
+      "actor": "frontier_host",
+      "phase": "render_approval",
+      "taskClass": "action.prepare",
+      "action": "render_exact_approval_package",
+      "fields": ["intentId", "approvedActionIntentHash"],
+      "assertions": {
+        "exactApprovalRendered": true,
+        "userConsent": true
+      }
+    },
+    {
+      "order": 6,
+      "actor": "agentport_gateway",
+      "phase": "execute_action",
+      "taskClass": "action.execute",
+      "tool": "send_ticket",
+      "fields": ["intentId", "approvedActionIntentHash", "userConsent", "authorityEvidenceRef"],
+      "assertions": {
+        "intentId": "intent_send_ticket_001",
+        "approvedActionIntentHash": "sha256:send-ticket-approval",
+        "userConsent": true,
+        "exactApprovalRendered": true,
+        "authorityEvidenceRequired": true,
+        "authorityEvidenceCarried": true
+      }
+    },
+    {
+      "order": 7,
+      "actor": "agentport_gateway",
+      "phase": "receive_receipt",
+      "taskClass": "proof.receipt",
+      "tool": "ActionReceipt",
+      "fields": ["actionReceiptRef", "commitmentRef", "gatewayResultType"],
+      "assertions": {
+        "gatewayProducedReceipt": true,
+        "clientMintedReceipt": false,
+        "businessOutcomeFromGateway": true
+      }
+    },
+    {
+      "order": 8,
+      "actor": "frontier_host",
+      "phase": "present_result",
+      "taskClass": "proof.receipt",
+      "action": "present_gateway_outcome",
+      "fields": ["actionReceiptRef", "commitmentRef", "gatewayResultType"],
+      "assertions": {
+        "taskStatePresentedAsOrchestrationOnly": true,
+        "gatewayOutcomeNotUpgraded": true
+      }
+    }
+  ],
+  "boundaries": {
+    "hostTraceOnly": true,
+    "certification": false,
+    "realBusinessEvidence": false,
+    "replacesA2A": false,
+    "executesLiveNetwork": false
+  }
+}

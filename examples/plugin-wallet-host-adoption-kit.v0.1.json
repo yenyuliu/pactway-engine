@@ -1,0 +1,173 @@
+{
+  "protocol": "agentport-plugin-wallet-host-adoption-kit",
+  "version": "0.1",
+  "kitId": "wallet-host-adoption-kit-v0.1",
+  "generatedAt": "2026-06-26T13:00:00.000Z",
+  "components": [
+    {
+      "componentId": "gateway_wallet_contract",
+      "artifact": "artifacts/agentport-plugin-wallet.v0.1.json",
+      "helper": "createPluginWalletContract",
+      "owner": "agentport",
+      "purpose": "Defines the wallet protocol contract, boundaries, and artifact refs.",
+      "required": true
+    },
+    {
+      "componentId": "host_integration_packet",
+      "artifact": "artifacts/agentport-plugin-wallet.v0.1.json#hostIntegration",
+      "helper": "createPluginWalletHostIntegrationPacket",
+      "owner": "shared",
+      "purpose": "Lists host state, restore cadence, consent hooks, and worker responsibilities.",
+      "required": true
+    },
+    {
+      "componentId": "host_adapter_packets",
+      "artifact": "artifacts/agentport-plugin-wallet.v0.1.json#pilotHostAdapters",
+      "helper": "createPluginWalletPilotHostAdapterPacket",
+      "owner": "host",
+      "purpose": "Shows browser, mobile, and desktop adapter packet shapes without platform APIs.",
+      "required": true
+    },
+    {
+      "componentId": "host_adapter_smoke_harness",
+      "artifact": "test/core/plugin-wallet.test.mjs",
+      "helper": "runPluginWalletHostAdapterSmoke",
+      "owner": "shared",
+      "purpose": "Runs deterministic restore success and failure-mode smoke checks.",
+      "required": true
+    },
+    {
+      "componentId": "pilot_host_runbook",
+      "artifact": "examples/plugin-wallet-pilot-host-runbook.v0.1.json",
+      "owner": "agentport",
+      "purpose": "Chains adapter packets, smoke results, and pilot evidence for implementers.",
+      "required": true
+    },
+    {
+      "componentId": "returned_session_review_surface",
+      "artifact": "examples/plugin-wallet-returned-session-review.v0.1.json",
+      "helper": "createPluginWalletReturnedSessionReviewSurface",
+      "owner": "shared",
+      "purpose": "Defines payload-safe current, last-known, pending, expired, and reverify review sections.",
+      "required": true
+    },
+    {
+      "componentId": "virtual_store_reference_harness",
+      "artifact": "examples/plugin-wallet-virtual-store-reference-harness.v0.1.json",
+      "helper": "createPluginWalletVirtualStoreReferenceHarnessResult",
+      "owner": "agentport",
+      "purpose": "Makes Virtual Store the canonical deterministic gateway wallet reference business.",
+      "required": true
+    },
+    {
+      "componentId": "golden_trace_matrix",
+      "artifact": "examples/plugin-wallet-golden-trace-matrix.v0.1.json",
+      "helper": "createPluginWalletGoldenTraceMatrix",
+      "owner": "agentport",
+      "purpose": "Lists expected gateway source, wallet mutation, review, consent, and payload-safety traces.",
+      "required": true
+    },
+    {
+      "componentId": "conformance_evidence",
+      "artifact": "examples/conformance-report.v0.1.json#plugin-wallet",
+      "owner": "agentport",
+      "purpose": "Records the deterministic evidence bundle hosts compare before claiming support.",
+      "required": true
+    }
+  ],
+  "mustPassChecks": [
+    {
+      "checkId": "restore_success",
+      "evidenceRef": "test/core/plugin-wallet.test.mjs#runPluginWalletHostAdapterSmoke",
+      "expectation": "A host can restore a wallet page and show current only after gateway reverify.",
+      "blocksSupportClaim": true
+    },
+    {
+      "checkId": "locked_wallet_fails_closed",
+      "evidenceRef": "test/core/plugin-wallet.test.mjs#locked_wallet",
+      "expectation": "Locked wallet fails closed and does not call gateway before key unlock.",
+      "blocksSupportClaim": true
+    },
+    {
+      "checkId": "gateway_unavailable_last_known",
+      "evidenceRef": "examples/plugin-wallet-golden-trace-matrix.v0.1.json#gateway_unavailable",
+      "expectation": "Gateway unavailable remains local last-known and reverify-required.",
+      "blocksSupportClaim": true
+    },
+    {
+      "checkId": "expired_pending_action_review",
+      "evidenceRef": "examples/plugin-wallet-golden-trace-matrix.v0.1.json#expired_pending_action",
+      "expectation": "Expired pending action goes to review and is never delivered automatically.",
+      "blocksSupportClaim": true
+    },
+    {
+      "checkId": "user_triggered_retry_fresh_consent",
+      "evidenceRef": "examples/plugin-wallet-golden-trace-matrix.v0.1.json#user_triggered_retry",
+      "expectation": "User-triggered retry requires fresh consent after gateway reverify.",
+      "blocksSupportClaim": true
+    },
+    {
+      "checkId": "golden_trace_comparison",
+      "evidenceRef": "examples/plugin-wallet-golden-trace-matrix.v0.1.json",
+      "expectation": "Host behavior matches every golden trace before wallet support is claimed.",
+      "blocksSupportClaim": true
+    },
+    {
+      "checkId": "returned_review_payload_safe",
+      "evidenceRef": "examples/plugin-wallet-returned-session-review.v0.1.json",
+      "expectation": "Returned review excludes decrypted labels, commitments, receipts, signatures, backend confirmations, destination refs, and key material.",
+      "blocksSupportClaim": true
+    },
+    {
+      "checkId": "conformance_evidence_present",
+      "evidenceRef": "examples/conformance-report.v0.1.json#plugin-wallet",
+      "expectation": "Plugin-wallet conformance evidence includes the adoption kit, reference harness, golden matrix, review surface, and smoke harness.",
+      "blocksSupportClaim": true
+    }
+  ],
+  "hostOwnedResponsibilities": [
+    "key_unlock",
+    "local_wallet_store",
+    "consent_ui",
+    "restore_worker",
+    "telemetry_sink",
+    "export_import_ux"
+  ],
+  "agentPortOwnedBoundaries": [
+    "gateway_current_truth",
+    "wallet_contract",
+    "reference_harness",
+    "golden_trace_matrix",
+    "payload_safety_rules",
+    "conformance_evidence"
+  ],
+  "payloadSafety": {
+    "excludesDecryptedLabels": true,
+    "excludesCommitments": true,
+    "excludesReceipts": true,
+    "excludesSignatures": true,
+    "excludesBackendConfirmations": true,
+    "excludesDestinationRefs": true,
+    "excludesRawKeyMaterial": true,
+    "excludesRecoverySecrets": true
+  },
+  "runtimeRequirements": {
+    "liveCredentialsRequired": false,
+    "networkRequired": false,
+    "wallClockSleepsRequired": false,
+    "platformApisRequired": false,
+    "fullVirtualStoreEnvironmentRequired": false,
+    "realBusinessRequired": false
+  },
+  "boundaries": {
+    "kitIsLifecycleTruth": false,
+    "gatewayCurrentOnly": true,
+    "retryRequiresFreshConsent": true,
+    "hostOwnsKeyCustody": true,
+    "agentPortOwnsGatewayTruth": true,
+    "adoptionKitDeliversActions": false,
+    "adoptionKitIsHostSdk": false,
+    "paymentWallet": false,
+    "credentialVault": false
+  }
+}

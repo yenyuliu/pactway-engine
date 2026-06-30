@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-action-intent.v0.2.schema.json",
+  "title": "AgentPort Action Intent v0.2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "protocol",
+    "version",
+    "intentId",
+    "agentSessionId",
+    "action",
+    "target",
+    "approval",
+    "bounds",
+    "status"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "protocol": { "const": "agentport-action-intent" },
+    "version": { "const": "0.2" },
+    "intentId": { "type": "string", "minLength": 1 },
+    "agentSessionId": { "type": "string", "minLength": 1 },
+    "action": {
+      "enum": ["send_ticket", "book_service", "cancel_service", "reschedule_service", "handoff"]
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["businessId", "serviceId"],
+      "properties": {
+        "businessId": { "type": "string", "minLength": 1 },
+        "serviceId": { "type": "string", "minLength": 1 },
+        "commitmentId": { "type": "string", "minLength": 1 },
+        "destinationRef": { "type": "string", "minLength": 1 }
+      }
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "exactSummaryShown", "userConsentAttachedAfterApproval"],
+      "properties": {
+        "required": { "const": true },
+        "exactSummaryShown": { "const": true },
+        "approvalPhrase": { "type": "string", "minLength": 1 },
+        "consentStatement": { "type": "string", "minLength": 1 },
+        "userConsentAttachedAfterApproval": { "const": true },
+        "approvalHash": { "type": "string", "minLength": 1 }
+      }
+    },
+    "bounds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["expiresAt", "singleUse", "backendMutation"],
+      "properties": {
+        "expiresAt": { "type": "string", "minLength": 1 },
+        "singleUse": { "const": true },
+        "backendMutation": { "type": "boolean" }
+      }
+    },
+    "status": { "enum": ["needs_input", "ready", "approved", "executed", "rejected", "expired"] }
+  }
+}

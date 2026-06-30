@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-a2a-host-connector-capture.schema.json",
+  "title": "AgentPort A2A Host Connector Capture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["type", "version", "id", "surface", "scenario", "toolCalls", "boundaries"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "type": { "const": "agentport.a2a_host_connector_capture.v0.1" },
+    "version": { "const": "0.1" },
+    "id": { "type": "string", "minLength": 1 },
+    "surface": {
+      "enum": [
+        "chatgpt_app_connector",
+        "custom_gpt_action_facade",
+        "frontier_host_connector",
+        "manual_connector_export"
+      ]
+    },
+    "expectedStatus": { "enum": ["passed", "failed"] },
+    "expectedFailureIds": { "type": "array", "items": { "type": "string" } },
+    "scenario": { "type": "string", "minLength": 1 },
+    "task": {
+      "enum": ["send_ticket", "restore_ticket_status", "book_service", "manage_service"]
+    },
+    "toolCalls": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/toolCall" }
+    },
+    "boundaries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hostTraceOnly", "certification", "realBusinessEvidence", "replacesA2A", "executesLiveNetwork"],
+      "properties": {
+        "hostTraceOnly": { "const": true },
+        "certification": { "const": false },
+        "realBusinessEvidence": { "type": "boolean" },
+        "replacesA2A": { "const": false },
+        "executesLiveNetwork": { "type": "boolean" }
+      }
+    }
+  },
+  "$defs": {
+    "toolCall": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["order"],
+      "anyOf": [
+        { "required": ["name"] },
+        { "required": ["tool"] },
+        { "required": ["action"] }
+      ],
+      "properties": {
+        "order": { "type": "integer", "minimum": 1 },
+        "actor": { "enum": ["frontier_host", "frontier_model", "agentport_plugin", "agentport_gateway"] },
+        "phase": {
+          "enum": [
+            "classify_task",
+            "discover_gateway",
+            "read_action_model",
+            "compile_action_intent",
+            "render_approval",
+            "execute_action",
+            "receive_receipt",
+            "ack_result_delivery",
+            "present_result"
+          ]
+        },
+        "taskClass": {
+          "enum": ["business.info", "action.prepare", "action.execute", "proof.receipt"]
+        },
+        "name": { "type": "string", "minLength": 1 },
+        "tool": { "type": "string", "minLength": 1 },
+        "action": { "type": "string", "minLength": 1 },
+        "arguments": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "result": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "fields": { "type": "array", "items": { "type": "string" } },
+        "preservedFields": { "type": "array", "items": { "type": "string" } },
+        "assertions": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    }
+  }
+}

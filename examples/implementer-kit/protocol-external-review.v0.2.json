@@ -1,0 +1,78 @@
+{
+  "$schema": "../../schemas/agentport-protocol-external-review.schema.json",
+  "type": "agentport.protocol_external_review.v0.2",
+  "protocol": "agentport",
+  "version": "0.2",
+  "status": "ready_for_external_review",
+  "checklist": "docs/agentport-open-standard-v0.2-external-review-checklist.md",
+  "reviewInputs": [
+    "docs/protocol-compact.md",
+    "docs/agentport-open-standard-v0.2-draft.md",
+    "examples/implementer-kit/protocol-cut.v0.2.json",
+    "examples/implementer-kit/protocol-governance.v0.2.json",
+    "examples/implementer-kit/protocol-publication.v0.2.json",
+    "docs/agentport-open-standard-v0.2-release-notes.md",
+    "docs/agentport-open-standard-v0.2-stable-cut-review.md"
+  ],
+  "requiredGates": [
+    "npm run public-package-audit",
+    "npm run conformance",
+    "npm test",
+    "git diff --check"
+  ],
+  "roleChecks": [
+    {
+      "role": "agent_gateway",
+      "command": "node dist/cli/index.js gateway-protocol-check --input examples/gateway-protocol-proof-pack",
+      "allowedClaim": "Passes AgentPort Gateway conformance v0.2"
+    },
+    {
+      "role": "plugin_wallet",
+      "command": "node dist/cli/index.js plugin-wallet-check --input examples/plugin-wallet-proof-pack",
+      "allowedClaim": "Passes AgentPort Plugin Wallet conformance v0.2"
+    },
+    {
+      "role": "action_intent",
+      "command": "node dist/cli/index.js action-intent-check --input examples/action-intent-proof-pack",
+      "allowedClaim": "Passes AgentPort Action Intent compatibility check"
+    },
+    {
+      "role": "business_port_endpoint",
+      "command": "node dist/cli/index.js business-port-check --input examples/business-port-proof-pack",
+      "allowedClaim": "Passes AgentPort Business Port conformance v0.2"
+    },
+    {
+      "role": "commitment_registry",
+      "command": "node dist/cli/index.js registry-check --input examples/commitment-registry-proof-pack",
+      "allowedClaim": "Passes AgentPort Commitment Registry conformance v0.2"
+    },
+    {
+      "role": "protocol_trace",
+      "command": "node dist/cli/index.js protocol-trace-check --input examples/protocol-golden-trace-matrix.v0.1.json",
+      "allowedClaim": "Passes AgentPort protocol trace compatibility check"
+    },
+    {
+      "role": "a2a_host_binding",
+      "command": "node scripts/a2a-gateway-check.mjs --host-trace examples/a2a-host-trace.passing.v0.1.json --strict",
+      "allowedClaim": "Passes AgentPort A2A Host Adoption compatibility check"
+    }
+  ],
+  "acceptance": [
+    "every_cut_manifest_ref_is_packed",
+    "internal_feedback_and_plan_docs_are_not_public_cut_refs",
+    "virtual_store_evidence_is_compatibility_only",
+    "a2a_host_adoption_evidence_is_compatibility_only",
+    "selected_role_check_passes",
+    "tamper_fixtures_fail_closed",
+    "claim_boundaries_preserved"
+  ],
+  "forbiddenConclusions": [
+    "AgentPort Certified",
+    "AgentPort Verified business",
+    "real-business proof",
+    "live-backend proof",
+    "A2A replacement",
+    "gateway authority for plugins",
+    "backend confirmation authority for business ports"
+  ]
+}

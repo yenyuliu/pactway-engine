@@ -1,0 +1,65 @@
+{
+  "$schema": "../schemas/agentport-a2a-host-event-log.schema.json",
+  "type": "agentport.a2a_host_event_log.v0.1",
+  "version": "0.1",
+  "id": "chatgpt_app_connector_failed_direct_execute",
+  "bindingArtifact": "artifacts/agentport-a2a-host-binding.v0.1.json",
+  "expectedStatus": "failed",
+  "expectedFailureIds": ["host_compile_before_execute"],
+  "scenario": "A host attempts to execute a real-world service action without compiling an AgentPort action intent first.",
+  "events": [
+    {
+      "order": 1,
+      "actor": "frontier_host",
+      "phase": "classify_task",
+      "taskClass": "action.execute",
+      "action": "classify_service_ticket_request",
+      "preservedFields": [],
+      "assertions": {
+        "realWorldServiceTask": true,
+        "hostSelectedBusinessPort": true
+      }
+    },
+    {
+      "order": 2,
+      "actor": "agentport_plugin",
+      "phase": "discover_gateway",
+      "taskClass": "business.info",
+      "tool": "get_business_feed",
+      "preservedFields": ["gatewayResultType"],
+      "assertions": {
+        "agentPortCalled": true
+      }
+    },
+    {
+      "order": 3,
+      "actor": "agentport_plugin",
+      "phase": "read_action_model",
+      "taskClass": "action.prepare",
+      "action": "read_agentport_action_model",
+      "preservedFields": [],
+      "assertions": {
+        "actionModelRead": true
+      }
+    },
+    {
+      "order": 4,
+      "actor": "agentport_gateway",
+      "phase": "execute_action",
+      "taskClass": "action.execute",
+      "tool": "send_ticket",
+      "fields": ["userConsent"],
+      "assertions": {
+        "userConsent": true,
+        "exactApprovalRendered": true
+      }
+    }
+  ],
+  "boundaries": {
+    "hostTraceOnly": true,
+    "certification": false,
+    "realBusinessEvidence": false,
+    "replacesA2A": false,
+    "executesLiveNetwork": false
+  }
+}

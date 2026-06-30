@@ -1,0 +1,31 @@
+{
+  "type": "agentport.plugin_wallet_redaction_manifest.v0.1",
+  "requiredRedactionRuleIds": [
+    "no_customer_pii",
+    "no_decrypted_wallet_labels",
+    "no_raw_authority_tokens",
+    "no_receipt_bodies",
+    "no_signatures",
+    "no_backend_credentials",
+    "no_replay_without_fresh_consent"
+  ],
+  "filePolicy": {
+    "privatePayloadsAllowed": false,
+    "credentialsAllowed": false,
+    "customerPiiAllowed": false,
+    "receiptBodiesAllowed": false
+  },
+  "payloadSafety": {
+    "excludesDecryptedLabels": true,
+    "excludesRawAuthorityTokens": true,
+    "excludesReceiptBodies": true,
+    "excludesSignatures": true,
+    "excludesBackendCredentials": true,
+    "excludesCustomerPii": true
+  },
+  "boundaries": {
+    "lifecycleSourceOfTruth": false,
+    "gatewayAuthority": false,
+    "registryAuthority": false
+  }
+}

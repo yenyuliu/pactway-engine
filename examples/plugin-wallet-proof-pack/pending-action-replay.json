@@ -1,0 +1,26 @@
+{
+  "type": "agentport.plugin_wallet_pending_action_replay.v0.1",
+  "walletId": "wallet:plugin-wallet-proof-pack",
+  "pendingAction": {
+    "action": "send_ticket",
+    "stored": true,
+    "expired": false,
+    "commitmentId": "commitment_virtual_store_demo"
+  },
+  "replay": {
+    "freshConsentRequired": true,
+    "storedConsentReusable": false,
+    "executeAfterConsentOnly": true,
+    "attemptedWithoutFreshConsent": false,
+    "deliveryAttempted": false,
+    "userApprovalEvent": "required_before_delivery"
+  },
+  "payloadSafety": {
+    "excludesDecryptedLabels": true,
+    "excludesRawAuthorityTokens": true,
+    "excludesReceiptBodies": true,
+    "excludesSignatures": true,
+    "excludesBackendCredentials": true,
+    "excludesCustomerPii": true
+  }
+}

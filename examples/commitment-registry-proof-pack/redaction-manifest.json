@@ -1,0 +1,21 @@
+{
+  "type": "agentport.registry_redaction_manifest.v0.1",
+  "requiredRedactionRuleIds": [
+    "no_customer_pii",
+    "no_raw_authority_tokens",
+    "no_receipt_bodies",
+    "no_backend_credentials",
+    "no_business_backend_mutation"
+  ],
+  "filePolicy": {
+    "credentialsAllowed": false,
+    "customerPiiAllowed": false,
+    "receiptBodiesAllowed": false
+  },
+  "payloadSafety": {
+    "excludesCustomerPii": true,
+    "excludesRawAuthorityTokens": true,
+    "excludesReceiptBodies": true,
+    "excludesBackendCredentials": true
+  }
+}

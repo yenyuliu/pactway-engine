@@ -1,0 +1,94 @@
+{
+  "$schema": "../schemas/agentport-a2a-host-binding.schema.json",
+  "protocol": "agentport-a2a-host-binding",
+  "version": "0.1",
+  "artifactId": "agentport-a2a-host-binding.v0.1",
+  "summary": "Frontier hosts route A2A real-world service tasks through the AgentPort plugin/gateway path for business truth, action intent compilation, exact approval, state-changing execution, lifecycle state, and gateway receipts.",
+  "boundary": {
+    "hostOwnsIntent": true,
+    "hostOwnsBusinessSelection": true,
+    "agentPortOwnsGatewayTruth": true,
+    "doesNotReplaceA2A": true,
+    "doesNotCertify": true
+  },
+  "taskClasses": [
+    {
+      "a2aTaskClass": "business.info",
+      "hostResponsibility": "Classify the user request as a real service-business information task and select the business port or gateway endpoint.",
+      "agentPortBinding": ["get_business_feed", "get_business_info"],
+      "mustCallAgentPortWhen": "The host presents owner-approved facts, readiness, capability tier, or cannot-do limits as gateway truth."
+    },
+    {
+      "a2aTaskClass": "action.prepare",
+      "hostResponsibility": "Ask the AgentPort plugin/gateway to compile a bounded action intent before any state-changing action.",
+      "agentPortBinding": ["compile_action_intent", "get_action_intent_lifecycle"],
+      "mustCallAgentPortWhen": "The user asks to book, send, cancel, reschedule, or otherwise initiate a real-world service action."
+    },
+    {
+      "a2aTaskClass": "action.execute",
+      "hostResponsibility": "Execute only after rendering the exact approval package and carrying required intent, consent, and authority fields.",
+      "agentPortBinding": ["book_service", "cancel_service", "reschedule_service", "send_ticket"],
+      "mustCallAgentPortWhen": "The host invokes a state-changing AgentPort action or forwards one through the plugin."
+    },
+    {
+      "a2aTaskClass": "proof.receipt",
+      "hostResponsibility": "Preserve gateway receipt references and never mint, edit, or upgrade business outcome proof from A2A task state.",
+      "agentPortBinding": ["ActionReceipt", "get_action_intent_result_delivery", "ack_action_intent_result_delivery"],
+      "mustCallAgentPortWhen": "The host reports confirmed, requested, sent, failed, or rejected state as a business outcome."
+    }
+  ],
+  "requiredHostSequence": [
+    "classify_real_world_service_task",
+    "discover_agentport_gateway_or_plugin",
+    "read_agentport_action_model",
+    "compile_action_intent_before_state_change",
+    "render_exact_approval_package",
+    "execute_only_with_intent_hash_consent_and_authority",
+    "preserve_gateway_receipt_or_lifecycle_ref",
+    "present_gateway_outcome_without_upgrading"
+  ],
+  "forbiddenHostShortcuts": [
+    {
+      "id": "host_direct_execute_without_compile",
+      "rule": "The host must not call a state-changing AgentPort primitive before compile_action_intent."
+    },
+    {
+      "id": "host_invented_approval",
+      "rule": "The host must not set userConsent from task text or model reasoning without rendering the exact approval package."
+    },
+    {
+      "id": "host_missing_authority",
+      "rule": "The host must not request a higher assurance action without carrying required external authority evidence."
+    },
+    {
+      "id": "host_client_minted_receipt",
+      "rule": "The host must not mint, edit, or trust client-supplied ActionReceipt facts."
+    },
+    {
+      "id": "host_ack_as_receipt_verification",
+      "rule": "The host must not treat delivery acknowledgement as gateway receipt verification."
+    }
+  ],
+  "preserveFields": [
+    "intentId",
+    "approvedActionIntentHash",
+    "userConsent",
+    "authorityEvidenceRef",
+    "actionReceiptRef",
+    "commitmentRef",
+    "resultDeliveryId",
+    "gatewayResultType",
+    "gatewayReason"
+  ],
+  "conformance": {
+    "passingTrace": "examples/a2a-host-trace.passing.v0.1.json",
+    "negativeTraces": [
+      "examples/a2a-host-trace.direct-execute.v0.1.json",
+      "examples/a2a-host-trace.invented-approval.v0.1.json",
+      "examples/a2a-host-trace.missing-authority.v0.1.json",
+      "examples/a2a-host-trace.forged-receipt.v0.1.json",
+      "examples/a2a-host-trace.ack-as-verification.v0.1.json"
+    ],
+    "certification": false
+  }
+}

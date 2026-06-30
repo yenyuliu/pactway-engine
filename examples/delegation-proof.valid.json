@@ -1,0 +1,21 @@
+{
+  "delegationId": "del_123",
+  "issuer": "issuer_test",
+  "userSubject": "user_456",
+  "agentId": "agent_789",
+  "consentId": "consent_abc",
+  "scopes": ["book"],
+  "approvedActions": ["book_service"],
+  "businessId": "verified-spa",
+  "serviceId": "massage",
+  "audience": "agentport:test",
+  "challengeId": "challenge_123",
+  "tokenConfirmation": {
+    "method": "dpop",
+    "keyId": "key_123",
+    "jwkThumbprint": "jkt_123"
+  },
+  "expiresAt": "2026-07-20T00:00:00.000Z",
+  "issuedAt": "2026-06-19T00:00:00.000Z",
+  "assurance": "account"
+}

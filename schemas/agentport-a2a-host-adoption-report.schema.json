@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-a2a-host-adoption-report.schema.json",
+  "title": "AgentPort A2A Host Adoption Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["type", "profile", "generatedAt", "input", "inputKind", "bindingArtifact", "hostTrace", "expectedStatus", "expectedStatusMatches", "status", "ok", "certification", "boundaries", "areas", "checks", "failedCheckIds", "validator"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "type": { "const": "agentport.a2a_host_adoption_report.v0.1" },
+    "profile": { "const": "a2a-host-adoption" },
+    "generatedAt": { "type": "string", "minLength": 1 },
+    "input": { "type": "string", "minLength": 1 },
+    "inputKind": { "const": "a2a_host_trace_file" },
+    "bindingArtifact": { "type": "string", "minLength": 1 },
+    "hostTrace": { "type": "string", "minLength": 1 },
+    "expectedStatus": { "enum": ["passed", "failed"] },
+    "expectedStatusMatches": { "type": "boolean" },
+    "status": { "enum": ["passed", "failed"] },
+    "ok": { "type": "boolean" },
+    "certification": { "$ref": "#/$defs/certification" },
+    "boundaries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hostAdoptionOnly", "a2aCertification", "publicCertification", "realBusinessEvidence", "executesLiveNetwork"],
+      "properties": {
+        "hostAdoptionOnly": { "type": "boolean" },
+        "a2aCertification": { "type": "boolean" },
+        "publicCertification": { "type": "boolean" },
+        "realBusinessEvidence": { "type": "boolean" },
+        "executesLiveNetwork": { "type": "boolean" }
+      }
+    },
+    "areas": { "$ref": "#/$defs/areas" },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/check" }
+    },
+    "failedCheckIds": { "type": "array", "items": { "type": "string" } },
+    "validator": { "$ref": "#/$defs/validator" }
+  },
+  "$defs": {
+    "certification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["publicCertification", "a2aCertification", "agentPortReadyCertification", "realBusinessCertification", "note"],
+      "properties": {
+        "publicCertification": { "const": false },
+        "a2aCertification": { "const": false },
+        "agentPortReadyCertification": { "const": false },
+        "realBusinessCertification": { "const": false },
+        "note": { "type": "string", "minLength": 1 }
+      }
+    },
+    "areas": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "ok", "requiredCheckIds", "failedCheckIds"],
+        "properties": {
+          "id": {
+            "enum": [
+              "host_boundary",
+              "task_classification",
+              "binding_sequence",
+              "authority_and_receipt",
+              "presentation_semantics"
+            ]
+          },
+          "ok": { "type": "boolean" },
+          "requiredCheckIds": { "type": "array", "items": { "type": "string" } },
+          "failedCheckIds": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "ok", "detail"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "ok": { "type": "boolean" },
+        "detail": { "type": "string", "minLength": 1 }
+      }
+    },
+    "validator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "ok", "checkCount", "failedCheckIds"],
+      "properties": {
+        "type": { "const": "agentport.a2a_host_trace_validation.v0.1" },
+        "ok": { "type": "boolean" },
+        "checkCount": { "type": "integer", "minimum": 0 },
+        "failedCheckIds": { "type": "array", "items": { "type": "string" } },
+        "reportSchema": { "$ref": "#/$defs/reportSchemaValidation" }
+      }
+    },
+    "reportSchemaValidation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "schema", "ok", "errorCount", "errors"],
+      "properties": {
+        "type": { "const": "agentport.report_schema_validation.v0.1" },
+        "schema": { "type": "string", "minLength": 1 },
+        "ok": { "type": "boolean" },
+        "errorCount": { "type": "integer", "minimum": 0 },
+        "errors": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

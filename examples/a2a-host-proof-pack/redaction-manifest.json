@@ -1,0 +1,32 @@
+{
+  "type": "agentport.a2a_host_proof_pack_redaction_manifest.v0.1",
+  "generatedAt": "2026-06-27T18:43:47.000Z",
+  "input": "examples/a2a-host-trace.passing.v0.1.json",
+  "artifacts": {
+    "hostTrace": "examples/a2a-host-proof-pack/host-trace.json",
+    "adoptionReport": "examples/a2a-host-proof-pack/adoption-report.json"
+  },
+  "policy": {
+    "redactedReplacement": "[REDACTED]",
+    "forbiddenFieldPatterns": [
+      "token",
+      "secret",
+      "credential",
+      "password",
+      "privateKey",
+      "authorization",
+      "email",
+      "phone",
+      "rawAuthority",
+      "payment",
+      "card"
+    ],
+    "freeFormStringBoundary": "Automated redaction covers key names, not every possible secret embedded in prose."
+  },
+  "redactions": [],
+  "checks": {
+    "containsRawAuthorityTokens": false,
+    "containsRawCredentials": false,
+    "storesFullPrivatePayload": false
+  }
+}

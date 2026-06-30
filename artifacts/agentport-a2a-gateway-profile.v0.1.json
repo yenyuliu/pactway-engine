@@ -1,0 +1,126 @@
+{
+  "$schema": "../schemas/agentport-a2a-gateway-profile.schema.json",
+  "protocol": "agentport-a2a-gateway-profile",
+  "version": "0.1",
+  "artifactId": "agentport-a2a-gateway-profile.v0.1",
+  "summary": "A2A callers use AgentPort as a verified service-business gateway by mapping A2A task classes onto existing AgentPort discovery, action-intent, lifecycle, execution, and receipt primitives.",
+  "boundary": {
+    "a2aIsTransport": true,
+    "agentPortIsGateway": true,
+    "doesNotReplaceA2A": true,
+    "doesNotCertify": true,
+    "doesNotOwnBackend": true
+  },
+  "resources": [
+    {
+      "uri": "agentport://discovery",
+      "purpose": "Locate the AgentPort gateway and advertised resources."
+    },
+    {
+      "uri": "agentport://open-standard",
+      "purpose": "Distinguish public read, operational read, and consent-gated state-changing behavior."
+    },
+    {
+      "uri": "agentport://action-model",
+      "purpose": "Follow the existing safe action sequence instead of inventing A2A-specific action rules."
+    },
+    {
+      "uri": "agentport://client-use-policy",
+      "purpose": "Prevent browsing, model memory, or task text from replacing gateway truth."
+    },
+    {
+      "uri": "agentport://commitment-format",
+      "purpose": "Preserve portable ticket/reservation refs when a gateway outcome creates or updates a commitment."
+    },
+    {
+      "uri": "agentport://gateway-trust-profile",
+      "purpose": "Verify signed gateway receipts when the profile is published.",
+      "optional": true
+    }
+  ],
+  "taskMapping": [
+    {
+      "a2aTaskClass": "business.info",
+      "agentPortPrimitive": ["get_business_info", "get_business_feed"],
+      "stateChanging": false,
+      "authorityRule": "No user-action authority is required for public verified facts, but verification and capability must come from AgentPort records.",
+      "receiptRule": "No ActionReceipt is expected for read-only facts."
+    },
+    {
+      "a2aTaskClass": "action.prepare",
+      "agentPortPrimitive": ["compile_action_intent"],
+      "stateChanging": false,
+      "authorityRule": "Preparation creates a bounded approval package only; it does not authorize execution.",
+      "receiptRule": "Preparation returns lifecycle refs, not a backend outcome receipt."
+    },
+    {
+      "a2aTaskClass": "action.lifecycle",
+      "agentPortPrimitive": [
+        "get_action_intent_lifecycle",
+        "poll_action_intent_lifecycles",
+        "list_action_intent_result_deliveries",
+        "get_action_intent_result_delivery",
+        "ack_action_intent_result_delivery"
+      ],
+      "stateChanging": false,
+      "authorityRule": "Lifecycle reads and acknowledgements do not prove user consent or receipt validity.",
+      "receiptRule": "Delivery acknowledgement means the host consumed a result; it is not receipt verification."
+    },
+    {
+      "a2aTaskClass": "action.execute",
+      "agentPortPrimitive": ["book_service", "cancel_service", "reschedule_service", "send_ticket"],
+      "stateChanging": true,
+      "authorityRule": "Execution requires the compiled intent id, approved action-intent hash, exact user approval, userConsent true, and any gateway-required authority evidence.",
+      "receiptRule": "Only the AgentPort gateway can return the business outcome and ActionReceipt."
+    },
+    {
+      "a2aTaskClass": "proof.receipt",
+      "agentPortPrimitive": ["ActionReceipt"],
+      "stateChanging": false,
+      "authorityRule": "A2A callers may carry receipt refs, but must not mint or edit receipt facts.",
+      "receiptRule": "Receipt validity is derived from gateway payload/hash/signature expectations, not from the caller's task state."
+    }
+  ],
+  "requiredSequence": [
+    "identify_a2a_caller",
+    "discover_agentport_gateway",
+    "read_agentport_action_model",
+    "compile_action_intent_before_state_change",
+    "render_exact_user_approval",
+    "carry_external_authority_evidence_when_required",
+    "execute_with_intentId_approvedActionIntentHash_and_userConsent",
+    "report_gateway_result_or_action_receipt_without_upgrading"
+  ],
+  "forbiddenShortcuts": [
+    {
+      "id": "a2a_direct_execute_without_compile",
+      "rule": "A2A action.execute must not call a state-changing AgentPort tool before compile_action_intent returns a ready approval package."
+    },
+    {
+      "id": "a2a_self_asserted_user_approval",
+      "rule": "A2A caller task text cannot stand in for exact user approval or userConsent."
+    },
+    {
+      "id": "a2a_missing_authority_evidence",
+      "rule": "High-assurance actions cannot be upgraded from none to signed or verified-mandate by caller assertion."
+    },
+    {
+      "id": "a2a_client_minted_receipt",
+      "rule": "A2A caller-supplied ActionReceipt fields are untrusted and must be ignored or rejected."
+    },
+    {
+      "id": "a2a_ack_without_receipt_verification",
+      "rule": "A result-delivery acknowledgement must not be treated as gateway receipt verification."
+    }
+  ],
+  "resultSemantics": {
+    "taskStateRule": "A2A task state reports orchestration progress only.",
+    "businessOutcomeRule": "Business outcome comes only from AgentPort gateway tool results and existing backend responses.",
+    "receiptRule": "Portable proof requires AgentPort ActionReceipt data and configured trust verification when present."
+  },
+  "conformance": {
+    "goldenTrace": "examples/a2a-gateway-trace-suite.v0.1.json#golden",
+    "tamperTraceSuite": "examples/a2a-gateway-trace-suite.v0.1.json#tamper",
+    "certification": false
+  }
+}

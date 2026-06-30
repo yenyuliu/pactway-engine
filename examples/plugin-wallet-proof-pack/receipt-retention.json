@@ -1,0 +1,28 @@
+{
+  "type": "agentport.plugin_wallet_receipt_retention.v0.1",
+  "walletId": "wallet:plugin-wallet-proof-pack",
+  "receiptRefs": {
+    "receiptId": "receipt_virtual_store_demo",
+    "gatewayReceiptRef": "gateway-receipt:receipt_virtual_store_demo",
+    "backendOutcomeRef": "backend-outcome:fixture-product_demo-0001",
+    "payloadHashRef": "sha256:receipt_virtual_store_demo_payload"
+  },
+  "retention": {
+    "storesFullReceiptBody": false,
+    "storesBackendConfirmationBody": false,
+    "preservesGatewayRefs": true
+  },
+  "payloadSafety": {
+    "excludesDecryptedLabels": true,
+    "excludesRawAuthorityTokens": true,
+    "excludesReceiptBodies": true,
+    "excludesSignatures": true,
+    "excludesBackendCredentials": true,
+    "excludesCustomerPii": true
+  },
+  "boundaries": {
+    "walletSignsReceipt": false,
+    "walletVerifiesReceiptSignature": false,
+    "gatewayOwnsReceiptVerification": true
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-protocol-trace-compatibility-report.schema.json",
+  "title": "AgentPort Protocol Trace Compatibility Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["type", "profile", "generatedAt", "input", "inputKind", "referenceTrace", "status", "ok", "certification", "boundaries", "areas", "validator"],
+  "properties": {
+    "type": { "const": "agentport.protocol_trace_compatibility_report.v0.1" },
+    "profile": { "const": "protocol-trace-matrix" },
+    "generatedAt": { "type": "string", "minLength": 1 },
+    "input": { "type": "string", "minLength": 1 },
+    "inputKind": { "const": "trace_matrix_file" },
+    "referenceTrace": { "const": "protocol-golden-trace-matrix" },
+    "status": { "enum": ["passed", "failed"] },
+    "ok": { "type": "boolean" },
+    "certification": { "$ref": "#/$defs/certification" },
+    "boundaries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["goldenTraceOnly", "realBusinessEvidence", "certification", "adapterCoverage"],
+      "properties": {
+        "goldenTraceOnly": { "type": "boolean" },
+        "realBusinessEvidence": { "type": "boolean" },
+        "certification": { "type": "boolean" },
+        "adapterCoverage": { "type": "boolean" }
+      }
+    },
+    "areas": { "$ref": "#/$defs/areas" },
+    "validator": { "$ref": "#/$defs/validator" }
+  },
+  "$defs": {
+    "certification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["publicCertification", "agentPortReadyCertification", "realBusinessCertification", "gatewayCertification", "businessPortCertification", "registryCertification", "note"],
+      "properties": {
+        "publicCertification": { "const": false },
+        "agentPortReadyCertification": { "const": false },
+        "realBusinessCertification": { "const": false },
+        "gatewayCertification": { "const": false },
+        "businessPortCertification": { "const": false },
+        "registryCertification": { "const": false },
+        "note": { "type": "string", "minLength": 1 }
+      }
+    },
+    "areas": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "ok", "requiredCheckIds"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "ok": { "type": "boolean" },
+          "requiredCheckIds": { "type": "array", "items": { "type": "string" } },
+          "missingCheckIds": { "type": "array", "items": { "type": "string" } },
+          "failedCheckIds": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "validator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "ok", "checkCount", "failedCheckIds", "schema", "reportSchema"],
+      "properties": {
+        "type": { "const": "agentport.protocol_trace_matrix_validation.v0.1" },
+        "ok": { "type": "boolean" },
+        "checkCount": { "type": "integer" },
+        "failedCheckIds": { "type": "array", "items": { "type": "string" } },
+        "schema": { "type": "object" },
+        "reportSchema": { "$ref": "#/$defs/reportSchema" }
+      }
+    },
+    "reportSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "schema", "ok", "errorCount", "errors"],
+      "properties": {
+        "type": { "const": "agentport.report_schema_validation.v0.1" },
+        "schema": { "type": "string", "minLength": 1 },
+        "ok": { "type": "boolean" },
+        "errorCount": { "type": "integer" },
+        "errors": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

@@ -1,0 +1,123 @@
+{
+  "$schema": "../schemas/agentport-gateway-protocol-compliance-report.schema.json",
+  "type": "agentport.gateway_protocol_compliance_report.v0.1",
+  "profile": "gateway-protocol",
+  "generatedAt": "2026-06-26T21:24:31.255Z",
+  "input": "data/virtual-store-live-test/example/phase3-gate.json",
+  "inputKind": "phase3_gate_file",
+  "proofPackDir": "data/virtual-store-live-test/example",
+  "gateFile": "data/virtual-store-live-test/example/phase3-gate.json",
+  "referenceTrace": "virtual-store-phase3",
+  "status": "passed",
+  "ok": true,
+  "certification": {
+    "publicCertification": false,
+    "agentPortReadyCertification": false,
+    "realBusinessCertification": false,
+    "note": "Protocol compliance is an internal gateway trace check, not public business certification."
+  },
+  "boundaries": {
+    "virtualStoreOnly": true,
+    "fixtureBackendOnly": true,
+    "realBusinessEvidence": false,
+    "realMarketProof": false,
+    "paymentWallet": false,
+    "bookingLedger": false,
+    "credentialVault": false,
+    "systemOfRecord": false
+  },
+  "areas": [
+    {
+      "id": "discovery_descriptor_and_agent_path",
+      "ok": true,
+      "requiredCheckIds": [
+        "required_files_exist",
+        "legacy_evidence_v05",
+        "legacy_evidence_boundaries"
+      ],
+      "directCheckIds": ["discovery_descriptor_routes_to_mcp_gateway"]
+    },
+    {
+      "id": "compact_business_feed_and_readiness",
+      "ok": true,
+      "requiredCheckIds": [
+        "summary_ok",
+        "summary_checks_all_pass",
+        "summary_virtual_store_only"
+      ],
+      "directCheckIds": ["feed_and_readiness_present"]
+    },
+    {
+      "id": "bounded_approval_before_state_change",
+      "ok": true,
+      "requiredCheckIds": [
+        "w16_evidence_refs_complete",
+        "w16_evidence_refs_do_not_satisfy_real_business",
+        "gateway_consent_gate"
+      ],
+      "directCheckIds": ["approval_package_ready_with_exact_execute"]
+    },
+    {
+      "id": "consent_gate_before_execution",
+      "ok": true,
+      "requiredCheckIds": ["gateway_consent_gate"],
+      "directCheckIds": ["consent_gate_rejects_without_user_consent"]
+    },
+    {
+      "id": "gateway_execution_and_lifecycle",
+      "ok": true,
+      "requiredCheckIds": [
+        "gateway_confirmed_fixture",
+        "gateway_lifecycle_succeeded"
+      ],
+      "directCheckIds": ["lifecycle_terminal_after_gateway_execution"]
+    },
+    {
+      "id": "action_receipt_backend_binding",
+      "ok": true,
+      "requiredCheckIds": [
+        "receipt_fixture_binding",
+        "receipt_not_real_backend_outcome",
+        "gateway_receipt_matches"
+      ],
+      "directCheckIds": ["receipt_binds_backend_and_gateway_result"]
+    },
+    {
+      "id": "returned_session_restore_and_review",
+      "ok": true,
+      "requiredCheckIds": [
+        "wallet_review_current",
+        "wallet_review_gateway_current_only",
+        "wallet_review_no_reverify_gap"
+      ],
+      "directCheckIds": ["restore_review_uses_gateway_current_state"]
+    },
+    {
+      "id": "redaction_and_payload_boundary",
+      "ok": true,
+      "requiredCheckIds": [
+        "w16_redaction_rules_complete",
+        "manifest_no_private_file_policy",
+        "no_forbidden_payload_strings"
+      ],
+      "directCheckIds": ["redaction_rules_block_private_payloads"]
+    },
+    {
+      "id": "system_of_record_and_real_business_boundary",
+      "ok": true,
+      "requiredCheckIds": [
+        "summary_no_system_of_record",
+        "summary_not_real_business",
+        "summary_not_real_market_proof",
+        "summary_backend_fixture"
+      ],
+      "directCheckIds": ["boundary_flags_do_not_overclaim"]
+    }
+  ],
+  "validator": {
+    "type": "agentport.virtual_store_phase3_proof_validation.v0.1",
+    "ok": true,
+    "checkCount": 28,
+    "failedCheckIds": []
+  }
+}

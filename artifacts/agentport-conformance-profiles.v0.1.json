@@ -1,0 +1,218 @@
+{
+  "$schema": "../schemas/agentport-conformance-profiles.schema.json",
+  "protocol": "agentport-conformance-profiles",
+  "version": "0.1",
+  "profiles": [
+    {
+      "name": "core-runtime",
+      "claim": "Passes AgentPort Core Runtime conformance v0.1.",
+      "requires": [
+        "find_services",
+        "get_business_info",
+        "check_availability",
+        "book_service",
+        "agentport://action-model",
+        "agentport://protocol-codes",
+        "structured_results",
+        "binding_addressability",
+        "stable_codes"
+      ],
+      "forbids": [
+        "fabricated_verified_facts",
+        "live_credentials_required_for_ci",
+        "opaque_policy_errors"
+      ],
+      "minimumTests": [
+        "find_services_returns_tagged_verified_services",
+        "get_business_info_unknown_returns_not_found",
+        "availability_unsupported_is_structured",
+        "invalid_input_is_not_internal_error"
+      ]
+    },
+    {
+      "name": "capability-honesty",
+      "claim": "Passes AgentPort Capability Honesty conformance v0.1.",
+      "requires": [
+        "verified_from_verification_status",
+        "tier_from_binding_adapter_capability",
+        "verification_capability_separation",
+        "credential_loss_degrades_capability",
+        "connected_backend_preflight_degrades_capability",
+        "no_confirm_without_confirm_capability",
+        "no_manage_success_without_manage_capability"
+      ],
+      "forbids": [
+        "adapter_overrides_verified",
+        "adapter_overrides_tag",
+        "adapter_overrides_binding_id",
+        "connected_backend_implies_verified",
+        "handoff_or_request_binding_confirms"
+      ],
+      "minimumTests": [
+        "verified_manual_is_non_confirm",
+        "verified_fixture_is_confirm",
+        "unverified_connected_is_not_verified",
+        "capability_violation_rejected",
+        "square_preflight_and_api_errors_are_non_success"
+      ]
+    },
+    {
+      "name": "authority-evidence-checkpoint",
+      "claim": "Passes AgentPort Authority Evidence Checkpoint conformance v0.1.",
+      "requires": [
+        "authority_context_normalization",
+        "local_delegation_profile_supported",
+        "authority_before_adapter_execution",
+        "scope_action_business_service_audience_issuer_expiry_assurance_checks",
+        "authority_separate_from_consent",
+        "external_profile_seams_are_explicit",
+        "default_booking_is_commit",
+        "lead_cannot_escalate_to_confirmed",
+        "stable_authority_reason_codes"
+      ],
+      "forbids": [
+        "authority_from_tool_arguments",
+        "raw_authority_tokens_in_tool_arguments",
+        "authority_counts_as_consent",
+        "adapter_executes_after_authority_failure"
+      ],
+      "minimumTests": [
+        "local_profile_normalizes_to_authority_context",
+        "missing_proof_rejected",
+        "wrong_action_rejected",
+        "wrong_business_rejected",
+        "wrong_service_rejected",
+        "expired_proof_rejected",
+        "external_profile_stubs_reject_without_verifier",
+        "lead_escalation_rejected"
+      ]
+    },
+    {
+      "name": "token-confirmation",
+      "claim": "Passes AgentPort Token Confirmation conformance v0.1.",
+      "requires": [
+        "configured_token_confirmation_methods",
+        "per_layer_token_confirmation_policy",
+        "missing_method_rejected",
+        "unsupported_method_rejected",
+        "malformed_details_rejected",
+        "only_public_confirmation_references_recorded"
+      ],
+      "forbids": [
+        "sender_constraint_counts_as_consent",
+        "raw_sender_constraint_tokens_stored_by_default",
+        "bearer_proof_satisfies_sender_constrained_layer"
+      ],
+      "minimumTests": [
+        "missing_token_confirmation_rejected",
+        "unsupported_token_confirmation_rejected",
+        "malformed_token_confirmation_rejected",
+        "layer_specific_methods_enforced"
+      ]
+    },
+    {
+      "name": "action-receipt",
+      "claim": "Passes AgentPort Action Receipt conformance v0.1.",
+      "requires": [
+        "gateway_builds_receipt_facts",
+        "adapter_receipts_stripped",
+        "canonical_payload_hash",
+        "signer_returns_signature_metadata_only",
+        "authority_evidence_refs_bound_when_available",
+        "success_outcomes_bind_backend_confirmation",
+        "terminal_outcomes_bind_reason_or_source"
+      ],
+      "forbids": [
+        "client_agent_receipt_trusted",
+        "adapter_receipt_overrides_gateway_facts",
+        "signer_mutates_receipt_facts"
+      ],
+      "minimumTests": [
+        "confirmed_receipt_binds_backend_confirmation",
+        "rejected_receipt_binds_reason",
+        "adapter_receipt_replaced",
+        "payload_hash_recomputes"
+      ]
+    },
+    {
+      "name": "compact-payload-retention",
+      "claim": "Passes AgentPort Compact Payload conformance v0.1.",
+      "requires": [
+        "stable_codes",
+        "references_for_identity",
+        "hashes_for_integrity",
+        "full_records_behind_read_tools",
+        "minimal_customer_fields"
+      ],
+      "forbids": [
+        "raw_delegation_tokens_in_receipts_or_audit",
+        "raw_token_confirmation_tokens_in_receipts_or_audit",
+        "raw_chat_transcripts_as_protocol_memory",
+        "agent_reasoning_traces_as_protocol_memory",
+        "raw_adapter_payloads_as_portable_output",
+        "cross_business_user_memory"
+      ],
+      "minimumTests": [
+        "state_changing_result_uses_refs",
+        "receipt_audit_has_no_raw_tokens",
+        "customer_payload_is_minimal",
+        "raw_adapter_response_normalized_or_omitted",
+        "business_copilot_packet_uses_refs_and_codes"
+      ]
+    },
+    {
+      "name": "gateway-protocol",
+      "claim": "Passes AgentPort Gateway Protocol conformance v0.1.",
+      "requires": [
+        "core-runtime",
+        "capability-honesty",
+        "authority-evidence-checkpoint",
+        "token-confirmation",
+        "action-receipt",
+        "compact-payload-retention"
+      ],
+      "forbids": ["claiming_gateway_certified_without_certification"],
+      "minimumTests": ["all_required_profile_tests_pass"]
+    },
+    {
+      "name": "plugin-wallet",
+      "claim": "Passes AgentPort Plugin Wallet conformance v0.1.",
+      "requires": [
+        "ticket_ref_stored_on_creation",
+        "ticket_ref_restored_on_session_reconnect",
+        "get_ticket_status_called_before_presenting_state",
+        "user_approval_required_before_state_changing_actions",
+        "commitment_and_receipt_encrypted_at_rest",
+        "wrong_key_decryption_fails_closed",
+        "forbidden_fields_rejected_at_write_time",
+        "pending_action_does_not_imply_backend_mutation",
+        "wallet_record_schema_valid",
+        "stable_wallet_ticket_ids"
+      ],
+      "forbids": [
+        "fabricating_ticket_state_from_model_memory",
+        "presenting_cached_status_as_current_without_reverification",
+        "storing_raw_delegation_tokens",
+        "storing_raw_token_confirmation_secrets",
+        "storing_chat_transcripts",
+        "storing_identity_documents",
+        "storing_card_data",
+        "storing_full_customer_profiles",
+        "storing_model_reasoning_traces",
+        "skipping_approval_gate_for_send_ticket",
+        "skipping_approval_gate_for_cancel",
+        "wallet_as_canonical_lifecycle_source"
+      ],
+      "minimumTests": [
+        "session_restore_returns_gateway_truth_not_cached_state",
+        "approval_gate_blocks_unapproved_state_changing_action",
+        "wrong_key_decryption_fails_closed",
+        "forbidden_raw_fields_rejected_before_encryption",
+        "forbidden_raw_fields_rejected_after_decryption",
+        "get_ticket_status_called_on_reconnect",
+        "wallet_stores_commitment_ref_not_raw_token",
+        "pending_action_cleared_after_terminal_outcome"
+      ]
+    }
+  ]
+}

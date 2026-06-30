@@ -1,0 +1,255 @@
+{
+  "$schema": "../schemas/agentport-frontier-web-experience-map.schema.json",
+  "type": "agentport.frontier_web_experience_map.v0.1",
+  "version": "0.1",
+  "generatedAt": "2026-06-30T12:00:00.000Z",
+  "thesis": "Pactway improves real-world UX by combining current business web surfaces with frontier-model intent, explanation, approval, routing, and memory.",
+  "surfaces": [
+    {
+      "id": "business_website",
+      "kind": "current_web",
+      "label": "Existing business website",
+      "owns": [
+        "brand context",
+        "public details",
+        "policies",
+        "visual trust",
+        "business-controlled links"
+      ],
+      "mustNotOwn": [
+        "delegated user approval",
+        "frontier session memory",
+        "gateway receipt truth"
+      ]
+    },
+    {
+      "id": "frontier_chat",
+      "kind": "frontier_ui",
+      "label": "Frontier model UI",
+      "owns": [
+        "intent clarification",
+        "natural-language explanation",
+        "comparison",
+        "follow-up conversation"
+      ],
+      "mustNotOwn": [
+        "lifecycle truth",
+        "business verification",
+        "raw credentials"
+      ]
+    },
+    {
+      "id": "pactway_gateway",
+      "kind": "pactway_gateway",
+      "label": "Pactway approval, routing, and memory layer",
+      "owns": [
+        "owner-approved facts",
+        "exact approval",
+        "scoped authorization",
+        "verified route",
+        "receipt and status refs"
+      ],
+      "mustNotOwn": [
+        "website content ownership",
+        "booking ledger",
+        "payment ledger",
+        "business CRM"
+      ]
+    },
+    {
+      "id": "business_backend",
+      "kind": "business_system",
+      "label": "Existing business system of record",
+      "owns": [
+        "fulfillment truth",
+        "actual booking or inbox state",
+        "payment or order records where applicable"
+      ],
+      "mustNotOwn": [
+        "neutral frontier approval UX",
+        "cross-provider assistant memory",
+        "Pactway verification claims"
+      ]
+    },
+    {
+      "id": "owner_review",
+      "kind": "owner_review_surface",
+      "label": "Owner review packet in frontier or web UI",
+      "owns": [
+        "short approve/edit/defer decisions",
+        "action boundary confirmation",
+        "destination correction"
+      ],
+      "mustNotOwn": [
+        "self-asserted verification",
+        "ranking guarantees",
+        "backend confirmation"
+      ]
+    }
+  ],
+  "authorizedExperienceObject": {
+    "label": "Authorized experience object",
+    "scopeKinds": [
+      "answer",
+      "request",
+      "quote",
+      "book",
+      "submit",
+      "support",
+      "pickup",
+      "follow_up",
+      "manage",
+      "handoff"
+    ],
+    "requiredRefs": [
+      "intentRef",
+      "approvalRef",
+      "destinationRef",
+      "businessPortRef",
+      "evidenceRefs",
+      "receiptRefs",
+      "statusRef"
+    ],
+    "lifecycleStates": [
+      "draft",
+      "approval_required",
+      "approved",
+      "routed",
+      "pending_business_response",
+      "confirmed_by_backend",
+      "handoff_required",
+      "completed",
+      "failed"
+    ]
+  },
+  "journeys": [
+    {
+      "id": "customer_frontier_start",
+      "actor": "customer",
+      "startSurface": "frontier_ui",
+      "goal": "Ask an assistant to coordinate a real-world request without browsing and guessing.",
+      "steps": [
+        {
+          "id": "clarify_intent",
+          "surface": "frontier_ui",
+          "uxJob": "Clarify the customer need, timing, constraints, and preferred outcome.",
+          "pactwayBoundary": "No action has happened yet; the model only drafts intent.",
+          "evidence": ["intentRef"],
+          "handoffTo": "pactway_gateway"
+        },
+        {
+          "id": "show_allowed_action",
+          "surface": "pactway_gateway",
+          "uxJob": "Show whether the business can answer, request, book, submit, manage, or hand off.",
+          "pactwayBoundary": "Capability is derived from owner-approved facts and backend proof, never inferred from model confidence.",
+          "evidence": ["businessPortRef", "evidenceRefs"],
+          "handoffTo": "frontier_ui"
+        },
+        {
+          "id": "ask_exact_approval",
+          "surface": "frontier_ui",
+          "uxJob": "Ask the user to approve the exact scoped action and visible constraints.",
+          "pactwayBoundary": "Approval must be explicit before state-changing or commitment-adjacent actions.",
+          "evidence": ["approvalRef"],
+          "handoffTo": "pactway_gateway"
+        },
+        {
+          "id": "route_to_business",
+          "surface": "pactway_gateway",
+          "uxJob": "Route the approved request to the verified destination or downgrade to handoff.",
+          "pactwayBoundary": "Pactway routes and records; it does not claim backend confirmation without backend proof.",
+          "evidence": ["destinationRef", "receiptRefs", "statusRef"],
+          "handoffTo": "business_system"
+        },
+        {
+          "id": "restore_status_later",
+          "surface": "pactway_gateway",
+          "uxJob": "Restore status and receipt refs when the user returns in a later frontier session.",
+          "pactwayBoundary": "The frontier model receives a model-safe status summary and must not invent lifecycle state.",
+          "evidence": ["receiptRefs", "statusRef"],
+          "handoffTo": "frontier_ui"
+        }
+      ]
+    },
+    {
+      "id": "customer_web_start",
+      "actor": "customer",
+      "startSurface": "current_web",
+      "goal": "Start from the business website but get frontier-model help without making the business rebuild its site.",
+      "steps": [
+        {
+          "id": "inspect_public_context",
+          "surface": "current_web",
+          "uxJob": "Use the business website for brand, policy, menu, service, and visual context.",
+          "pactwayBoundary": "Website facts are context until owner-approved and verified through Pactway.",
+          "evidence": ["evidenceRefs"],
+          "handoffTo": "frontier_ui"
+        },
+        {
+          "id": "assistant_clarifies_from_web",
+          "surface": "frontier_ui",
+          "uxJob": "Clarify what the customer wants to do with the business context already visible.",
+          "pactwayBoundary": "The assistant cannot treat page text as authority for action.",
+          "evidence": ["intentRef"],
+          "handoffTo": "pactway_gateway"
+        },
+        {
+          "id": "same_authorized_object",
+          "surface": "pactway_gateway",
+          "uxJob": "Create the same authorized experience object used by frontier-start flows.",
+          "pactwayBoundary": "Starting from the webpage does not bypass exact approval, route verification, or receipt memory.",
+          "evidence": ["intentRef", "approvalRef", "destinationRef", "receiptRefs"],
+          "handoffTo": "business_system"
+        }
+      ]
+    },
+    {
+      "id": "owner_conversion",
+      "actor": "business_owner",
+      "startSurface": "owner_review_surface",
+      "goal": "Make the current website and business channels AI-experience-ready with minimal owner work.",
+      "steps": [
+        {
+          "id": "review_candidate_facts",
+          "surface": "owner_review_surface",
+          "uxJob": "Approve, edit, or defer the few facts and action boundaries that affect customer experience.",
+          "pactwayBoundary": "Candidate facts are not publishable truth until owner-reviewed.",
+          "evidence": ["evidenceRefs"],
+          "handoffTo": "pactway_gateway"
+        },
+        {
+          "id": "verify_destination",
+          "surface": "pactway_gateway",
+          "uxJob": "Verify business ownership and destination control before making the port actionable.",
+          "pactwayBoundary": "Verification is earned, never self-asserted by the owner packet.",
+          "evidence": ["businessPortRef", "destinationRef"],
+          "handoffTo": "business_system"
+        },
+        {
+          "id": "preserve_current_tools",
+          "surface": "business_system",
+          "uxJob": "Receive requests, bookings, or handoffs through existing tools.",
+          "pactwayBoundary": "The business system keeps fulfillment truth; Pactway records receipts and status refs.",
+          "evidence": ["receiptRefs", "statusRef"]
+        }
+      ]
+    }
+  ],
+  "constraints": {
+    "frontierUiDoesNotOwnLifecycleTruth": true,
+    "webpageDoesNotOwnDelegatedAuthority": true,
+    "pactwayDoesNotOwnSystemOfRecord": true,
+    "businessSystemKeepsFulfillmentTruth": true,
+    "exactApprovalRequiredForStateChangingActions": true,
+    "noRankingGuarantee": true,
+    "noTrafficGuarantee": true,
+    "noAiCitationGuarantee": true
+  },
+  "blockedClaims": [
+    "Pactway replaces the business website.",
+    "Frontier model memory is lifecycle authority.",
+    "A ticket is limited to service-business booking.",
+    "Pactway owns the booking, payment, support, POS, or CRM system of record.",
+    "Pactway guarantees ranking, traffic, or AI citation."
+  ]
+}

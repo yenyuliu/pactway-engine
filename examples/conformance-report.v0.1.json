@@ -1,0 +1,195 @@
+{
+  "protocol": "agentport",
+  "version": "0.1",
+  "implementation": {
+    "name": "@agentport/engine",
+    "version": "0.0.0",
+    "buildId": "local"
+  },
+  "profiles": [
+    {
+      "name": "core-runtime",
+      "status": "passed",
+      "testsPassed": 4,
+      "testsFailed": 0,
+      "testsSkipped": 0,
+      "evidence": [
+        "test/server/http-mcp.test.mjs",
+        "test/server/business-info.test.mjs",
+        "test/server/failure-handling.test.mjs",
+        "artifacts/agentport-action-model.v0.1.json",
+        "docs/feedback/action-intent-proof-pack.md",
+        "docs/feedback/action-intent-compatibility-contract.md",
+        "schemas/agentport-action-intent-proof-pack.schema.json",
+        "schemas/agentport-action-intent-compatibility-report.schema.json",
+        "docs/feedback/business-port-registry-compatibility-contract.md",
+        "schemas/agentport-business-port-proof-pack.schema.json",
+        "schemas/agentport-business-port-compatibility-report.schema.json",
+        "schemas/agentport-registry-proof-pack.schema.json",
+        "schemas/agentport-registry-compatibility-report.schema.json",
+        "schemas/agentport-protocol-trace-matrix.schema.json",
+        "schemas/agentport-protocol-trace-compatibility-report.schema.json",
+        "examples/action-intent-proof-pack/user-goal.json",
+        "examples/action-intent-proof-pack/compiled-intent.json",
+        "examples/action-intent-proof-pack/required-inputs.json",
+        "examples/action-intent-proof-pack/approval-package.json",
+        "examples/action-intent-proof-pack/approved-execution.json",
+        "examples/action-intent-proof-pack/consent-rejection.json",
+        "examples/action-intent-proof-pack/lifecycle-result.json",
+        "examples/action-intent-proof-pack/result-delivery.json",
+        "examples/action-intent-proof-pack/receipt-refs.json",
+        "examples/action-intent-proof-pack/redaction-manifest.json",
+        "examples/action-intent-proof-pack/action-intent-proof-summary.json",
+        "examples/action-intent-negative-cases.v0.1.json",
+        "examples/business-port-proof-pack/inbound-request.json",
+        "examples/business-port-proof-pack/gateway-forward.json",
+        "examples/business-port-proof-pack/gateway-response.json",
+        "examples/business-port-proof-pack/port-response.json",
+        "examples/business-port-proof-pack/redaction-manifest.json",
+        "examples/business-port-proof-pack/business-port-proof-summary.json",
+        "examples/commitment-registry-proof-pack/lifecycle-write.json",
+        "examples/commitment-registry-proof-pack/event-history.json",
+        "examples/commitment-registry-proof-pack/current-state-read.json",
+        "examples/commitment-registry-proof-pack/restore-read.json",
+        "examples/commitment-registry-proof-pack/redaction-manifest.json",
+        "examples/commitment-registry-proof-pack/registry-proof-summary.json",
+        "examples/protocol-golden-trace-matrix.v0.1.json"
+      ]
+    },
+    {
+      "name": "capability-honesty",
+      "status": "passed",
+      "testsPassed": 5,
+      "testsFailed": 0,
+      "testsSkipped": 0,
+      "evidence": [
+        "test/conformance/adapter-conformance.test.mjs",
+        "test/adapters/square-adapter.test.mjs",
+        "test/server/credential-vault.test.mjs",
+        "test/server/manual-flow.test.mjs",
+        "test/server/multi-binding.test.mjs"
+      ]
+    },
+    {
+      "name": "authority-evidence-checkpoint",
+      "status": "passed",
+      "testsPassed": 8,
+      "testsFailed": 0,
+      "testsSkipped": 0,
+      "evidence": [
+        "test/server/verified-delegation.test.mjs",
+        "docs/authority-evidence-profiles-plan.md",
+        "docs/delegation-proof-spec.md"
+      ]
+    },
+    {
+      "name": "token-confirmation",
+      "status": "passed",
+      "testsPassed": 4,
+      "testsFailed": 0,
+      "testsSkipped": 0,
+      "evidence": [
+        "test/server/verified-delegation.test.mjs",
+        "test/server/client-token-emission.test.mjs"
+      ]
+    },
+    {
+      "name": "action-receipt",
+      "status": "passed",
+      "testsPassed": 4,
+      "testsFailed": 0,
+      "testsSkipped": 0,
+      "evidence": [
+        "test/server/verified-delegation.test.mjs",
+        "test/server/client-agent-runner-kit.test.mjs"
+      ]
+    },
+    {
+      "name": "compact-payload-retention",
+      "status": "passed",
+      "testsPassed": 5,
+      "testsFailed": 0,
+      "testsSkipped": 0,
+      "evidence": [
+        "artifacts/agentport-protocol-codes.v0.1.json",
+        "schemas/agentport-compact-envelope.schema.json",
+        "schemas/agentport-owner-proof-request.schema.json",
+        "schemas/agentport-presentation-run-packet.schema.json",
+        "schemas/agentport-presentation-run-status.schema.json",
+        "schemas/agentport-presentation-run-brief.schema.json",
+        "schemas/agentport-presentation-run-report.schema.json",
+        "schemas/agentport-business-copilot-readiness-packet.schema.json",
+        "schemas/agentport-presentation-preflight.schema.json",
+        "schemas/agentport-presentation-evidence.schema.json",
+        "schemas/agentport-frontier-intent-pilot-packet.schema.json",
+        "schemas/agentport-frontier-host-worker-evidence.schema.json",
+        "schemas/agentport-frontier-intent-pilot-evidence.schema.json",
+        "schemas/agentport-frontier-intent-pilot-validation.schema.json",
+        "schemas/agentport-frontier-intent-pilot-run.schema.json",
+        "docs/protocol-codes.md"
+      ]
+    },
+    {
+      "name": "gateway-protocol",
+      "status": "passed",
+      "testsPassed": 1,
+      "testsFailed": 0,
+      "testsSkipped": 0,
+      "evidence": [
+        "docs/protocol-conformance-v0.1.md",
+        "schemas/agentport-gateway-protocol-compliance-report.schema.json",
+        "examples/gateway-protocol-compliance.virtual-store.v0.1.json",
+        "docs/feedback/frontier-integration-gate.md",
+        "scripts/chatgpt-app-hosted-evidence.mjs",
+        "test/server/chatgpt-app-hosted-evidence.test.mjs",
+        "CONFORMANCE.md",
+        "CERTIFICATION.md"
+      ]
+    },
+    {
+      "name": "plugin-wallet",
+      "status": "passed",
+      "testsPassed": 8,
+      "testsFailed": 0,
+      "testsSkipped": 0,
+      "evidence": [
+        "test/core/plugin-wallet.test.mjs",
+        "artifacts/agentport-plugin-wallet.v0.1.json",
+        "docs/plugin-wallet-contract-plan.md",
+        "docs/plugin-wallet-session-restore-plan.md",
+        "docs/plugin-wallet-pending-actions-plan.md",
+        "docs/plugin-wallet-delivery-audit-plan.md",
+        "docs/plugin-wallet-search-review-plan.md",
+        "docs/plugin-wallet-key-custody-plan.md",
+        "docs/plugin-wallet-host-integration-plan.md",
+        "docs/plugin-wallet-pilot-scale-plan.md",
+        "docs/plugin-wallet-pilot-host-adapters-plan.md",
+        "docs/plugin-wallet-host-adapter-smoke-plan.md",
+        "docs/plugin-wallet-pilot-host-runbook-plan.md",
+        "docs/plugin-wallet-example-business-pilot-evidence-plan.md",
+        "docs/plugin-wallet-returned-session-review-plan.md",
+        "docs/agent-gateway-virtual-store-reference-harness-plan.md",
+        "docs/agent-gateway-wallet-golden-trace-matrix-plan.md",
+        "docs/agent-gateway-wallet-host-adoption-kit-plan.md",
+        "docs/agent-gateway-wallet-real-business-handoff-plan.md",
+        "docs/feedback/plugin-wallet-proof-pack.md",
+        "examples/plugin-wallet-pilot-evidence.v0.1.json",
+        "examples/plugin-wallet-pilot-host-runbook.v0.1.json",
+        "examples/plugin-wallet-virtual-store-pilot-evidence.v0.1.json",
+        "examples/plugin-wallet-returned-session-review.v0.1.json",
+        "examples/plugin-wallet-virtual-store-reference-harness.v0.1.json",
+        "examples/plugin-wallet-golden-trace-matrix.v0.1.json",
+        "examples/plugin-wallet-host-adoption-kit.v0.1.json",
+        "examples/plugin-wallet-real-business-handoff.v0.1.json",
+        "examples/plugin-wallet-proof-pack/ticket-save.json",
+        "examples/plugin-wallet-proof-pack/returned-session-restore.json",
+        "examples/plugin-wallet-proof-pack/gateway-reverify.json",
+        "examples/plugin-wallet-proof-pack/pending-action-replay.json",
+        "examples/plugin-wallet-proof-pack/receipt-retention.json",
+        "examples/plugin-wallet-proof-pack/redaction-manifest.json",
+        "examples/plugin-wallet-proof-pack/wallet-proof-summary.json"
+      ]
+    }
+  ],
+  "generatedAt": "2026-06-27T16:10:26.768Z"
+}

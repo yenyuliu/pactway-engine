@@ -1,0 +1,297 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-open-standard.schema.json",
+  "title": "AgentPort Open Standard",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "protocol",
+    "version",
+    "artifactId",
+    "resourceUri",
+    "license",
+    "summary",
+    "scope",
+    "resources",
+    "toolClasses",
+    "efficientPath",
+    "requiredSemantics",
+    "capabilityDegradation",
+    "verificationStatuses",
+    "actionFlow",
+    "conformance"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "protocol": { "const": "agentport-open-standard" },
+    "version": { "const": "0.1" },
+    "artifactId": { "const": "agentport-open-standard.v0.1" },
+    "resourceUri": { "const": "agentport://open-standard" },
+    "license": { "const": "Apache-2.0" },
+    "summary": { "type": "string", "minLength": 1 },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["includes", "excludes"],
+      "properties": {
+        "includes": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "discovery",
+              "public_read",
+              "business_feed",
+              "capability_honesty",
+              "verification_status",
+              "consent_gating",
+              "authority_evidence_checkpoint",
+              "backend_outcome_binding",
+              "receipt_semantics",
+              "commitment_format"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "excludes": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "payment_network",
+              "checkout_protocol",
+              "delegation_token_issuer",
+              "rankings",
+              "ads",
+              "hosted_registry",
+              "credential_vault_implementation"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      }
+    },
+    "resources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["uri", "required"],
+        "properties": {
+          "uri": {
+            "enum": [
+              "agentport://open-standard",
+              "agentport://runtime",
+              "agentport://discovery",
+              "agentport://client-use-policy",
+              "agentport://action-model",
+              "agentport://commitment-format",
+              "agentport://protocol-codes"
+            ]
+          },
+          "required": { "type": "boolean" }
+        }
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "toolClasses": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["publicRead", "operationalRead", "stateChanging"],
+      "properties": {
+        "publicRead": { "$ref": "#/$defs/toolClass" },
+        "operationalRead": { "$ref": "#/$defs/toolClass" },
+        "stateChanging": { "$ref": "#/$defs/toolClass" }
+      }
+    },
+    "efficientPath": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "normal",
+        "defaultBusinessFeedMode",
+        "fullBusinessFeedMode",
+        "businessFeedIntents",
+        "businessFeedResponseFields",
+        "businessFeedCacheMemory",
+        "cacheableResources",
+        "rule"
+      ],
+      "properties": {
+        "normal": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "discover_gateway",
+              "call_get_business_feed_compact",
+              "answer_or_call_action_tool_if_needed"
+            ]
+          },
+          "minItems": 3
+        },
+        "defaultBusinessFeedMode": { "const": "compact" },
+        "fullBusinessFeedMode": { "const": "full" },
+        "businessFeedIntents": {
+          "type": "array",
+          "items": { "enum": ["answer", "book", "manage", "compare"] },
+          "minItems": 4,
+          "uniqueItems": true
+        },
+        "businessFeedResponseFields": {
+          "type": "array",
+          "items": {
+            "enum": ["representative", "citations", "actionFeed", "nextActions", "cannotDo", "cache"]
+          },
+          "minItems": 6,
+          "uniqueItems": true
+        },
+        "businessFeedCacheMemory": {
+          "type": "object",
+          "required": [
+            "conditionalInput",
+            "versionField",
+            "matchResult",
+            "cacheScope",
+            "store",
+            "neverStore"
+          ],
+          "properties": {
+            "conditionalInput": { "const": "ifBusinessVersion" },
+            "versionField": { "const": "businessVersion" },
+            "matchResult": { "const": "notModified" },
+            "cacheScope": {
+              "type": "array",
+              "items": { "enum": ["businessId", "mode", "intent", "businessVersion"] },
+              "minItems": 4,
+              "uniqueItems": true
+            },
+            "store": {
+              "type": "array",
+              "items": {
+                "enum": ["business_truth_refs", "verification_status", "capability_state", "cache_key"]
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "neverStore": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "raw_authority_tokens",
+                  "credentials",
+                  "payment_credentials",
+                  "model_reasoning",
+                  "transcripts",
+                  "broad_user_preferences"
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          },
+          "additionalProperties": false
+        },
+        "cacheableResources": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "agentport://open-standard",
+              "agentport://client-use-policy",
+              "agentport://action-model",
+              "agentport://commitment-format",
+              "agentport://protocol-codes"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "rule": { "type": "string", "minLength": 1 }
+      }
+    },
+    "requiredSemantics": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "capabilityDegradation": {
+      "type": "array",
+      "items": { "enum": ["confirm", "request", "inform", "handoff"] },
+      "minItems": 4,
+      "maxItems": 4
+    },
+    "verificationStatuses": {
+      "type": "array",
+      "items": { "enum": ["verified", "stale", "unverified"] },
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "actionFlow": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    },
+    "conformance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mustExposeResource",
+        "mustExposePublicReadTools",
+        "mustConsentGateStateChangingTools",
+        "mustReturnStructuredNotFound",
+        "mustNotFabricateVerifiedFacts",
+        "mustNotFabricateConfirmedActions"
+      ],
+      "properties": {
+        "mustExposeResource": { "const": "agentport://open-standard" },
+        "mustExposePublicReadTools": {
+          "type": "array",
+          "items": { "enum": ["find_services", "get_business_info", "get_business_feed", "get_readiness_report"] },
+          "minItems": 3,
+          "uniqueItems": true
+        },
+        "mustConsentGateStateChangingTools": {
+          "type": "array",
+          "items": { "enum": ["book_service", "cancel_service", "reschedule_service"] },
+          "minItems": 3,
+          "uniqueItems": true
+        },
+        "mustReturnStructuredNotFound": { "const": true },
+        "mustNotFabricateVerifiedFacts": { "const": true },
+        "mustNotFabricateConfirmedActions": { "const": true }
+      }
+    }
+  },
+  "$defs": {
+    "toolClass": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tools", "defaultAuth", "rule"],
+      "properties": {
+        "tools": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "find_services",
+              "get_business_info",
+              "get_business_feed",
+              "get_readiness_report",
+              "compile_action_intent",
+              "get_action_intent_lifecycle",
+              "poll_action_intent_lifecycles",
+              "check_availability",
+              "book_service",
+              "cancel_service",
+              "reschedule_service"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "defaultAuth": { "type": "string", "minLength": 1 },
+        "rule": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

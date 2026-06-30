@@ -1,0 +1,20 @@
+{
+  "type": "agentport.business_port_gateway_forward.v0.1",
+  "forward": {
+    "target": "agent_gateway",
+    "requestId": "business_port_request_demo",
+    "intentId": "intent_action_intent_demo",
+    "forwardedUnmodified": true
+  },
+  "payloadSafety": {
+    "excludesCustomerPii": true,
+    "excludesRawAuthorityTokens": true,
+    "excludesReceiptBodies": true,
+    "excludesSignatures": true,
+    "excludesBackendCredentials": true
+  },
+  "boundaries": {
+    "businessPortExecutedBackend": false,
+    "businessPortMintedReceipt": false
+  }
+}

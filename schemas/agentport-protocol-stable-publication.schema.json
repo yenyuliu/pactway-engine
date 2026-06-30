@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-protocol-stable-publication.schema.json",
+  "title": "AgentPort Protocol Stable Publication",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "protocol",
+    "version",
+    "status",
+    "tagName",
+    "cutManifest",
+    "publicationStatus",
+    "reviewResult",
+    "stablePublication",
+    "claimBoundary"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "type": { "const": "agentport.protocol_stable_publication.v0.2" },
+    "protocol": { "const": "agentport" },
+    "version": { "const": "0.2" },
+    "status": { "const": "stable_published" },
+    "tagName": { "const": "agentport-protocol-v0.2" },
+    "cutManifest": { "$ref": "#/$defs/fileRef" },
+    "publicationStatus": { "$ref": "#/$defs/fileRef" },
+    "reviewResult": { "$ref": "#/$defs/fileRef" },
+    "stablePublication": { "const": true },
+    "claimBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "agentPortCertified",
+        "agentPortVerifiedBusiness",
+        "realBusinessProof",
+        "liveBackendProof",
+        "a2aReplacement"
+      ],
+      "properties": {
+        "agentPortCertified": { "const": false },
+        "agentPortVerifiedBusiness": { "const": false },
+        "realBusinessProof": { "const": false },
+        "liveBackendProof": { "const": false },
+        "a2aReplacement": { "const": false }
+      }
+    }
+  },
+  "$defs": {
+    "fileRef": { "type": "string", "minLength": 1 }
+  }
+}

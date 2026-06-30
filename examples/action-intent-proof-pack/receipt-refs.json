@@ -1,0 +1,22 @@
+{
+  "type": "agentport.action_intent_receipt_refs.v0.1",
+  "receiptRefs": {
+    "receiptId": "receipt_action_intent_demo",
+    "gatewayReceiptRef": "gateway-receipt:receipt_action_intent_demo",
+    "payloadHashRef": "sha256:receipt_action_intent_demo_payload",
+    "resultDeliveryId": "delivery_action_intent_demo"
+  },
+  "retention": {
+    "storesFullReceiptBody": false,
+    "storesSignature": false,
+    "preservesGatewayRefs": true
+  },
+  "payloadSafety": {
+    "excludesCustomerPii": true,
+    "excludesRawAuthorityTokens": true,
+    "excludesReceiptBodies": true,
+    "excludesDeliveryBodies": true,
+    "excludesSignatures": true,
+    "excludesBackendCredentials": true
+  }
+}

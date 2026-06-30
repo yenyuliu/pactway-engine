@@ -1,0 +1,29 @@
+{
+  "type": "agentport.action_intent_result_delivery.v0.1",
+  "delivery": {
+    "deliveryId": "delivery_action_intent_demo",
+    "intentId": "intent_action_intent_demo",
+    "status": "delivered",
+    "terminal": true,
+    "resultType": "confirmed",
+    "payloadHashRef": "sha256:delivery_action_intent_demo_payload"
+  },
+  "read": {
+    "tool": "get_action_intent_result_delivery",
+    "restorableByDeliveryId": true,
+    "ackTool": "ack_action_intent_result_delivery"
+  },
+  "payloadSafety": {
+    "excludesCustomerPii": true,
+    "excludesRawAuthorityTokens": true,
+    "excludesReceiptBodies": true,
+    "excludesDeliveryBodies": true,
+    "excludesSignatures": true,
+    "excludesBackendCredentials": true
+  },
+  "boundaries": {
+    "deliveryIsLifecycleTruth": false,
+    "storesWebhookBody": false,
+    "deliveryDoesNotMintOutcome": true
+  }
+}

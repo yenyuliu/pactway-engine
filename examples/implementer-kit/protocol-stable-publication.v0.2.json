@@ -1,0 +1,19 @@
+{
+  "$schema": "../../schemas/agentport-protocol-stable-publication.schema.json",
+  "type": "agentport.protocol_stable_publication.v0.2",
+  "protocol": "agentport",
+  "version": "0.2",
+  "status": "stable_published",
+  "tagName": "agentport-protocol-v0.2",
+  "cutManifest": "examples/implementer-kit/protocol-cut.v0.2.json",
+  "publicationStatus": "examples/implementer-kit/protocol-publication.v0.2.json",
+  "reviewResult": "examples/implementer-kit/protocol-external-review-result.v0.2.json",
+  "stablePublication": true,
+  "claimBoundary": {
+    "agentPortCertified": false,
+    "agentPortVerifiedBusiness": false,
+    "realBusinessProof": false,
+    "liveBackendProof": false,
+    "a2aReplacement": false
+  }
+}

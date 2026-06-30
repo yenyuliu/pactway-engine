@@ -1,0 +1,128 @@
+{
+  "$schema": "../../schemas/agentport-protocol-governance.schema.json",
+  "type": "agentport.protocol_governance.v0.2",
+  "protocol": "agentport",
+  "version": "0.2",
+  "status": "cut_readiness",
+  "extensionNamespaces": {
+    "allowedFieldLocations": [
+      "extensions",
+      "x-*"
+    ],
+    "thirdPartyIdFormat": "reverse_dns_or_uri",
+    "reservedPrefixes": [
+      "agentport.",
+      "ap."
+    ],
+    "forbiddenOverrides": [
+      "verification.status",
+      "verified",
+      "tag",
+      "readinessTier",
+      "bindingId",
+      "businessId",
+      "serviceId",
+      "backend.confirmationId",
+      "result.type",
+      "allowedActions",
+      "receipt",
+      "authority.assurance",
+      "lifecycle.status",
+      "consent",
+      "systemOfRecord"
+    ]
+  },
+  "versionPolicy": {
+    "patchCompatible": [
+      "optional metadata with explicit defaults",
+      "new examples or tamper fixtures that do not change required behavior",
+      "clarifying text without changed role obligations",
+      "optional namespaced report fields"
+    ],
+    "minorRequired": [
+      "new role profile",
+      "new required check",
+      "new required proof-pack artifact",
+      "new action family",
+      "new lifecycle event family",
+      "changed allowed claim wording"
+    ],
+    "breaking": [
+      "remove or rename required fields",
+      "weaken consent authority receipt registry redaction or role-boundary requirements",
+      "allow a role to self-assert another role truth",
+      "treat compatibility as certification",
+      "treat virtual-store host-adoption or fixture evidence as real-business proof"
+    ]
+  },
+  "deprecationPolicy": {
+    "requiresMigrationNote": true,
+    "removalRequires": "major_version",
+    "mustNotWeakenFailClosed": true
+  },
+  "claimPolicy": {
+    "allowedClaims": [
+      "Passes AgentPort Gateway conformance v0.2",
+      "Passes AgentPort Plugin Wallet conformance v0.2",
+      "Passes AgentPort Business Port conformance v0.2",
+      "Passes AgentPort Adapter conformance v0.2",
+      "Passes AgentPort Commitment Registry conformance v0.2",
+      "Passes AgentPort A2A Host Adoption compatibility check"
+    ],
+    "forbiddenClaims": [
+      "AgentPort Certified",
+      "AgentPort Gateway Certified",
+      "AgentPort Verified business",
+      "real-business proof",
+      "live-backend proof",
+      "A2A certification",
+      "A2A replacement",
+      "backend confirmation authority for business ports",
+      "gateway authority for plugins",
+      "registry authority for hosts or models"
+    ],
+    "officialMarksRequireSeparateProcess": true
+  },
+  "securityPolicy": {
+    "conformanceBypass": "not_allowed_for_safety_or_role_boundary_failures",
+    "noBypassFor": [
+      "role boundaries",
+      "exact user approval",
+      "consent",
+      "authority evidence",
+      "receipt binding",
+      "lifecycle authority",
+      "registry authority",
+      "adapter trust self-assertion",
+      "redaction",
+      "system-of-record boundary"
+    ],
+    "rawPrivateDataForbidden": true,
+    "tighteningMayBeMinor": true
+  },
+  "contributionPolicy": {
+    "mustBeDeterministic": true,
+    "mustBeCredentialFree": true,
+    "networkRequiredInCi": false,
+    "forbidden": [
+      "production credentials",
+      "raw private tokens",
+      "certification claims",
+      "verified-business claims",
+      "real-business proof claims",
+      "live-backend proof claims",
+      "hosted-only behavior in the open engine",
+      "role responsibility collapse"
+    ]
+  },
+  "stableCutRequirements": [
+    "protocol_cut_manifest_refs_exist",
+    "publication_status_refs_exist",
+    "npm run public-package-audit",
+    "all_manifest_commands_pass",
+    "npm run conformance",
+    "npm test",
+    "git diff --check",
+    "claim_boundaries_preserved"
+  ]
+}

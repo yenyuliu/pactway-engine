@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-gateway-protocol-compliance-report.schema.json",
+  "title": "AgentPort Gateway Protocol Compliance Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "profile",
+    "generatedAt",
+    "input",
+    "inputKind",
+    "proofPackDir",
+    "referenceTrace",
+    "status",
+    "ok",
+    "certification",
+    "boundaries",
+    "areas",
+    "validator"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "type": { "const": "agentport.gateway_protocol_compliance_report.v0.1" },
+    "profile": { "const": "gateway-protocol" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "input": { "type": "string", "minLength": 1 },
+    "inputKind": { "enum": ["phase3_gate_file", "proof_pack_dir", "unknown"] },
+    "proofPackDir": { "type": "string", "minLength": 1 },
+    "gateFile": { "type": "string", "minLength": 1 },
+    "referenceTrace": { "const": "virtual-store-phase3" },
+    "status": { "enum": ["passed", "failed"] },
+    "ok": { "type": "boolean" },
+    "certification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "publicCertification",
+        "agentPortReadyCertification",
+        "realBusinessCertification",
+        "note"
+      ],
+      "properties": {
+        "publicCertification": { "const": false },
+        "agentPortReadyCertification": { "const": false },
+        "realBusinessCertification": { "const": false },
+        "note": { "type": "string", "minLength": 1 }
+      }
+    },
+    "boundaries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "virtualStoreOnly",
+        "fixtureBackendOnly",
+        "realBusinessEvidence",
+        "realMarketProof",
+        "paymentWallet",
+        "bookingLedger",
+        "credentialVault",
+        "systemOfRecord"
+      ],
+      "properties": {
+        "virtualStoreOnly": { "type": "boolean" },
+        "fixtureBackendOnly": { "type": "boolean" },
+        "realBusinessEvidence": { "type": "boolean" },
+        "realMarketProof": { "type": "boolean" },
+        "paymentWallet": { "type": "boolean" },
+        "bookingLedger": { "type": "boolean" },
+        "credentialVault": { "type": "boolean" },
+        "systemOfRecord": { "type": "boolean" }
+      }
+    },
+    "areas": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "ok", "requiredCheckIds"],
+        "properties": {
+          "id": {
+            "enum": [
+              "discovery_descriptor_and_agent_path",
+              "compact_business_feed_and_readiness",
+              "bounded_approval_before_state_change",
+              "consent_gate_before_execution",
+              "gateway_execution_and_lifecycle",
+              "action_receipt_backend_binding",
+              "returned_session_restore_and_review",
+              "redaction_and_payload_boundary",
+              "system_of_record_and_real_business_boundary"
+            ]
+          },
+          "ok": { "type": "boolean" },
+          "requiredCheckIds": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "directCheckIds": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "missingCheckIds": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "failedCheckIds": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "failedDirectCheckIds": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "validator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "ok", "checkCount", "failedCheckIds"],
+      "properties": {
+        "type": { "const": "agentport.virtual_store_phase3_proof_validation.v0.1" },
+        "ok": { "type": "boolean" },
+        "checkCount": { "type": "integer", "minimum": 0 },
+        "failedCheckIds": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "agentport.registry_restore_read.v0.1",
+  "restore": {
+    "commitmentRef": "commitment:commitment_action_intent_demo",
+    "restoredEventCount": 3
+  },
+  "payloadSafety": {
+    "excludesCustomerPii": true,
+    "excludesRawAuthorityTokens": true,
+    "excludesReceiptBodies": true,
+    "excludesBackendCredentials": true
+  },
+  "boundaries": {
+    "modelMemorySource": false,
+    "pluginWalletSource": false
+  }
+}

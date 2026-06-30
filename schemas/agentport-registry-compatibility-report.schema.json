@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-registry-compatibility-report.schema.json",
+  "title": "AgentPort Commitment Registry Compatibility Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["type", "profile", "generatedAt", "input", "inputKind", "proofPackDir", "referenceTrace", "status", "ok", "certification", "boundaries", "areas", "validator"],
+  "properties": {
+    "type": { "const": "agentport.registry_compatibility_report.v0.1" },
+    "profile": { "const": "commitment-registry" },
+    "generatedAt": { "type": "string", "minLength": 1 },
+    "input": { "type": "string", "minLength": 1 },
+    "inputKind": { "const": "proof_pack_dir" },
+    "proofPackDir": { "type": "string", "minLength": 1 },
+    "referenceTrace": { "const": "commitment-registry-proof-pack" },
+    "status": { "enum": ["passed", "failed"] },
+    "ok": { "type": "boolean" },
+    "certification": { "$ref": "#/$defs/certification" },
+    "boundaries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["registryOnly", "lifecycleSourceOfTruth", "businessBackend", "paymentWallet", "executesBusinessActions", "mintsAuthority", "realBusinessEvidence"],
+      "properties": {
+        "registryOnly": { "type": "boolean" },
+        "lifecycleSourceOfTruth": { "type": "boolean" },
+        "businessBackend": { "type": "boolean" },
+        "paymentWallet": { "type": "boolean" },
+        "executesBusinessActions": { "type": "boolean" },
+        "mintsAuthority": { "type": "boolean" },
+        "realBusinessEvidence": { "type": "boolean" }
+      }
+    },
+    "areas": { "$ref": "#/$defs/areas" },
+    "validator": { "$ref": "#/$defs/validator" }
+  },
+  "$defs": {
+    "certification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["publicCertification", "agentPortReadyCertification", "realBusinessCertification", "gatewayCertification", "businessPortCertification", "registryCertification", "note"],
+      "properties": {
+        "publicCertification": { "const": false },
+        "agentPortReadyCertification": { "const": false },
+        "realBusinessCertification": { "const": false },
+        "gatewayCertification": { "const": false },
+        "businessPortCertification": { "const": false },
+        "registryCertification": { "const": false },
+        "note": { "type": "string", "minLength": 1 }
+      }
+    },
+    "areas": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "ok", "requiredCheckIds"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "ok": { "type": "boolean" },
+          "requiredCheckIds": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+          "missingCheckIds": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+          "failedCheckIds": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+        }
+      }
+    },
+    "validator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "ok", "checkCount", "failedCheckIds", "schema", "reportSchema"],
+      "properties": {
+        "type": { "const": "agentport.registry_proof_validation.v0.1" },
+        "ok": { "type": "boolean" },
+        "checkCount": { "type": "integer" },
+        "failedCheckIds": { "type": "array", "items": { "type": "string" } },
+        "schema": { "type": "object" },
+        "reportSchema": { "$ref": "#/$defs/reportSchema" }
+      }
+    },
+    "reportSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "schema", "ok", "errorCount", "errors"],
+      "properties": {
+        "type": { "const": "agentport.report_schema_validation.v0.1" },
+        "schema": { "type": "string", "minLength": 1 },
+        "ok": { "type": "boolean" },
+        "errorCount": { "type": "integer" },
+        "errors": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

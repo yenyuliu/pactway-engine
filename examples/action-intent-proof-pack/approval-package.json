@@ -1,0 +1,46 @@
+{
+  "type": "agentport.action_intent_approval_package.v0.1",
+  "approvalPackage": {
+    "type": "agentport.intent_approval_package",
+    "version": "0.1",
+    "status": "ready",
+    "intentId": "intent_action_intent_demo",
+    "agentSessionId": "session_action_intent_demo",
+    "approvalCard": {
+      "cardHash": "sha256:approval_card_action_intent_demo",
+      "actionIntentHash": "sha256:action_intent_demo",
+      "businessName": "AgentPort Virtual Store",
+      "serviceName": "Product demo",
+      "requestedTimeOrSlot": "2026-07-01T16:00:00.000Z"
+    },
+    "execute": {
+      "tool": "book_service",
+      "arguments": {
+        "businessId": "agentport-virtual-store",
+        "serviceId": "product_demo",
+        "bindingId": "fixture#0",
+        "requestedType": "confirmed",
+        "slotStart": "2026-07-01T16:00:00.000Z",
+        "intentId": "intent_action_intent_demo",
+        "approvedActionIntentHash": "sha256:action_intent_demo"
+      },
+      "requiredArgs": [
+        "customer",
+        "userConsent"
+      ]
+    }
+  },
+  "payloadSafety": {
+    "excludesCustomerPii": true,
+    "excludesRawAuthorityTokens": true,
+    "excludesReceiptBodies": true,
+    "excludesDeliveryBodies": true,
+    "excludesSignatures": true,
+    "excludesBackendCredentials": true
+  },
+  "boundaries": {
+    "readyOnlyAfterRequiredInputs": true,
+    "approvalIsNotConsent": true,
+    "clientMintsReceipt": false
+  }
+}

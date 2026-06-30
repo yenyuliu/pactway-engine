@@ -1,0 +1,136 @@
+{
+  "$schema": "../schemas/agentport-a2a-host-trace.schema.json",
+  "type": "agentport.a2a_host_trace.v0.1",
+  "version": "0.1",
+  "id": "a2a_host_routes_service_action_through_agentport",
+  "bindingArtifact": "artifacts/agentport-a2a-host-binding.v0.1.json",
+  "expectedStatus": "passed",
+  "expectedFailureIds": [],
+  "scenario": "A frontier host classifies a booking task, routes through the AgentPort plugin/gateway path, renders exact approval, executes with the compiled intent binding, and preserves the gateway receipt.",
+  "events": [
+    {
+      "order": 1,
+      "actor": "frontier_host",
+      "phase": "classify_task",
+      "a2aTaskClass": "business.info",
+      "assertions": {
+        "realWorldServiceTask": true,
+        "hostSelectedBusinessPort": true,
+        "modelMemoryIsNotGatewayTruth": true
+      }
+    },
+    {
+      "order": 2,
+      "actor": "agentport_plugin",
+      "phase": "discover_gateway",
+      "a2aTaskClass": "business.info",
+      "agentPortPrimitive": "get_business_feed",
+      "preservedFields": [
+        "gatewayResultType"
+      ],
+      "assertions": {
+        "agentPortCalled": true,
+        "verifiedFactsFromGateway": true
+      }
+    },
+    {
+      "order": 3,
+      "actor": "agentport_plugin",
+      "phase": "read_action_model",
+      "a2aTaskClass": "action.prepare",
+      "assertions": {
+        "actionModelRead": true
+      }
+    },
+    {
+      "order": 4,
+      "actor": "agentport_plugin",
+      "phase": "compile_action_intent",
+      "a2aTaskClass": "action.prepare",
+      "agentPortPrimitive": "compile_action_intent",
+      "preservedFields": [
+        "intentId",
+        "approvedActionIntentHash"
+      ],
+      "assertions": {
+        "intentId": "intent_a2a_host_001",
+        "approvedActionIntentHash": "sha256:a2a-host-approval",
+        "approvalPackageReady": true
+      }
+    },
+    {
+      "order": 5,
+      "actor": "frontier_host",
+      "phase": "render_approval",
+      "a2aTaskClass": "action.prepare",
+      "preservedFields": [
+        "intentId",
+        "approvedActionIntentHash"
+      ],
+      "assertions": {
+        "exactApprovalRendered": true,
+        "userConsent": true
+      }
+    },
+    {
+      "order": 6,
+      "actor": "agentport_gateway",
+      "phase": "execute_action",
+      "a2aTaskClass": "action.execute",
+      "agentPortPrimitive": "book_service",
+      "preservedFields": [
+        "intentId",
+        "approvedActionIntentHash",
+        "userConsent",
+        "authorityEvidenceRef"
+      ],
+      "assertions": {
+        "intentId": "intent_a2a_host_001",
+        "approvedActionIntentHash": "sha256:a2a-host-approval",
+        "userConsent": true,
+        "exactApprovalRendered": true,
+        "authorityEvidenceRequired": true,
+        "authorityEvidenceCarried": true
+      }
+    },
+    {
+      "order": 7,
+      "actor": "agentport_gateway",
+      "phase": "receive_receipt",
+      "a2aTaskClass": "proof.receipt",
+      "agentPortPrimitive": "ActionReceipt",
+      "preservedFields": [
+        "actionReceiptRef",
+        "commitmentRef",
+        "gatewayResultType"
+      ],
+      "assertions": {
+        "gatewayProducedReceipt": true,
+        "clientMintedReceipt": false,
+        "businessOutcomeFromGateway": true
+      }
+    },
+    {
+      "order": 8,
+      "actor": "frontier_host",
+      "phase": "present_result",
+      "a2aTaskClass": "proof.receipt",
+      "preservedFields": [
+        "actionReceiptRef",
+        "commitmentRef",
+        "gatewayResultType"
+      ],
+      "assertions": {
+        "taskStatePresentedAsOrchestrationOnly": true,
+        "gatewayOutcomeNotUpgraded": true
+      }
+    }
+  ],
+  "boundaries": {
+    "hostTraceOnly": true,
+    "certification": false,
+    "realBusinessEvidence": false,
+    "replacesA2A": false,
+    "executesLiveNetwork": false
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "type": "agentport.action_intent_approved_execution.v0.1",
+  "approvalEvent": {
+    "userApprovedExactCard": true,
+    "userConsentAttachedAfterApproval": true,
+    "userConsentBeforeApproval": false,
+    "approvalCardHash": "sha256:approval_card_action_intent_demo"
+  },
+  "executionArguments": {
+    "businessId": "agentport-virtual-store",
+    "serviceId": "product_demo",
+    "bindingId": "fixture#0",
+    "requestedType": "confirmed",
+    "slotStart": "2026-07-01T16:00:00.000Z",
+    "intentId": "intent_action_intent_demo",
+    "approvedActionIntentHash": "sha256:action_intent_demo",
+    "userConsent": true
+  },
+  "binding": {
+    "matchesApprovalPackage": true,
+    "exactActionOnly": true
+  },
+  "driftCheck": {
+    "editedArgsRejected": true,
+    "reason": "approved_action_intent_hash_mismatch"
+  },
+  "payloadSafety": {
+    "excludesCustomerPii": true,
+    "excludesRawAuthorityTokens": true,
+    "excludesReceiptBodies": true,
+    "excludesDeliveryBodies": true,
+    "excludesSignatures": true,
+    "excludesBackendCredentials": true
+  }
+}

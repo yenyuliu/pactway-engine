@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-commitment.schema.json",
+  "title": "AgentPort Commitment",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "protocol",
+    "version",
+    "commitmentId",
+    "status",
+    "subject",
+    "business",
+    "backend",
+    "authority",
+    "rights",
+    "recoveryPolicy",
+    "events",
+    "receipts"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "protocol": { "const": "agentport-commitment" },
+    "version": { "const": "0.1" },
+    "commitmentId": { "type": "string", "minLength": 1 },
+    "status": {
+      "enum": ["active", "cancelled", "rescheduled", "expired", "released", "failed"]
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["holderRef"],
+      "properties": {
+        "holderRef": { "type": "string", "minLength": 1 },
+        "clientAgentId": { "type": "string", "minLength": 1 }
+      }
+    },
+    "business": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["businessId", "serviceId"],
+      "properties": {
+        "businessId": { "type": "string", "minLength": 1 },
+        "serviceId": { "type": "string", "minLength": 1 },
+        "bindingId": { "type": "string", "minLength": 1 }
+      }
+    },
+    "backend": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "confirmationId", "systemOfRecord"],
+      "properties": {
+        "source": { "type": "string", "minLength": 1 },
+        "confirmationId": { "type": "string", "minLength": 1 },
+        "systemOfRecord": { "const": true }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assurance", "evidenceRefs", "consentId"],
+      "properties": {
+        "assurance": { "enum": ["none", "signed", "verified-mandate"] },
+        "evidenceRefs": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "delegationId": { "type": "string", "minLength": 1 },
+        "consentId": { "type": "string", "minLength": 1 }
+      }
+    },
+    "rights": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowedActions",
+        "transferable",
+        "modificationRequiresConsent",
+        "cancellationRequiresConsent"
+      ],
+      "properties": {
+        "allowedActions": {
+          "type": "array",
+          "items": { "enum": ["verify", "cancel", "reschedule", "transfer"] },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "transferable": { "type": "boolean" },
+        "modificationRequiresConsent": { "const": true },
+        "cancellationRequiresConsent": { "const": true }
+      }
+    },
+    "recoveryPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "fallbackAction"],
+      "properties": {
+        "mode": { "enum": ["business_backend", "agentport_handoff", "unavailable"] },
+        "fallbackAction": { "enum": ["retry_backend", "handoff", "refuse"] },
+        "expiresAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "events": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/event" },
+      "minItems": 1
+    },
+    "receipts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/receiptRef" },
+      "minItems": 1
+    }
+  },
+  "$defs": {
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["eventId", "type", "at", "actor"],
+      "properties": {
+        "eventId": { "type": "string", "minLength": 1 },
+        "type": {
+          "enum": [
+            "created",
+            "verified",
+            "cancel_requested",
+            "cancelled",
+            "reschedule_requested",
+            "rescheduled",
+            "transfer_requested",
+            "transferred",
+            "expired",
+            "recovered",
+            "failed"
+          ]
+        },
+        "at": { "type": "string", "format": "date-time" },
+        "actor": {
+          "enum": ["client_user", "client_agent", "business_gateway", "business_backend", "agentport_operator"]
+        },
+        "receiptId": { "type": "string", "minLength": 1 },
+        "backendConfirmationId": { "type": "string", "minLength": 1 },
+        "reason": { "type": "string", "minLength": 1 }
+      }
+    },
+    "receiptRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["receiptId", "action", "resultType", "payloadHash", "keyId", "signature"],
+      "properties": {
+        "receiptId": { "type": "string", "minLength": 1 },
+        "action": { "enum": ["book_service", "cancel_service", "reschedule_service"] },
+        "resultType": { "enum": ["confirmed", "cancelled", "rescheduled", "rejected", "failed"] },
+        "payloadHash": { "type": "string", "minLength": 1 },
+        "keyId": { "type": "string", "minLength": 1 },
+        "signature": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

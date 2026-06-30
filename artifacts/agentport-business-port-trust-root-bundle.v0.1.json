@@ -1,0 +1,31 @@
+{
+  "protocol": "agentport-business-port-trust-root-bundle",
+  "version": "0.1",
+  "bundleId": "agentport-business-port-trust-root-demo-2026-06",
+  "sequence": 1,
+  "issuedBy": "agentport",
+  "issuedAt": "2026-06-20T00:00:00.000Z",
+  "notBefore": "2026-06-20T00:00:00.000Z",
+  "expiresAt": "2026-07-20T00:00:00.000Z",
+  "authorities": [
+    {
+      "issuer": "agentport",
+      "displayName": "AgentPort Business Port Attestation Authority",
+      "publicKeys": [
+        {
+          "keyId": "business-port-runtime-key-demo",
+          "alg": "EdDSA",
+          "use": "sig",
+          "status": "active",
+          "notBefore": "2026-06-20T00:00:00.000Z",
+          "expiresAt": "2026-07-20T00:00:00.000Z",
+          "publicKey": {
+            "kty": "OKP",
+            "crv": "Ed25519",
+            "x": "11qYAYdk2OJreT7lJ3LzviHz4rP35Br5b4jnhHu_Ce0"
+          }
+        }
+      ]
+    }
+  ]
+}

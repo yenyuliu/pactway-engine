@@ -1,0 +1,273 @@
+{
+  "$schema": "../../schemas/agentport-protocol-trace.v0.2.schema.json",
+  "protocol": "agentport-protocol-trace",
+  "version": "0.2",
+  "traceId": "golden-ticket-proof-routing",
+  "kind": "golden",
+  "scenario": "wallet-first ticket proof routing to business port",
+  "roles": {
+    "frontierHost": {
+      "role": "frontier_host",
+      "responsibility": "talks to user and requests plugin actions",
+      "holdsCurrentTicketTruth": false
+    },
+    "plugin": {
+      "role": "plugin",
+      "responsibility": "stores durable refs, restores session, preserves receipt refs",
+      "lifecycleAuthority": false,
+      "mintsAuthority": false
+    },
+    "businessPortEndpoint": {
+      "role": "business_port_endpoint",
+      "responsibility": "receives standardized delivery request and preserves gateway outcome refs",
+      "systemOfRecord": false
+    },
+    "gateway": {
+      "role": "gateway",
+      "responsibility": "verifies, standardizes, derives allowed actions, routes proof, issues receipt",
+      "derivesAllowedActions": true
+    },
+    "adapter": {
+      "role": "adapter",
+      "responsibility": "normalizes backend capability only",
+      "selfAssertsVerification": false
+    },
+    "commitmentRegistry": {
+      "role": "commitment_registry",
+      "responsibility": "owns AgentPort lifecycle state and event history",
+      "lifecycleAuthority": true
+    },
+    "businessBackend": {
+      "role": "business_backend",
+      "responsibility": "existing operational booking ledger",
+      "systemOfRecord": true
+    }
+  },
+  "objects": {
+    "commitment": {
+      "$schema": "../../schemas/agentport-commitment.v0.2.schema.json",
+      "protocol": "agentport-commitment",
+      "version": "0.2",
+      "commitmentId": "commitment_v02_demo_001",
+      "status": "active",
+      "holder": {
+        "holderRef": "user_ticket_456",
+        "customerActorRef": "customer_holder:chatgpt-demo"
+      },
+      "business": {
+        "businessId": "verified-spa",
+        "serviceId": "massage",
+        "bindingId": "fixture#0",
+        "businessPortRef": "agentport://business-port/verified-spa/front-desk"
+      },
+      "backend": {
+        "source": "fixture",
+        "confirmationRef": "backend-confirmation:fixture-massage-smoke-0001",
+        "systemOfRecord": true,
+        "agentPortOwnsBackendLedger": false
+      },
+      "authority": {
+        "assurance": "signed",
+        "evidenceRefs": [
+          "agentport-local-delegation:issuer_test:del_chatgpt_smoke"
+        ],
+        "consentId": "consent_chatgpt_smoke",
+        "mintedByAgentPort": false,
+        "mintedByModel": false,
+        "modelSelfIssued": false
+      },
+      "allowedActions": [
+        {
+          "action": "verify_ticket",
+          "derivedByGateway": true,
+          "requiresConsent": false,
+          "backendMutation": false
+        },
+        {
+          "action": "get_ticket_status",
+          "derivedByGateway": true,
+          "requiresConsent": false,
+          "backendMutation": false
+        },
+        {
+          "action": "get_allowed_ticket_actions",
+          "derivedByGateway": true,
+          "requiresConsent": false,
+          "backendMutation": false
+        },
+        {
+          "action": "send_ticket",
+          "derivedByGateway": true,
+          "requiresConsent": true,
+          "backendMutation": false
+        }
+      ],
+      "recoveryPolicy": {
+        "mode": "registry_reverify",
+        "fallbackAction": "reverify"
+      },
+      "registry": {
+        "registryRef": "agentport://registry/commitment_v02_demo_001",
+        "lifecycleAuthority": true,
+        "frontierHostIsAuthority": false,
+        "pluginWalletIsAuthority": false
+      },
+      "events": [
+        {
+          "eventId": "event_v02_created",
+          "type": "created",
+          "at": "2026-06-27T05:30:00.000Z",
+          "actorRole": "business_backend",
+          "receiptRef": "gateway-receipt:receipt_v02_created"
+        },
+        {
+          "eventId": "event_v02_proof_routed",
+          "type": "proof_routed",
+          "at": "2026-06-27T05:31:00.000Z",
+          "actorRole": "gateway",
+          "receiptRef": "delivery-receipt:delivery_v02_001"
+        }
+      ],
+      "receiptRefs": [
+        "gateway-receipt:receipt_v02_created",
+        "delivery-receipt:delivery_v02_001"
+      ]
+    },
+    "actionIntent": {
+      "$schema": "../../schemas/agentport-action-intent.v0.2.schema.json",
+      "protocol": "agentport-action-intent",
+      "version": "0.2",
+      "intentId": "intent_v02_send_ticket_001",
+      "agentSessionId": "session_v02_frontier_001",
+      "action": "send_ticket",
+      "target": {
+        "businessId": "verified-spa",
+        "serviceId": "massage",
+        "commitmentId": "commitment_v02_demo_001",
+        "destinationRef": "agentport://business-port/verified-spa/front-desk"
+      },
+      "approval": {
+        "required": true,
+        "exactSummaryShown": true,
+        "approvalPhrase": "Yes",
+        "consentStatement": "User approved: Yes. Send ticket proof for AP-DEMO-1234 to the front desk at verified-spa. Backend changed: no.",
+        "userConsentAttachedAfterApproval": true,
+        "approvalHash": "sha256:approval_v02_001"
+      },
+      "bounds": {
+        "expiresAt": "2026-06-27T05:36:00.000Z",
+        "singleUse": true,
+        "backendMutation": false
+      },
+      "status": "executed"
+    },
+    "deliveryReceipt": {
+      "$schema": "../../schemas/agentport-delivery-receipt.v0.2.schema.json",
+      "protocol": "agentport-delivery-receipt",
+      "version": "0.2",
+      "deliveryId": "delivery_v02_001",
+      "commitmentId": "commitment_v02_demo_001",
+      "destination": {
+        "kind": "business_inbox",
+        "targetRef": "agentport://business-inbox/verified-spa",
+        "businessPortRef": "agentport://business-port/verified-spa/front-desk"
+      },
+      "result": "sent",
+      "backendMutation": false,
+      "actors": {
+        "requestedActor": {
+          "actorKind": "plugin_host",
+          "principalId": "AgentPort Ticket Manager"
+        },
+        "customerActor": {
+          "actorKind": "customer_holder",
+          "principalId": "customer_holder:chatgpt-demo"
+        },
+        "gatewayActor": {
+          "actorKind": "gateway",
+          "principalId": "agentport-gateway"
+        }
+      },
+      "proofLevel": "receipt_ref",
+      "issuedBy": "agentport-gateway",
+      "receiptRef": "delivery-receipt:delivery_v02_001",
+      "authorityEvidenceRefs": [
+        "agentport-local-delegation:issuer_test:del_chatgpt_smoke"
+      ],
+      "consentId": "consent_chatgpt_smoke",
+      "outcomeRef": "delivery-receipt:delivery_v02_001"
+    },
+    "businessPortDelivery": {
+      "systemOfRecord": false,
+      "gatewayOutcome": "sent",
+      "result": "sent",
+      "gatewayOutcomeRef": "delivery-receipt:delivery_v02_001",
+      "upgradedOutcome": false
+    },
+    "adapterAssertions": {
+      "selfAssertedTrust": {
+        "verified": false
+      },
+      "gatewayIgnoredSelfAssertedTrust": true
+    },
+    "auditEvents": [
+      {
+        "eventId": "audit_v02_delivery",
+        "type": "ticket_delivery",
+        "actorRoles": ["plugin_host", "customer_holder", "gateway"],
+        "backendMutation": false
+      }
+    ]
+  },
+  "steps": [
+    {
+      "id": "restore_wallet_first",
+      "from": "frontier_host",
+      "to": "plugin",
+      "action": "locate_wallet_tickets",
+      "objectRef": "commitment_v02_demo_001"
+    },
+    {
+      "id": "registry_status_read",
+      "from": "gateway",
+      "to": "commitment_registry",
+      "action": "get_ticket_status",
+      "objectRef": "commitment_v02_demo_001"
+    },
+    {
+      "id": "allowed_actions_gateway_derived",
+      "from": "gateway",
+      "to": "plugin",
+      "action": "get_allowed_ticket_actions",
+      "objectRef": "commitment_v02_demo_001"
+    },
+    {
+      "id": "summary_then_approval",
+      "from": "frontier_host",
+      "to": "customer_holder",
+      "action": "show_exact_summary_then_receive_approval",
+      "objectRef": "intent_v02_send_ticket_001"
+    },
+    {
+      "id": "route_proof",
+      "from": "gateway",
+      "to": "business_port_endpoint",
+      "action": "send_ticket",
+      "objectRef": "delivery_v02_001"
+    },
+    {
+      "id": "registry_event_append",
+      "from": "gateway",
+      "to": "commitment_registry",
+      "action": "append_proof_routed_event",
+      "objectRef": "delivery_v02_001"
+    }
+  ],
+  "claims": {
+    "agentPortCompatible": true,
+    "agentPortCertified": false,
+    "agentPortVerifiedBusiness": false,
+    "realBusinessProof": false,
+    "virtualStoreOrFixtureBoundary": true
+  }
+}

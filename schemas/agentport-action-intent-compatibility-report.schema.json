@@ -1,0 +1,188 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-action-intent-compatibility-report.schema.json",
+  "title": "AgentPort Action Intent Compatibility Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "profile",
+    "generatedAt",
+    "input",
+    "inputKind",
+    "proofPackDir",
+    "referenceTrace",
+    "status",
+    "ok",
+    "certification",
+    "boundaries",
+    "areas",
+    "roleProfile",
+    "validator"
+  ],
+  "properties": {
+    "type": { "const": "agentport.action_intent_compatibility_report.v0.1" },
+    "profile": { "enum": ["action-intent", "frontier", "plugin-wallet", "gateway"] },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "input": { "type": "string", "minLength": 1 },
+    "inputKind": { "const": "proof_pack_dir" },
+    "proofPackDir": { "type": "string", "minLength": 1 },
+    "referenceTrace": { "const": "action-intent-proof-pack" },
+    "status": { "enum": ["passed", "failed"] },
+    "ok": { "type": "boolean" },
+    "certification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "publicCertification",
+        "agentPortReadyCertification",
+        "realBusinessCertification",
+        "gatewayCertification",
+        "pluginWalletCertification",
+        "registryCertification",
+        "note"
+      ],
+      "properties": {
+        "publicCertification": { "const": false },
+        "agentPortReadyCertification": { "const": false },
+        "realBusinessCertification": { "const": false },
+        "gatewayCertification": { "const": false },
+        "pluginWalletCertification": { "const": false },
+        "registryCertification": { "const": false },
+        "note": { "type": "string", "minLength": 1 }
+      }
+    },
+    "boundaries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actionIntentOnly",
+        "gatewayAuthority",
+        "pluginWalletAuthority",
+        "registryAuthority",
+        "lifecycleSourceOfTruth",
+        "realBusinessEvidence",
+        "storesPrivatePayloads",
+        "mintsAuthority"
+      ],
+      "properties": {
+        "actionIntentOnly": { "type": "boolean" },
+        "gatewayAuthority": { "type": "boolean" },
+        "pluginWalletAuthority": { "type": "boolean" },
+        "registryAuthority": { "type": "boolean" },
+        "lifecycleSourceOfTruth": { "type": "boolean" },
+        "realBusinessEvidence": { "type": "boolean" },
+        "storesPrivatePayloads": { "type": "boolean" },
+        "mintsAuthority": { "type": "boolean" }
+      }
+    },
+    "areas": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "ok", "requiredCheckIds"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "ok": { "type": "boolean" },
+          "requiredCheckIds": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "missingCheckIds": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "failedCheckIds": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "roleProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profile", "ok", "certification", "note", "obligationCheckIds"],
+      "properties": {
+        "profile": { "enum": ["action-intent", "frontier", "plugin-wallet", "gateway"] },
+        "ok": { "type": "boolean" },
+        "certification": { "const": false },
+        "note": { "type": "string", "minLength": 1 },
+        "obligationCheckIds": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "missingCheckIds": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "failedCheckIds": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "validator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "ok", "checkCount", "failedCheckIds", "schema", "reportSchema"],
+      "properties": {
+        "type": { "const": "agentport.action_intent_proof_validation.v0.1" },
+        "ok": { "type": "boolean" },
+        "checkCount": { "type": "integer", "minimum": 0 },
+        "failedCheckIds": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "schema": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "schema", "ok", "checks", "failedCheckIds", "errors"],
+          "properties": {
+            "type": { "const": "agentport.action_intent_schema_validation.v0.1" },
+            "schema": { "type": "string", "minLength": 1 },
+            "ok": { "type": "boolean" },
+            "checks": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["id", "ok"],
+                "properties": {
+                  "id": { "type": "string", "minLength": 1 },
+                  "ok": { "type": "boolean" },
+                  "detail": { "type": "string" }
+                }
+              }
+            },
+            "failedCheckIds": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 }
+            },
+            "errors": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "reportSchema": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "schema", "ok", "errorCount", "errors"],
+          "properties": {
+            "type": { "const": "agentport.report_schema_validation.v0.1" },
+            "schema": { "type": "string", "minLength": 1 },
+            "ok": { "type": "boolean" },
+            "errorCount": { "type": "integer", "minimum": 0 },
+            "errors": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    }
+  }
+}

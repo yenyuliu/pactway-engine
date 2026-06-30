@@ -1,0 +1,272 @@
+{
+  "$schema": "../../schemas/agentport-protocol-cut-manifest.schema.json",
+  "type": "agentport.protocol_cut_manifest.v0.2",
+  "protocol": "agentport",
+  "version": "0.2",
+  "status": "cut_readiness",
+  "standardDraft": "docs/agentport-open-standard-v0.2-draft.md",
+  "governancePolicy": "examples/implementer-kit/protocol-governance.v0.2.json",
+  "publicationStatus": "examples/implementer-kit/protocol-publication.v0.2.json",
+  "packageRoot": "examples/implementer-kit",
+  "scope": "Virtual-store and A2A host-adoption compatibility evidence for the top-down AgentPort gateway protocol.",
+  "roles": [
+    {
+      "id": "frontier_host",
+      "doc": "docs/implementer-kit/frontier-host.md",
+      "proof": "Action-intent frontier profile and v0.2 frontier-host role profile."
+    },
+    {
+      "id": "plugin_wallet",
+      "doc": "docs/implementer-kit/plugin.md",
+      "proof": "Plugin wallet proof pack and v0.2 plugin role profile."
+    },
+    {
+      "id": "business_port_endpoint",
+      "doc": "docs/implementer-kit/business-port-endpoint.md",
+      "proof": "Business-port proof pack and v0.2 business-port role profile."
+    },
+    {
+      "id": "agent_gateway",
+      "doc": "docs/implementer-kit/gateway.md",
+      "proof": "Gateway protocol proof pack and v0.2 gateway role profile."
+    },
+    {
+      "id": "adapter",
+      "doc": "docs/implementer-kit/adapter.md",
+      "proof": "Adapter capability-honesty profile and tamper fixtures."
+    },
+    {
+      "id": "commitment_registry",
+      "doc": "docs/implementer-kit/commitment-registry.md",
+      "proof": "Commitment-registry proof pack and v0.2 registry role profile."
+    },
+    {
+      "id": "a2a_host_binding",
+      "doc": "docs/implementer-kit/a2a-host-binding.md",
+      "proof": "A2A host trace, adoption report, and proof-pack redaction manifest."
+    }
+  ],
+  "artifacts": {
+    "docs": [
+      "docs/protocol-compact.md",
+      "docs/agentport-open-standard-v0.2-draft.md",
+      "docs/agentport-protocol-governance-v0.2.md",
+      "docs/agentport-open-standard-v0.2-release-notes.md",
+      "docs/agentport-open-standard-v0.2-stable-cut-review.md",
+      "docs/agentport-open-standard-v0.2-external-review-checklist.md",
+      "docs/agentport-protocol-v0.2.md",
+      "docs/external-implementer-quickstart.md",
+      "docs/implementer-kit/README.md",
+      "docs/implementer-kit/frontier-host.md",
+      "docs/implementer-kit/plugin.md",
+      "docs/implementer-kit/business-port-endpoint.md",
+      "docs/implementer-kit/gateway.md",
+      "docs/implementer-kit/adapter.md",
+      "docs/implementer-kit/commitment-registry.md",
+      "docs/implementer-kit/a2a-host-binding.md",
+      "docs/open-protocol-implementer-kit-roadmap.md"
+    ],
+    "schemas": [
+      "schemas/agentport-protocol-cut-manifest.schema.json",
+      "schemas/agentport-protocol-governance.schema.json",
+      "schemas/agentport-protocol-publication.schema.json",
+      "schemas/agentport-protocol-external-review.schema.json",
+      "schemas/agentport-protocol-external-review-result.schema.json",
+      "schemas/agentport-protocol-stable-publication.schema.json",
+      "schemas/agentport-protocol-conformance-report.v0.2.schema.json",
+      "schemas/agentport-action-intent.v0.2.schema.json",
+      "schemas/agentport-commitment.v0.2.schema.json",
+      "schemas/agentport-delivery-receipt.v0.2.schema.json",
+      "schemas/agentport-protocol-trace.v0.2.schema.json",
+      "schemas/agentport-action-intent-proof-pack.schema.json",
+      "schemas/agentport-action-intent-compatibility-report.schema.json",
+      "schemas/agentport-business-port-proof-pack.schema.json",
+      "schemas/agentport-business-port-compatibility-report.schema.json",
+      "schemas/agentport-registry-proof-pack.schema.json",
+      "schemas/agentport-registry-compatibility-report.schema.json",
+      "schemas/agentport-protocol-trace-matrix.schema.json",
+      "schemas/agentport-protocol-trace-compatibility-report.schema.json",
+      "schemas/agentport-a2a-gateway-profile.schema.json",
+      "schemas/agentport-a2a-gateway-trace-suite.schema.json",
+      "schemas/agentport-a2a-gateway-compatibility-report.schema.json",
+      "schemas/agentport-a2a-host-binding.schema.json",
+      "schemas/agentport-a2a-host-trace.schema.json",
+      "schemas/agentport-a2a-host-event-log.schema.json",
+      "schemas/agentport-a2a-host-adoption-report.schema.json",
+      "schemas/agentport-a2a-host-proof-pack.schema.json"
+    ],
+    "reports": [
+      "examples/gateway-protocol-compliance.virtual-store.v0.1.json",
+      "examples/a2a-gateway-compatibility-report.v0.1.json",
+      "examples/a2a-host-proof-pack/adoption-report.json",
+      "examples/a2a-host-proof-pack/redaction-manifest.json",
+      "examples/a2a-host-proof-pack/proof-summary.json"
+    ],
+    "examples": [
+      "examples/action-intent-proof-pack/action-intent-proof-summary.json",
+      "examples/action-intent-proof-pack/approval-package.json",
+      "examples/action-intent-proof-pack/approved-execution.json",
+      "examples/action-intent-proof-pack/receipt-refs.json",
+      "examples/business-port-proof-pack/business-port-proof-summary.json",
+      "examples/business-port-proof-pack/gateway-forward.json",
+      "examples/business-port-proof-pack/gateway-response.json",
+      "examples/commitment-registry-proof-pack/registry-proof-summary.json",
+      "examples/commitment-registry-proof-pack/event-history.json",
+      "examples/protocol-golden-trace-matrix.v0.1.json",
+      "examples/protocol-v0.2/golden-ticket-proof-routing.json",
+      "examples/protocol-v0.2/tamper-adapter-self-asserts-trust.json",
+      "examples/protocol-v0.2/tamper-business-port-upgrades-outcome.json",
+      "examples/protocol-v0.2/tamper-certification-overclaim.json",
+      "examples/protocol-v0.2/tamper-missing-consent.json",
+      "examples/protocol-v0.2/tamper-model-minted-authority.json",
+      "examples/protocol-v0.2/tamper-plugin-lifecycle-authority.json",
+      "examples/protocol-v0.2/tamper-receipt-missing-authority-binding.json",
+      "examples/a2a-gateway-trace-suite.v0.1.json",
+      "examples/a2a-host-trace.passing.v0.1.json",
+      "examples/a2a-host-trace.direct-execute.v0.1.json",
+      "examples/a2a-host-trace.invented-approval.v0.1.json",
+      "examples/a2a-host-trace.missing-authority.v0.1.json",
+      "examples/a2a-host-trace.forged-receipt.v0.1.json",
+      "examples/a2a-host-trace.ack-as-verification.v0.1.json",
+      "examples/a2a-host-event-log.send-ticket.v0.1.json",
+      "examples/a2a-host-event-log.restore-ticket-status.v0.1.json",
+      "examples/a2a-host-event-log.failed-direct-execute.v0.1.json",
+      "examples/chatgpt-app-connector-capture.send-ticket.v0.1.json",
+      "examples/chatgpt-app-connector-capture.direct-execute.v0.1.json",
+      "examples/a2a-host-proof-pack/host-trace.json",
+      "examples/implementer-kit/protocol-governance.v0.2.json",
+      "examples/implementer-kit/protocol-publication.v0.2.json",
+      "examples/implementer-kit/protocol-external-review.v0.2.json",
+      "examples/implementer-kit/protocol-external-review-result.v0.2.json",
+      "examples/implementer-kit/protocol-stable-publication.v0.2.json"
+    ],
+    "scripts": [
+      "scripts/conformance.mjs",
+      "scripts/protocol-v02-conformance.mjs",
+      "scripts/a2a-gateway-check.mjs",
+      "scripts/a2a-host-proof-pack.mjs"
+    ]
+  },
+  "commands": [
+    {
+      "id": "build",
+      "command": "npm run build",
+      "validates": "Compiles the CLI and runtime artifacts used by role checks."
+    },
+    {
+      "id": "gateway",
+      "command": "node dist/cli/index.js gateway-protocol-check --input examples/gateway-protocol-proof-pack",
+      "validates": "Gateway discovery, approval, execution, receipt, lifecycle, wallet restore, and redaction proof pack."
+    },
+    {
+      "id": "plugin-wallet",
+      "command": "node dist/cli/index.js plugin-wallet-check --input examples/plugin-wallet-proof-pack",
+      "validates": "Plugin wallet save, restore, pending action, receipt retention, reverify, and redaction proof pack."
+    },
+    {
+      "id": "action-intent",
+      "command": "node dist/cli/index.js action-intent-check --input examples/action-intent-proof-pack",
+      "validates": "Bounded action intent, exact approval, consent rejection, lifecycle result, result delivery, and receipt refs."
+    },
+    {
+      "id": "business-port",
+      "command": "node dist/cli/index.js business-port-check --input examples/business-port-proof-pack",
+      "validates": "Business-port receive/forward behavior without backend confirmation or gateway truth self-assertion."
+    },
+    {
+      "id": "registry",
+      "command": "node dist/cli/index.js registry-check --input examples/commitment-registry-proof-pack",
+      "validates": "Commitment lifecycle writes, restore reads, current-state reads, event history, and redaction."
+    },
+    {
+      "id": "protocol-trace",
+      "command": "node dist/cli/index.js protocol-trace-check --input examples/protocol-golden-trace-matrix.v0.1.json",
+      "validates": "Golden and tamper trace matrix compatibility."
+    },
+    {
+      "id": "a2a-gateway",
+      "command": "node scripts/a2a-gateway-check.mjs",
+      "validates": "A2A gateway profile and trace suite compatibility report."
+    },
+    {
+      "id": "a2a-host",
+      "command": "node scripts/a2a-gateway-check.mjs --host-trace examples/a2a-host-trace.passing.v0.1.json --strict",
+      "validates": "A2A host adoption trace against AgentPort host binding rules."
+    },
+    {
+      "id": "a2a-host-proof-pack",
+      "command": "node scripts/a2a-host-proof-pack.mjs --input examples/a2a-host-trace.passing.v0.1.json --out-dir /tmp/a2a-host-pack --strict",
+      "validates": "A2A host proof-pack packaging and redaction."
+    },
+    {
+      "id": "v02-conformance",
+      "command": "node scripts/protocol-v02-conformance.mjs --input examples/protocol-v0.2 --expect-tamper-failures",
+      "validates": "v0.2 role profiles, golden trace, and expected tamper failures."
+    },
+    {
+      "id": "role-gateway",
+      "command": "node dist/cli/index.js conformance gateway --input examples/protocol-v0.2",
+      "validates": "Gateway v0.2 role profile."
+    },
+    {
+      "id": "role-frontier-host",
+      "command": "node dist/cli/index.js conformance frontier-host --input examples/protocol-v0.2",
+      "validates": "Frontier-host v0.2 session discipline role profile."
+    },
+    {
+      "id": "role-plugin",
+      "command": "node dist/cli/index.js conformance plugin --input examples/protocol-v0.2",
+      "validates": "Plugin wallet v0.2 role profile."
+    },
+    {
+      "id": "role-adapter",
+      "command": "node dist/cli/index.js conformance adapter --input examples/protocol-v0.2",
+      "validates": "Adapter capability-honesty v0.2 role profile."
+    },
+    {
+      "id": "role-business-port",
+      "command": "node dist/cli/index.js conformance business-port --input examples/protocol-v0.2",
+      "validates": "Business-port forwarding v0.2 role profile."
+    },
+    {
+      "id": "role-registry",
+      "command": "node dist/cli/index.js conformance registry --input examples/protocol-v0.2",
+      "validates": "Commitment registry lifecycle v0.2 role profile."
+    }
+  ],
+  "claims": {
+    "allowed": [
+      "Passes AgentPort Gateway conformance v0.2",
+      "Passes AgentPort Frontier Host conformance v0.2",
+      "Passes AgentPort Plugin Wallet conformance v0.2",
+      "Passes AgentPort Business Port conformance v0.2",
+      "Passes AgentPort Adapter conformance v0.2",
+      "Passes AgentPort Commitment Registry conformance v0.2",
+      "Passes AgentPort A2A Host Adoption compatibility check"
+    ],
+    "forbidden": [
+      "AgentPort Certified",
+      "AgentPort Verified business",
+      "real-business proof",
+      "live-backend proof",
+      "A2A replacement",
+      "gateway authority for plugins",
+      "backend confirmation authority for business ports"
+    ]
+  },
+  "boundaries": {
+    "agentPortCertified": false,
+    "agentPortVerifiedBusiness": false,
+    "realBusinessProof": false,
+    "liveBackendProof": false,
+    "a2aReplacement": false,
+    "hostedCredentialVault": false,
+    "businessSystemOfRecord": false
+  },
+  "releaseGates": [
+    "npm run public-package-audit",
+    "npm run conformance",
+    "npm test",
+    "git diff --check"
+  ]
+}

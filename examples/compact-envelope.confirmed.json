@@ -1,0 +1,29 @@
+{
+  "$schema": "../schemas/agentport-compact-envelope.schema.json",
+  "protocol": "agentport",
+  "version": "0.1",
+  "action": "book_service",
+  "actionLayer": "commit",
+  "result": {
+    "type": "confirmed",
+    "reason": null
+  },
+  "refs": {
+    "businessId": "agentport-virtual-store",
+    "serviceId": "product_demo",
+    "bindingId": "fixture#0",
+    "authorityEvidenceRef": "agentport-local-delegation:del_123",
+    "authorityAssurance": "signed",
+    "delegationId": "del_123",
+    "consentId": "consent_123",
+    "clientAgentId": "agent_mobile_claude",
+    "userSubject": "user_mobile_001",
+    "backendConfirmationId": "fixture-product_demo-0001"
+  },
+  "receipt": {
+    "receiptId": "receipt_example",
+    "payloadHash": "sha256:example",
+    "keyId": "gateway-key-1",
+    "signature": "sig:example"
+  }
+}

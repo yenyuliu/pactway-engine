@@ -1,0 +1,18 @@
+{
+  "type": "agentport.registry_current_state_read.v0.1",
+  "currentState": {
+    "commitmentRef": "commitment:commitment_action_intent_demo",
+    "status": "confirmed",
+    "lastEventId": "event_action_intent_confirmed"
+  },
+  "read": {
+    "tool": "get_ticket_status",
+    "source": "commitment_registry"
+  },
+  "payloadSafety": {
+    "excludesCustomerPii": true,
+    "excludesRawAuthorityTokens": true,
+    "excludesReceiptBodies": true,
+    "excludesBackendCredentials": true
+  }
+}

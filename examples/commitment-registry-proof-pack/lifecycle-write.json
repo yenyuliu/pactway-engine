@@ -1,0 +1,18 @@
+{
+  "type": "agentport.registry_lifecycle_write.v0.1",
+  "write": {
+    "commitmentId": "commitment_action_intent_demo",
+    "eventType": "confirmed",
+    "persisted": true
+  },
+  "payloadSafety": {
+    "excludesCustomerPii": true,
+    "excludesRawAuthorityTokens": true,
+    "excludesReceiptBodies": true,
+    "excludesBackendCredentials": true
+  },
+  "boundaries": {
+    "executesBusinessActions": false,
+    "mintsAuthority": false
+  }
+}

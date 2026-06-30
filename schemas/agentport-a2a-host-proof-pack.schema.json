@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-a2a-host-proof-pack.schema.json",
+  "title": "AgentPort A2A Host Proof Pack Summary",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "version",
+    "generatedAt",
+    "input",
+    "status",
+    "ok",
+    "artifacts",
+    "certification",
+    "boundaries",
+    "hashes"
+  ],
+  "properties": {
+    "type": { "const": "agentport.a2a_host_proof_pack.v0.1" },
+    "version": { "const": "0.1" },
+    "generatedAt": { "type": "string", "minLength": 1 },
+    "input": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["passed", "failed"] },
+    "ok": { "type": "boolean" },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hostTrace", "adoptionReport", "redactionManifest"],
+      "properties": {
+        "hostTrace": { "type": "string", "minLength": 1 },
+        "adoptionReport": { "type": "string", "minLength": 1 },
+        "redactionManifest": { "type": "string", "minLength": 1 }
+      }
+    },
+    "certification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["publicCertification", "a2aCertification", "agentPortReadyCertification", "realBusinessCertification", "note"],
+      "properties": {
+        "publicCertification": { "const": false },
+        "a2aCertification": { "const": false },
+        "agentPortReadyCertification": { "const": false },
+        "realBusinessCertification": { "const": false },
+        "note": { "type": "string", "minLength": 1 }
+      }
+    },
+    "boundaries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hostTraceOnly", "executesLiveNetwork", "containsRawAuthorityTokens", "containsRawCredentials"],
+      "properties": {
+        "hostTraceOnly": { "type": "boolean" },
+        "executesLiveNetwork": { "type": "boolean" },
+        "containsRawAuthorityTokens": { "const": false },
+        "containsRawCredentials": { "const": false }
+      }
+    },
+    "hashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hostTraceSha256", "adoptionReportSha256", "redactionManifestSha256"],
+      "properties": {
+        "hostTraceSha256": { "type": "string", "minLength": 1 },
+        "adoptionReportSha256": { "type": "string", "minLength": 1 },
+        "redactionManifestSha256": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

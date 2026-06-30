@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-protocol-publication.schema.json",
+  "title": "AgentPort Protocol Publication Status",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "protocol",
+    "version",
+    "status",
+    "technicalFreeze",
+    "cutReadiness",
+    "stablePublication",
+    "packageRefs",
+    "includedSurfaces",
+    "gates",
+    "certification",
+    "stablePromotionBlockers",
+    "forbiddenClaims"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "type": { "const": "agentport.protocol_publication.v0.2" },
+    "protocol": { "const": "agentport" },
+    "version": { "const": "0.2" },
+    "status": { "const": "stable_published" },
+    "technicalFreeze": { "const": true },
+    "cutReadiness": { "const": true },
+    "stablePublication": { "const": true },
+    "packageRefs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "standardDraft",
+        "technicalFreezeDoc",
+        "cutManifest",
+        "governancePolicy",
+        "releaseNotes",
+        "stableCutReview",
+        "externalReview",
+        "externalReviewResult",
+        "stablePublication"
+      ],
+      "properties": {
+        "standardDraft": { "$ref": "#/$defs/fileRef" },
+        "technicalFreezeDoc": { "$ref": "#/$defs/fileRef" },
+        "cutManifest": { "$ref": "#/$defs/fileRef" },
+        "governancePolicy": { "$ref": "#/$defs/fileRef" },
+        "releaseNotes": { "$ref": "#/$defs/fileRef" },
+        "stableCutReview": { "$ref": "#/$defs/fileRef" },
+        "externalReview": { "$ref": "#/$defs/fileRef" },
+        "externalReviewResult": { "$ref": "#/$defs/fileRef" },
+        "stablePublication": { "$ref": "#/$defs/fileRef" }
+      }
+    },
+    "includedSurfaces": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "frontier_host",
+          "plugin_wallet",
+          "business_port_endpoint",
+          "agent_gateway",
+          "adapter",
+          "commitment_registry",
+          "a2a_host_binding",
+          "action_intent",
+          "golden_traces",
+          "tamper_fixtures",
+          "cut_manifest",
+          "governance_policy"
+        ]
+      },
+      "minItems": 12,
+      "uniqueItems": true
+    },
+    "gates": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["manifestCommands", "publicPackageAudit", "conformance", "tests", "diffCheck"],
+      "properties": {
+        "manifestCommands": { "const": "passed" },
+        "publicPackageAudit": { "const": "passed" },
+        "conformance": { "const": "passed" },
+        "tests": { "const": "passed" },
+        "diffCheck": { "const": "passed" }
+      }
+    },
+    "certification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "agentPortCertified",
+        "agentPortVerifiedBusiness",
+        "realBusinessProof",
+        "liveBackendProof",
+        "stablePublication"
+      ],
+      "properties": {
+        "agentPortCertified": { "const": false },
+        "agentPortVerifiedBusiness": { "const": false },
+        "realBusinessProof": { "const": false },
+        "liveBackendProof": { "const": false },
+        "stablePublication": { "const": true }
+      }
+    },
+    "stablePromotionBlockers": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "external_publication_review_not_recorded",
+          "stable_publication_tag_not_set",
+          "certification_process_not_run",
+          "real_business_evidence_not_included",
+          "live_backend_evidence_not_included"
+        ]
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "forbiddenClaims": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "AgentPort Certified",
+          "AgentPort Verified business",
+          "real-business proof",
+          "live-backend proof",
+          "A2A replacement",
+          "gateway authority for plugins",
+          "backend confirmation authority for business ports"
+        ]
+      },
+      "minItems": 7,
+      "uniqueItems": true
+    }
+  },
+  "$defs": {
+    "fileRef": { "type": "string", "minLength": 1 }
+  }
+}

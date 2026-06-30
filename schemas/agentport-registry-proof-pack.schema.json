@@ -1,0 +1,190 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-registry-proof-pack.schema.json",
+  "title": "AgentPort Commitment Registry Proof Pack",
+  "type": "object",
+  "additionalProperties": false,
+  "$defs": {
+    "payloadSafety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["excludesCustomerPii", "excludesRawAuthorityTokens", "excludesReceiptBodies", "excludesBackendCredentials"],
+      "properties": {
+        "excludesCustomerPii": { "const": true },
+        "excludesRawAuthorityTokens": { "const": true },
+        "excludesReceiptBodies": { "const": true },
+        "excludesBackendCredentials": { "const": true }
+      }
+    },
+    "lifecycleWrite": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "write", "payloadSafety", "boundaries"],
+      "properties": {
+        "type": { "const": "agentport.registry_lifecycle_write.v0.1" },
+        "write": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["commitmentId", "eventType", "persisted"],
+          "properties": {
+            "commitmentId": { "type": "string", "minLength": 1 },
+            "eventType": { "enum": ["created", "approved", "confirmed", "request", "handoff", "failed", "rejected"] },
+            "persisted": { "const": true }
+          }
+        },
+        "payloadSafety": { "$ref": "#/$defs/payloadSafety" },
+        "boundaries": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["executesBusinessActions", "mintsAuthority"],
+          "properties": {
+            "executesBusinessActions": { "const": false },
+            "mintsAuthority": { "const": false }
+          }
+        }
+      }
+    },
+    "eventHistory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "commitmentId", "events", "payloadSafety", "boundaries"],
+      "properties": {
+        "type": { "const": "agentport.registry_event_history.v0.1" },
+        "commitmentId": { "type": "string", "minLength": 1 },
+        "events": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["eventId", "sequence", "eventType", "toStatus"],
+            "properties": {
+              "eventId": { "type": "string", "minLength": 1 },
+              "sequence": { "type": "integer" },
+              "eventType": { "type": "string", "minLength": 1 },
+              "toStatus": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "payloadSafety": { "$ref": "#/$defs/payloadSafety" },
+        "boundaries": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["appendOnly", "rewritesHistory"],
+          "properties": {
+            "appendOnly": { "const": true },
+            "rewritesHistory": { "const": false }
+          }
+        }
+      }
+    },
+    "currentStateRead": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "currentState", "read", "payloadSafety"],
+      "properties": {
+        "type": { "const": "agentport.registry_current_state_read.v0.1" },
+        "currentState": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["commitmentRef", "status", "lastEventId"],
+          "properties": {
+            "commitmentRef": { "type": "string", "minLength": 1 },
+            "status": { "type": "string", "minLength": 1 },
+            "lastEventId": { "type": "string", "minLength": 1 }
+          }
+        },
+        "read": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["tool", "source"],
+          "properties": {
+            "tool": { "const": "get_ticket_status" },
+            "source": { "const": "commitment_registry" }
+          }
+        },
+        "payloadSafety": { "$ref": "#/$defs/payloadSafety" }
+      }
+    },
+    "restoreRead": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "restore", "payloadSafety", "boundaries"],
+      "properties": {
+        "type": { "const": "agentport.registry_restore_read.v0.1" },
+        "restore": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["commitmentRef", "restoredEventCount"],
+          "properties": {
+            "commitmentRef": { "type": "string", "minLength": 1 },
+            "restoredEventCount": { "type": "integer" }
+          }
+        },
+        "payloadSafety": { "$ref": "#/$defs/payloadSafety" },
+        "boundaries": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["modelMemorySource", "pluginWalletSource"],
+          "properties": {
+            "modelMemorySource": { "const": false },
+            "pluginWalletSource": { "const": false }
+          }
+        }
+      }
+    },
+    "redactionManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "requiredRedactionRuleIds", "filePolicy", "payloadSafety"],
+      "properties": {
+        "type": { "const": "agentport.registry_redaction_manifest.v0.1" },
+        "requiredRedactionRuleIds": { "type": "array", "items": { "type": "string" } },
+        "filePolicy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["credentialsAllowed", "customerPiiAllowed", "receiptBodiesAllowed"],
+          "properties": {
+            "credentialsAllowed": { "const": false },
+            "customerPiiAllowed": { "const": false },
+            "receiptBodiesAllowed": { "const": false }
+          }
+        },
+        "payloadSafety": { "$ref": "#/$defs/payloadSafety" }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "profile", "ok", "claims", "boundaries"],
+      "properties": {
+        "type": { "const": "agentport.registry_proof_summary.v0.1" },
+        "profile": { "const": "commitment-registry" },
+        "ok": { "const": true },
+        "claims": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["allowed", "forbidden"],
+          "properties": {
+            "allowed": { "type": "string", "minLength": 1 },
+            "forbidden": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "boundaries": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["registryOnly", "lifecycleSourceOfTruth", "businessBackend", "paymentWallet", "executesBusinessActions", "mintsAuthority", "realBusinessEvidence"],
+          "properties": {
+            "registryOnly": { "const": true },
+            "lifecycleSourceOfTruth": { "const": true },
+            "businessBackend": { "const": false },
+            "paymentWallet": { "const": false },
+            "executesBusinessActions": { "const": false },
+            "mintsAuthority": { "const": false },
+            "realBusinessEvidence": { "const": false }
+          }
+        }
+      }
+    }
+  }
+}

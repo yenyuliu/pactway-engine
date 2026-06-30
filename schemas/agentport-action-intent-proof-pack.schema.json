@@ -1,0 +1,535 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-action-intent-proof-pack.schema.json",
+  "title": "AgentPort Action Intent Proof Pack",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "userGoal",
+    "compiledIntent",
+    "requiredInputs",
+    "approvalPackage",
+    "approvedExecution",
+    "consentRejection",
+    "lifecycleResult",
+    "resultDelivery",
+    "receiptRefs",
+    "redactionManifest",
+    "summary"
+  ],
+  "properties": {
+    "userGoal": { "$ref": "#/$defs/userGoal" },
+    "compiledIntent": { "$ref": "#/$defs/compiledIntent" },
+    "requiredInputs": { "$ref": "#/$defs/requiredInputs" },
+    "approvalPackage": { "$ref": "#/$defs/approvalPackage" },
+    "approvedExecution": { "$ref": "#/$defs/approvedExecution" },
+    "consentRejection": { "$ref": "#/$defs/consentRejection" },
+    "lifecycleResult": { "$ref": "#/$defs/lifecycleResult" },
+    "resultDelivery": { "$ref": "#/$defs/resultDelivery" },
+    "receiptRefs": { "$ref": "#/$defs/receiptRefs" },
+    "redactionManifest": { "$ref": "#/$defs/redactionManifest" },
+    "summary": { "$ref": "#/$defs/summary" }
+  },
+  "$defs": {
+    "payloadSafety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "excludesCustomerPii",
+        "excludesRawAuthorityTokens",
+        "excludesReceiptBodies",
+        "excludesDeliveryBodies",
+        "excludesSignatures",
+        "excludesBackendCredentials"
+      ],
+      "properties": {
+        "excludesCustomerPii": { "const": true },
+        "excludesRawAuthorityTokens": { "const": true },
+        "excludesReceiptBodies": { "const": true },
+        "excludesDeliveryBodies": { "const": true },
+        "excludesSignatures": { "const": true },
+        "excludesBackendCredentials": { "const": true }
+      }
+    },
+    "stringArray": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "ok"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "ok": { "type": "boolean" }
+      }
+    },
+    "userGoal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "goal", "payloadSafety", "boundaries"],
+      "properties": {
+        "type": { "const": "agentport.action_intent_user_goal.v0.1" },
+        "goal": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["text", "agentSessionId", "stateChangingRequested", "userConsentPresent"],
+          "properties": {
+            "text": { "type": "string", "minLength": 1 },
+            "agentSessionId": { "type": "string", "minLength": 1 },
+            "stateChangingRequested": { "type": "boolean" },
+            "userConsentPresent": { "const": false }
+          }
+        },
+        "payloadSafety": { "$ref": "#/$defs/payloadSafety" },
+        "boundaries": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["rawAuthorityEvidencePresent", "mintsAuthority", "realBusinessEvidence"],
+          "properties": {
+            "rawAuthorityEvidencePresent": { "const": false },
+            "mintsAuthority": { "const": false },
+            "realBusinessEvidence": { "const": false }
+          }
+        }
+      }
+    },
+    "compiledIntent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "outcome", "intentId", "agentSessionId", "actionIntent", "citations", "payloadSafety", "boundaries"],
+      "properties": {
+        "type": { "const": "agentport.action_intent_compiled.v0.1" },
+        "outcome": { "const": "compiled" },
+        "intentId": { "type": "string", "minLength": 1 },
+        "agentSessionId": { "type": "string", "minLength": 1 },
+        "actionIntent": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["action", "businessId", "serviceId", "bindingId", "requestedType", "slotStart", "customerFields", "consentText", "expiresAt"],
+          "properties": {
+            "action": { "const": "book_service" },
+            "businessId": { "type": "string", "minLength": 1 },
+            "serviceId": { "type": "string", "minLength": 1 },
+            "bindingId": { "type": "string", "minLength": 1 },
+            "requestedType": { "enum": ["confirmed", "request"] },
+            "slotStart": { "type": "string", "minLength": 1 },
+            "customerFields": { "$ref": "#/$defs/stringArray" },
+            "consentText": { "$ref": "#/$defs/stringArray" },
+            "expiresAt": { "type": "string", "minLength": 1 }
+          }
+        },
+        "citations": { "$ref": "#/$defs/stringArray" },
+        "payloadSafety": { "$ref": "#/$defs/payloadSafety" },
+        "boundaries": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["verifiedBusinessInfoOnly", "userConsentPresent", "clientMintsReceipt"],
+          "properties": {
+            "verifiedBusinessInfoOnly": { "const": true },
+            "userConsentPresent": { "const": false },
+            "clientMintsReceipt": { "const": false }
+          }
+        }
+      }
+    },
+    "requiredInputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "compile", "resolve", "payloadSafety", "boundaries"],
+      "properties": {
+        "type": { "const": "agentport.action_intent_required_inputs.v0.1" },
+        "compile": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "missingFields", "approvalCardPresent"],
+          "properties": {
+            "status": { "const": "needs_required_input" },
+            "missingFields": { "$ref": "#/$defs/stringArray" },
+            "approvalCardPresent": { "const": false }
+          }
+        },
+        "resolve": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["tool", "resultPath", "arguments"],
+          "properties": {
+            "tool": { "const": "check_availability" },
+            "resultPath": { "type": "string", "minLength": 1 },
+            "arguments": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["businessId", "serviceId", "bindingId"],
+              "properties": {
+                "businessId": { "type": "string", "minLength": 1 },
+                "serviceId": { "type": "string", "minLength": 1 },
+                "bindingId": { "type": "string", "minLength": 1 }
+              }
+            }
+          }
+        },
+        "payloadSafety": { "$ref": "#/$defs/payloadSafety" },
+        "boundaries": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["finalApprovalBlocked", "userConsentPresent", "guessedInputAllowed"],
+          "properties": {
+            "finalApprovalBlocked": { "const": true },
+            "userConsentPresent": { "const": false },
+            "guessedInputAllowed": { "const": false }
+          }
+        }
+      }
+    },
+    "approvalPackage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "approvalPackage", "payloadSafety", "boundaries"],
+      "properties": {
+        "type": { "const": "agentport.action_intent_approval_package.v0.1" },
+        "approvalPackage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "version", "status", "intentId", "agentSessionId", "approvalCard", "execute"],
+          "properties": {
+            "type": { "const": "agentport.intent_approval_package" },
+            "version": { "const": "0.1" },
+            "status": { "const": "ready" },
+            "intentId": { "type": "string", "minLength": 1 },
+            "agentSessionId": { "type": "string", "minLength": 1 },
+            "approvalCard": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["cardHash", "actionIntentHash", "businessName", "serviceName", "requestedTimeOrSlot"],
+              "properties": {
+                "cardHash": { "type": "string", "minLength": 1 },
+                "actionIntentHash": { "type": "string", "minLength": 1 },
+                "businessName": { "type": "string", "minLength": 1 },
+                "serviceName": { "type": "string", "minLength": 1 },
+                "requestedTimeOrSlot": { "type": "string", "minLength": 1 }
+              }
+            },
+            "execute": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["tool", "arguments", "requiredArgs"],
+              "properties": {
+                "tool": { "const": "book_service" },
+                "arguments": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["businessId", "serviceId", "bindingId", "requestedType", "slotStart", "intentId", "approvedActionIntentHash"],
+                  "properties": {
+                    "businessId": { "type": "string", "minLength": 1 },
+                    "serviceId": { "type": "string", "minLength": 1 },
+                    "bindingId": { "type": "string", "minLength": 1 },
+                    "requestedType": { "enum": ["confirmed", "request"] },
+                    "slotStart": { "type": "string", "minLength": 1 },
+                    "intentId": { "type": "string", "minLength": 1 },
+                    "approvedActionIntentHash": { "type": "string", "minLength": 1 }
+                  }
+                },
+                "requiredArgs": { "$ref": "#/$defs/stringArray" }
+              }
+            }
+          }
+        },
+        "payloadSafety": { "$ref": "#/$defs/payloadSafety" },
+        "boundaries": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["readyOnlyAfterRequiredInputs", "approvalIsNotConsent", "clientMintsReceipt"],
+          "properties": {
+            "readyOnlyAfterRequiredInputs": { "const": true },
+            "approvalIsNotConsent": { "const": true },
+            "clientMintsReceipt": { "const": false }
+          }
+        }
+      }
+    },
+    "approvedExecution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "approvalEvent", "executionArguments", "binding", "driftCheck", "payloadSafety"],
+      "properties": {
+        "type": { "const": "agentport.action_intent_approved_execution.v0.1" },
+        "approvalEvent": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["userApprovedExactCard", "userConsentAttachedAfterApproval", "userConsentBeforeApproval", "approvalCardHash"],
+          "properties": {
+            "userApprovedExactCard": { "const": true },
+            "userConsentAttachedAfterApproval": { "const": true },
+            "userConsentBeforeApproval": { "const": false },
+            "approvalCardHash": { "type": "string", "minLength": 1 }
+          }
+        },
+        "executionArguments": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["businessId", "serviceId", "bindingId", "requestedType", "slotStart", "intentId", "approvedActionIntentHash", "userConsent"],
+          "properties": {
+            "businessId": { "type": "string", "minLength": 1 },
+            "serviceId": { "type": "string", "minLength": 1 },
+            "bindingId": { "type": "string", "minLength": 1 },
+            "requestedType": { "enum": ["confirmed", "request"] },
+            "slotStart": { "type": "string", "minLength": 1 },
+            "intentId": { "type": "string", "minLength": 1 },
+            "approvedActionIntentHash": { "type": "string", "minLength": 1 },
+            "userConsent": { "const": true }
+          }
+        },
+        "binding": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["matchesApprovalPackage", "exactActionOnly"],
+          "properties": {
+            "matchesApprovalPackage": { "const": true },
+            "exactActionOnly": { "const": true }
+          }
+        },
+        "driftCheck": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["editedArgsRejected", "reason"],
+          "properties": {
+            "editedArgsRejected": { "const": true },
+            "reason": { "type": "string", "minLength": 1 }
+          }
+        },
+        "payloadSafety": { "$ref": "#/$defs/payloadSafety" }
+      }
+    },
+    "consentRejection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "rejection", "payloadSafety", "boundaries"],
+      "properties": {
+        "type": { "const": "agentport.action_intent_consent_rejection.v0.1" },
+        "rejection": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["resultType", "reason", "tool"],
+          "properties": {
+            "resultType": { "const": "rejected" },
+            "reason": { "const": "consent_required" },
+            "tool": { "const": "book_service" }
+          }
+        },
+        "payloadSafety": { "$ref": "#/$defs/payloadSafety" },
+        "boundaries": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["backendExecuted", "receiptIssued", "policyFailure"],
+          "properties": {
+            "backendExecuted": { "const": false },
+            "receiptIssued": { "const": false },
+            "policyFailure": { "const": true }
+          }
+        }
+      }
+    },
+    "lifecycleResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "lifecycle", "read", "payloadSafety", "boundaries"],
+      "properties": {
+        "type": { "const": "agentport.action_intent_lifecycle_result.v0.1" },
+        "lifecycle": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["intentId", "agentSessionId", "status", "resultType", "receiptRef"],
+          "properties": {
+            "intentId": { "type": "string", "minLength": 1 },
+            "agentSessionId": { "type": "string", "minLength": 1 },
+            "status": { "enum": ["succeeded", "failed", "rejected"] },
+            "resultType": { "enum": ["confirmed", "request", "handoff", "failed", "rejected"] },
+            "receiptRef": { "type": "string", "minLength": 1 }
+          }
+        },
+        "read": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["tool", "readableAfterSession", "arguments"],
+          "properties": {
+            "tool": { "const": "get_action_intent_lifecycle" },
+            "readableAfterSession": { "const": true },
+            "arguments": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["intentId"],
+              "properties": {
+                "intentId": { "type": "string", "minLength": 1 }
+              }
+            }
+          }
+        },
+        "payloadSafety": { "$ref": "#/$defs/payloadSafety" },
+        "boundaries": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["lifecycleSourceOfTruth", "gatewayCurrentOnly", "proofPackIsRegistry"],
+          "properties": {
+            "lifecycleSourceOfTruth": { "const": false },
+            "gatewayCurrentOnly": { "const": true },
+            "proofPackIsRegistry": { "const": false }
+          }
+        }
+      }
+    },
+    "resultDelivery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "delivery", "read", "payloadSafety", "boundaries"],
+      "properties": {
+        "type": { "const": "agentport.action_intent_result_delivery.v0.1" },
+        "delivery": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["deliveryId", "intentId", "status", "terminal", "resultType", "payloadHashRef"],
+          "properties": {
+            "deliveryId": { "type": "string", "minLength": 1 },
+            "intentId": { "type": "string", "minLength": 1 },
+            "status": { "const": "delivered" },
+            "terminal": { "const": true },
+            "resultType": { "enum": ["confirmed", "request", "handoff", "failed", "rejected"] },
+            "payloadHashRef": { "type": "string", "minLength": 1 }
+          }
+        },
+        "read": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["tool", "restorableByDeliveryId", "ackTool"],
+          "properties": {
+            "tool": { "const": "get_action_intent_result_delivery" },
+            "restorableByDeliveryId": { "const": true },
+            "ackTool": { "type": "string", "minLength": 1 }
+          }
+        },
+        "payloadSafety": { "$ref": "#/$defs/payloadSafety" },
+        "boundaries": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["deliveryIsLifecycleTruth", "storesWebhookBody", "deliveryDoesNotMintOutcome"],
+          "properties": {
+            "deliveryIsLifecycleTruth": { "const": false },
+            "storesWebhookBody": { "const": false },
+            "deliveryDoesNotMintOutcome": { "const": true }
+          }
+        }
+      }
+    },
+    "receiptRefs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "receiptRefs", "retention", "payloadSafety"],
+      "properties": {
+        "type": { "const": "agentport.action_intent_receipt_refs.v0.1" },
+        "receiptRefs": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["receiptId", "gatewayReceiptRef", "payloadHashRef", "resultDeliveryId"],
+          "properties": {
+            "receiptId": { "type": "string", "minLength": 1 },
+            "gatewayReceiptRef": { "type": "string", "minLength": 1 },
+            "payloadHashRef": { "type": "string", "minLength": 1 },
+            "resultDeliveryId": { "type": "string", "minLength": 1 }
+          }
+        },
+        "retention": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["storesFullReceiptBody", "storesSignature", "preservesGatewayRefs"],
+          "properties": {
+            "storesFullReceiptBody": { "const": false },
+            "storesSignature": { "const": false },
+            "preservesGatewayRefs": { "const": true }
+          }
+        },
+        "payloadSafety": { "$ref": "#/$defs/payloadSafety" }
+      }
+    },
+    "redactionManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "requiredRedactionRuleIds", "filePolicy", "payloadSafety", "boundaries"],
+      "properties": {
+        "type": { "const": "agentport.action_intent_redaction_manifest.v0.1" },
+        "requiredRedactionRuleIds": { "$ref": "#/$defs/stringArray" },
+        "filePolicy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["privatePayloadsAllowed", "credentialsAllowed", "customerPiiAllowed", "receiptBodiesAllowed", "deliveryBodiesAllowed"],
+          "properties": {
+            "privatePayloadsAllowed": { "const": false },
+            "credentialsAllowed": { "const": false },
+            "customerPiiAllowed": { "const": false },
+            "receiptBodiesAllowed": { "const": false },
+            "deliveryBodiesAllowed": { "const": false }
+          }
+        },
+        "payloadSafety": { "$ref": "#/$defs/payloadSafety" },
+        "boundaries": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["realBusinessEvidence", "lifecycleSourceOfTruth", "credentialVault"],
+          "properties": {
+            "realBusinessEvidence": { "const": false },
+            "lifecycleSourceOfTruth": { "const": false },
+            "credentialVault": { "const": false }
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "profile", "ok", "checks", "claims", "payloadSafety", "boundaries"],
+      "properties": {
+        "type": { "const": "agentport.action_intent_proof_summary.v0.1" },
+        "profile": { "const": "action-intent" },
+        "ok": { "const": true },
+        "checks": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/check" }
+        },
+        "claims": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["allowed", "forbidden"],
+          "properties": {
+            "allowed": { "type": "string", "minLength": 1 },
+            "forbidden": { "$ref": "#/$defs/stringArray" }
+          }
+        },
+        "payloadSafety": { "$ref": "#/$defs/payloadSafety" },
+        "boundaries": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "actionIntentOnly",
+            "gatewayAuthority",
+            "pluginWalletAuthority",
+            "registryAuthority",
+            "lifecycleSourceOfTruth",
+            "realBusinessEvidence",
+            "storesPrivatePayloads",
+            "mintsAuthority"
+          ],
+          "properties": {
+            "actionIntentOnly": { "const": true },
+            "gatewayAuthority": { "const": false },
+            "pluginWalletAuthority": { "const": false },
+            "registryAuthority": { "const": false },
+            "lifecycleSourceOfTruth": { "const": false },
+            "realBusinessEvidence": { "const": false },
+            "storesPrivatePayloads": { "const": false },
+            "mintsAuthority": { "const": false }
+          }
+        }
+      }
+    }
+  }
+}

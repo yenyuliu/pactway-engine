@@ -1,0 +1,268 @@
+{
+  "protocol": "agentport-plugin-wallet-golden-trace-matrix",
+  "version": "0.1",
+  "matrixId": "wallet-golden-trace-matrix-v0.1",
+  "generatedAt": "2026-06-26T12:50:00.000Z",
+  "sourceHarness": {
+    "protocol": "agentport-plugin-wallet-virtual-store-reference-harness",
+    "fixture": "examples/plugin-wallet-virtual-store-reference-harness.v0.1.json",
+    "canonicalBusinessId": "agentport-virtual-store",
+    "canonicalServiceId": "product_demo"
+  },
+  "requiredScenarios": [
+    "success_restore",
+    "gateway_unavailable",
+    "stale_last_known",
+    "pending_consent",
+    "expired_pending_action",
+    "locked_wallet",
+    "user_triggered_retry",
+    "duplicate_commitment",
+    "export_import",
+    "wrong_key_restore"
+  ],
+  "traceCount": 10,
+  "traces": [
+    {
+      "scenario": "success_restore",
+      "trigger": "session_restore",
+      "gatewayResult": "verified_current",
+      "walletMutation": "update_last_verified_status",
+      "mutationAllowed": true,
+      "mutationReason": "Gateway verified the same commitment, so last verified status may advance.",
+      "reviewSection": "current",
+      "modelVisibility": "current",
+      "consentRule": "not_required",
+      "payloadSafety": {
+        "excludesDecryptedLabels": true,
+        "excludesCommitments": true,
+        "excludesReceipts": true,
+        "excludesSignatures": true,
+        "excludesBackendConfirmations": true,
+        "excludesDestinationRefs": true,
+        "excludesRawKeyMaterial": true,
+        "excludesRecoverySecrets": true
+      },
+      "deliveryAttempted": false
+    },
+    {
+      "scenario": "gateway_unavailable",
+      "trigger": "gateway_status_failure",
+      "gatewayResult": "unavailable",
+      "walletMutation": "mark_reverify_required",
+      "mutationAllowed": true,
+      "mutationReason": "Gateway did not verify current state, so the wallet may only mark reverify required.",
+      "reviewSection": "reverifyRequired",
+      "modelVisibility": "last_known_reverify_required",
+      "consentRule": "not_required",
+      "payloadSafety": {
+        "excludesDecryptedLabels": true,
+        "excludesCommitments": true,
+        "excludesReceipts": true,
+        "excludesSignatures": true,
+        "excludesBackendConfirmations": true,
+        "excludesDestinationRefs": true,
+        "excludesRawKeyMaterial": true,
+        "excludesRecoverySecrets": true
+      },
+      "deliveryAttempted": false
+    },
+    {
+      "scenario": "stale_last_known",
+      "trigger": "stale_local_status",
+      "gatewayResult": "reverify_required",
+      "walletMutation": "mark_reverify_required",
+      "mutationAllowed": true,
+      "mutationReason": "A stale local timestamp cannot become current without gateway re-verification.",
+      "reviewSection": "reverifyRequired",
+      "modelVisibility": "last_known_reverify_required",
+      "consentRule": "not_required",
+      "payloadSafety": {
+        "excludesDecryptedLabels": true,
+        "excludesCommitments": true,
+        "excludesReceipts": true,
+        "excludesSignatures": true,
+        "excludesBackendConfirmations": true,
+        "excludesDestinationRefs": true,
+        "excludesRawKeyMaterial": true,
+        "excludesRecoverySecrets": true
+      },
+      "deliveryAttempted": false
+    },
+    {
+      "scenario": "pending_consent",
+      "trigger": "pending_action_review",
+      "gatewayResult": "verified_current",
+      "walletMutation": "mark_pending_consent",
+      "mutationAllowed": true,
+      "mutationReason": "Gateway state is current, but outbound replay remains blocked until fresh consent.",
+      "reviewSection": "pendingConsent",
+      "modelVisibility": "pending_consent",
+      "consentRule": "fresh_consent_required",
+      "payloadSafety": {
+        "excludesDecryptedLabels": true,
+        "excludesCommitments": true,
+        "excludesReceipts": true,
+        "excludesSignatures": true,
+        "excludesBackendConfirmations": true,
+        "excludesDestinationRefs": true,
+        "excludesRawKeyMaterial": true,
+        "excludesRecoverySecrets": true
+      },
+      "deliveryAttempted": false
+    },
+    {
+      "scenario": "expired_pending_action",
+      "trigger": "pending_action_review",
+      "gatewayResult": "verified_current",
+      "walletMutation": "mark_expired_review",
+      "mutationAllowed": true,
+      "mutationReason": "Expired pending action moves to review and must not be delivered automatically.",
+      "reviewSection": "expiredReview",
+      "modelVisibility": "expired_review",
+      "consentRule": "expired_requires_review",
+      "payloadSafety": {
+        "excludesDecryptedLabels": true,
+        "excludesCommitments": true,
+        "excludesReceipts": true,
+        "excludesSignatures": true,
+        "excludesBackendConfirmations": true,
+        "excludesDestinationRefs": true,
+        "excludesRawKeyMaterial": true,
+        "excludesRecoverySecrets": true
+      },
+      "deliveryAttempted": false
+    },
+    {
+      "scenario": "locked_wallet",
+      "trigger": "wallet_unlock",
+      "gatewayResult": "not_called",
+      "walletMutation": "blocked",
+      "mutationAllowed": false,
+      "mutationReason": "Locked wallet cannot decrypt local refs and must fail closed before gateway calls.",
+      "reviewSection": "none",
+      "modelVisibility": "not_visible_until_unlock",
+      "consentRule": "not_required",
+      "payloadSafety": {
+        "excludesDecryptedLabels": true,
+        "excludesCommitments": true,
+        "excludesReceipts": true,
+        "excludesSignatures": true,
+        "excludesBackendConfirmations": true,
+        "excludesDestinationRefs": true,
+        "excludesRawKeyMaterial": true,
+        "excludesRecoverySecrets": true
+      },
+      "deliveryAttempted": false
+    },
+    {
+      "scenario": "user_triggered_retry",
+      "trigger": "user_retry",
+      "gatewayResult": "verified_current",
+      "walletMutation": "mark_pending_consent",
+      "mutationAllowed": true,
+      "mutationReason": "Retry may prepare review only after gateway reverify and still requires fresh consent.",
+      "reviewSection": "pendingConsent",
+      "modelVisibility": "pending_consent",
+      "consentRule": "fresh_consent_required",
+      "payloadSafety": {
+        "excludesDecryptedLabels": true,
+        "excludesCommitments": true,
+        "excludesReceipts": true,
+        "excludesSignatures": true,
+        "excludesBackendConfirmations": true,
+        "excludesDestinationRefs": true,
+        "excludesRawKeyMaterial": true,
+        "excludesRecoverySecrets": true
+      },
+      "deliveryAttempted": false
+    },
+    {
+      "scenario": "duplicate_commitment",
+      "trigger": "save_ticket",
+      "gatewayResult": "verified_current",
+      "walletMutation": "dedupe_existing_ticket",
+      "mutationAllowed": true,
+      "mutationReason": "Wallet ticket identity is derived from wallet id and commitment id, so repeats update one ticket.",
+      "reviewSection": "current",
+      "modelVisibility": "current",
+      "consentRule": "not_required",
+      "payloadSafety": {
+        "excludesDecryptedLabels": true,
+        "excludesCommitments": true,
+        "excludesReceipts": true,
+        "excludesSignatures": true,
+        "excludesBackendConfirmations": true,
+        "excludesDestinationRefs": true,
+        "excludesRawKeyMaterial": true,
+        "excludesRecoverySecrets": true
+      },
+      "deliveryAttempted": false
+    },
+    {
+      "scenario": "export_import",
+      "trigger": "wallet_migration",
+      "gatewayResult": "reverify_required",
+      "walletMutation": "preserve_encrypted_payload",
+      "mutationAllowed": true,
+      "mutationReason": "Migration preserves encrypted payload integrity but imported current state still needs gateway reverify.",
+      "reviewSection": "reverifyRequired",
+      "modelVisibility": "last_known_reverify_required",
+      "consentRule": "not_required",
+      "payloadSafety": {
+        "excludesDecryptedLabels": true,
+        "excludesCommitments": true,
+        "excludesReceipts": true,
+        "excludesSignatures": true,
+        "excludesBackendConfirmations": true,
+        "excludesDestinationRefs": true,
+        "excludesRawKeyMaterial": true,
+        "excludesRecoverySecrets": true
+      },
+      "deliveryAttempted": false
+    },
+    {
+      "scenario": "wrong_key_restore",
+      "trigger": "wallet_unlock",
+      "gatewayResult": "not_called",
+      "walletMutation": "blocked",
+      "mutationAllowed": false,
+      "mutationReason": "Wrong-key restore cannot decrypt local refs and must fail closed before gateway calls.",
+      "reviewSection": "none",
+      "modelVisibility": "not_visible_until_unlock",
+      "consentRule": "not_required",
+      "payloadSafety": {
+        "excludesDecryptedLabels": true,
+        "excludesCommitments": true,
+        "excludesReceipts": true,
+        "excludesSignatures": true,
+        "excludesBackendConfirmations": true,
+        "excludesDestinationRefs": true,
+        "excludesRawKeyMaterial": true,
+        "excludesRecoverySecrets": true
+      },
+      "deliveryAttempted": false
+    }
+  ],
+  "payloadSafety": {
+    "excludesDecryptedLabels": true,
+    "excludesCommitments": true,
+    "excludesReceipts": true,
+    "excludesSignatures": true,
+    "excludesBackendConfirmations": true,
+    "excludesDestinationRefs": true,
+    "excludesRawKeyMaterial": true,
+    "excludesRecoverySecrets": true
+  },
+  "boundaries": {
+    "matrixIsLifecycleTruth": false,
+    "gatewayCurrentOnly": true,
+    "localLastKnownRequiresReverify": true,
+    "retryRequiresFreshConsent": true,
+    "lockedWalletCallsGateway": false,
+    "wrongKeyRestoreCallsGateway": false,
+    "matrixDeliversActions": false,
+    "paymentWallet": false,
+    "credentialVault": false
+  }
+}

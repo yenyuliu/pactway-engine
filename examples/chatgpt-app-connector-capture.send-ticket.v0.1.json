@@ -1,0 +1,105 @@
+{
+  "$schema": "../schemas/agentport-a2a-host-connector-capture.schema.json",
+  "type": "agentport.a2a_host_connector_capture.v0.1",
+  "version": "0.1",
+  "id": "chatgpt_app_connector_capture_send_ticket",
+  "surface": "chatgpt_app_connector",
+  "expectedStatus": "passed",
+  "expectedFailureIds": [],
+  "scenario": "Captured ChatGPT App connector flow for sending a service ticket through AgentPort.",
+  "task": "send_ticket",
+  "toolCalls": [
+    {
+      "order": 1,
+      "actor": "frontier_host",
+      "phase": "classify_task",
+      "action": "classify_service_ticket_request",
+      "assertions": {
+        "realWorldServiceTask": true,
+        "hostSelectedBusinessPort": true,
+        "modelMemoryIsNotGatewayTruth": true
+      }
+    },
+    {
+      "order": 2,
+      "name": "get_business_feed",
+      "result": {
+        "type": "business_feed",
+        "gatewayResultType": "request-ready"
+      }
+    },
+    {
+      "order": 3,
+      "actor": "agentport_plugin",
+      "phase": "read_action_model",
+      "action": "read_agentport_action_model",
+      "assertions": {
+        "actionModelRead": true
+      }
+    },
+    {
+      "order": 4,
+      "name": "compile_action_intent",
+      "result": {
+        "intentId": "intent_send_ticket_capture_001",
+        "approvedActionIntentHash": "sha256:capture-send-ticket"
+      }
+    },
+    {
+      "order": 5,
+      "actor": "frontier_host",
+      "phase": "render_approval",
+      "action": "render_exact_approval_package",
+      "arguments": {
+        "intentId": "intent_send_ticket_capture_001",
+        "approvedActionIntentHash": "sha256:capture-send-ticket"
+      },
+      "result": {
+        "userConsent": true
+      }
+    },
+    {
+      "order": 6,
+      "name": "send_ticket",
+      "arguments": {
+        "intentId": "intent_send_ticket_capture_001",
+        "approvedActionIntentHash": "sha256:capture-send-ticket",
+        "userConsent": true,
+        "authorityEvidenceRef": "agentport-local-delegation:capture"
+      },
+      "result": {
+        "type": "sent",
+        "backendMutation": false,
+        "delivery": {
+          "deliveryId": "ticket_delivery_capture_001"
+        }
+      }
+    },
+    {
+      "order": 7,
+      "name": "ActionReceipt",
+      "result": {
+        "actionReceiptRef": "agentport://receipt/ticket_delivery_capture_001",
+        "commitmentRef": "commitment_capture_001",
+        "gatewayResultType": "sent"
+      }
+    },
+    {
+      "order": 8,
+      "actor": "frontier_host",
+      "phase": "present_result",
+      "action": "present_gateway_outcome",
+      "assertions": {
+        "taskStatePresentedAsOrchestrationOnly": true,
+        "gatewayOutcomeNotUpgraded": true
+      }
+    }
+  ],
+  "boundaries": {
+    "hostTraceOnly": true,
+    "certification": false,
+    "realBusinessEvidence": false,
+    "replacesA2A": false,
+    "executesLiveNetwork": false
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "type": "agentport.business_port_proof_summary.v0.1",
+  "profile": "business-port",
+  "ok": true,
+  "claims": {
+    "allowed": "Passes AgentPort Business Port compatibility check.",
+    "forbidden": [
+      "AgentPort Certified",
+      "AgentPort Verified",
+      "Gateway compliant",
+      "Registry compliant",
+      "Real-business proof"
+    ]
+  },
+  "boundaries": {
+    "businessPortOnly": true,
+    "gatewayAuthority": false,
+    "registryAuthority": false,
+    "systemOfRecord": false,
+    "realBusinessEvidence": false,
+    "executesBusinessBackend": false,
+    "mintsReceipts": false
+  }
+}

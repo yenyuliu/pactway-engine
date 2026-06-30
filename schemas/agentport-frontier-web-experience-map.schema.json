@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-frontier-web-experience-map.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "version",
+    "generatedAt",
+    "thesis",
+    "surfaces",
+    "authorizedExperienceObject",
+    "journeys",
+    "constraints",
+    "blockedClaims"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "type": { "const": "agentport.frontier_web_experience_map.v0.1" },
+    "version": { "const": "0.1" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "thesis": { "type": "string", "minLength": 1 },
+    "surfaces": {
+      "type": "array",
+      "minItems": 4,
+      "items": { "$ref": "#/$defs/surface" }
+    },
+    "authorizedExperienceObject": { "$ref": "#/$defs/authorizedExperienceObject" },
+    "journeys": {
+      "type": "array",
+      "minItems": 2,
+      "items": { "$ref": "#/$defs/journey" }
+    },
+    "constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "frontierUiDoesNotOwnLifecycleTruth",
+        "webpageDoesNotOwnDelegatedAuthority",
+        "pactwayDoesNotOwnSystemOfRecord",
+        "businessSystemKeepsFulfillmentTruth",
+        "exactApprovalRequiredForStateChangingActions",
+        "noRankingGuarantee",
+        "noTrafficGuarantee",
+        "noAiCitationGuarantee"
+      ],
+      "properties": {
+        "frontierUiDoesNotOwnLifecycleTruth": { "const": true },
+        "webpageDoesNotOwnDelegatedAuthority": { "const": true },
+        "pactwayDoesNotOwnSystemOfRecord": { "const": true },
+        "businessSystemKeepsFulfillmentTruth": { "const": true },
+        "exactApprovalRequiredForStateChangingActions": { "const": true },
+        "noRankingGuarantee": { "const": true },
+        "noTrafficGuarantee": { "const": true },
+        "noAiCitationGuarantee": { "const": true }
+      }
+    },
+    "blockedClaims": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    }
+  },
+  "$defs": {
+    "surfaceKind": {
+      "enum": [
+        "current_web",
+        "frontier_ui",
+        "pactway_gateway",
+        "business_system",
+        "owner_review_surface"
+      ]
+    },
+    "surface": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "label", "owns", "mustNotOwn"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": { "$ref": "#/$defs/surfaceKind" },
+        "label": { "type": "string", "minLength": 1 },
+        "owns": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "mustNotOwn": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "authorizedExperienceObject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "scopeKinds", "requiredRefs", "lifecycleStates"],
+      "properties": {
+        "label": { "type": "string", "minLength": 1 },
+        "scopeKinds": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "enum": [
+              "answer",
+              "request",
+              "quote",
+              "book",
+              "submit",
+              "support",
+              "pickup",
+              "follow_up",
+              "manage",
+              "handoff"
+            ]
+          }
+        },
+        "requiredRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "enum": [
+              "intentRef",
+              "approvalRef",
+              "destinationRef",
+              "businessPortRef",
+              "evidenceRefs",
+              "receiptRefs",
+              "statusRef"
+            ]
+          }
+        },
+        "lifecycleStates": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "enum": [
+              "draft",
+              "approval_required",
+              "approved",
+              "routed",
+              "pending_business_response",
+              "confirmed_by_backend",
+              "handoff_required",
+              "completed",
+              "failed"
+            ]
+          }
+        }
+      }
+    },
+    "journey": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "actor", "startSurface", "goal", "steps"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "actor": { "enum": ["customer", "business_owner", "operator"] },
+        "startSurface": { "$ref": "#/$defs/surfaceKind" },
+        "goal": { "type": "string", "minLength": 1 },
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/journeyStep" }
+        }
+      }
+    },
+    "journeyStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "surface", "uxJob", "pactwayBoundary", "evidence"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "surface": { "$ref": "#/$defs/surfaceKind" },
+        "uxJob": { "type": "string", "minLength": 1 },
+        "pactwayBoundary": { "type": "string", "minLength": 1 },
+        "evidence": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "handoffTo": { "$ref": "#/$defs/surfaceKind" }
+      }
+    }
+  }
+}

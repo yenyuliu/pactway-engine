@@ -1,0 +1,31 @@
+{
+  "type": "agentport.plugin_wallet_gateway_reverify.v0.1",
+  "walletId": "wallet:plugin-wallet-proof-pack",
+  "request": {
+    "calledGateway": true,
+    "commitmentId": "commitment_virtual_store_demo",
+    "gatewayEndpointRef": "agent-gateway:virtual-store-demo"
+  },
+  "response": {
+    "statusSource": "agent_gateway",
+    "verifiedCurrent": true,
+    "lifecycleStatus": "confirmed",
+    "proofRef": "gateway-status:commitment_virtual_store_demo"
+  },
+  "presentation": {
+    "currentStatePresented": true,
+    "fromGatewayCurrent": true,
+    "modelVisibleState": "current"
+  },
+  "failurePolicy": {
+    "ifGatewayUnavailable": "last_known_reverify_required"
+  },
+  "payloadSafety": {
+    "excludesDecryptedLabels": true,
+    "excludesRawAuthorityTokens": true,
+    "excludesReceiptBodies": true,
+    "excludesSignatures": true,
+    "excludesBackendCredentials": true,
+    "excludesCustomerPii": true
+  }
+}

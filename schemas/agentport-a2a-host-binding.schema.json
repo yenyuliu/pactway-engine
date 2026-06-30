@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-a2a-host-binding.schema.json",
+  "title": "AgentPort A2A Host Binding",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["protocol", "version", "artifactId", "summary", "boundary", "taskClasses", "requiredHostSequence", "forbiddenHostShortcuts", "preserveFields", "conformance"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "protocol": { "const": "agentport-a2a-host-binding" },
+    "version": { "const": "0.1" },
+    "artifactId": { "const": "agentport-a2a-host-binding.v0.1" },
+    "summary": { "type": "string", "minLength": 1 },
+    "boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hostOwnsIntent", "hostOwnsBusinessSelection", "agentPortOwnsGatewayTruth", "doesNotReplaceA2A", "doesNotCertify"],
+      "properties": {
+        "hostOwnsIntent": { "const": true },
+        "hostOwnsBusinessSelection": { "const": true },
+        "agentPortOwnsGatewayTruth": { "const": true },
+        "doesNotReplaceA2A": { "const": true },
+        "doesNotCertify": { "const": true }
+      }
+    },
+    "taskClasses": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["a2aTaskClass", "hostResponsibility", "agentPortBinding", "mustCallAgentPortWhen"],
+        "properties": {
+          "a2aTaskClass": {
+            "enum": ["business.info", "action.prepare", "action.execute", "proof.receipt"]
+          },
+          "hostResponsibility": { "type": "string", "minLength": 1 },
+          "agentPortBinding": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "mustCallAgentPortWhen": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "requiredHostSequence": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    },
+    "forbiddenHostShortcuts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "rule"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "rule": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "preserveFields": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    },
+    "conformance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["passingTrace", "negativeTraces", "certification"],
+      "properties": {
+        "passingTrace": { "type": "string", "minLength": 1 },
+        "negativeTraces": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "certification": { "const": false }
+      }
+    }
+  }
+}

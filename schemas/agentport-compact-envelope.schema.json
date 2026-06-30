@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-compact-envelope.schema.json",
+  "title": "AgentPort Compact Envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["protocol", "version", "action", "actionLayer", "result", "refs"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "protocol": { "const": "agentport" },
+    "version": { "const": "0.1" },
+    "action": {
+      "enum": [
+        "assist",
+        "find_services",
+        "get_business_info",
+        "check_availability",
+        "book_service",
+        "cancel_service",
+        "reschedule_service"
+      ]
+    },
+    "actionLayer": { "enum": ["read", "availability", "lead", "commit", "manage", "funds"] },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "enum": [
+            "answered",
+            "available",
+            "unsupported",
+            "request",
+            "handoff",
+            "confirmed",
+            "cancelled",
+            "rescheduled",
+            "rejected",
+            "failed",
+            "no_verified_info"
+          ]
+        },
+        "reason": {
+          "anyOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/reasonCode" }
+          ]
+        }
+      }
+    },
+    "refs": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "businessId": { "type": "string" },
+        "serviceId": { "type": "string" },
+        "bindingId": { "type": "string" },
+        "authorityEvidenceRef": { "type": "string" },
+        "authorityAssurance": {
+          "enum": ["none", "signed", "verified-mandate"]
+        },
+        "delegationId": { "type": "string" },
+        "consentId": { "type": "string" },
+        "clientAgentId": { "type": "string" },
+        "userSubject": { "type": "string" },
+        "backendConfirmationId": { "type": "string" }
+      }
+    },
+    "receipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["receiptId", "payloadHash", "signature"],
+      "properties": {
+        "receiptId": { "type": "string" },
+        "payloadHash": { "type": "string" },
+        "keyId": { "type": "string" },
+        "signature": { "type": "string" }
+      }
+    }
+  },
+  "$defs": {
+    "reasonCode": {
+      "enum": [
+        "tenant_not_found",
+        "tenant_or_service_not_found",
+        "no_verified_info",
+        "ambiguous_verified_match",
+        "consent_required",
+        "requested_type_escalated",
+        "capability_exceeded",
+        "adapter_capability_violation",
+        "unsupported_capability",
+        "backend_no_availability_api",
+        "no_integration",
+        "backend_error",
+        "adapter_error",
+        "lead_delivery_error",
+        "slot_unavailable",
+        "confirmation_not_found",
+        "owner_request",
+        "delegation_required",
+        "delegation_invalid",
+        "delegation_scope_missing",
+        "delegation_action_not_approved",
+        "delegation_business_mismatch",
+        "delegation_service_mismatch",
+        "delegation_action_intent_mismatch",
+        "delegation_audience_mismatch",
+        "delegation_untrusted_issuer",
+        "delegation_expired",
+        "delegation_replay_protection_required",
+        "delegation_replay_detected",
+        "delegation_verification_failed",
+        "delegation_revoked",
+        "delegation_assurance_too_low",
+        "delegation_token_confirmation_required",
+        "delegation_token_confirmation_method_unsupported",
+        "delegation_token_confirmation_invalid",
+        "intent_required",
+        "intent_lifecycle_store_unavailable",
+        "intent_lifecycle_not_found",
+        "intent_expired",
+        "intent_lifecycle_not_executable",
+        "intent_action_hash_required",
+        "intent_action_hash_mismatch",
+        "intent_action_mismatch"
+      ]
+    }
+  }
+}

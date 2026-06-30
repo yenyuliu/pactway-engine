@@ -1,0 +1,31 @@
+{
+  "type": "agentport.a2a_host_proof_pack.v0.1",
+  "version": "0.1",
+  "generatedAt": "2026-06-27T18:43:47.000Z",
+  "input": "examples/a2a-host-trace.passing.v0.1.json",
+  "status": "passed",
+  "ok": true,
+  "artifacts": {
+    "hostTrace": "examples/a2a-host-proof-pack/host-trace.json",
+    "adoptionReport": "examples/a2a-host-proof-pack/adoption-report.json",
+    "redactionManifest": "examples/a2a-host-proof-pack/redaction-manifest.json"
+  },
+  "certification": {
+    "publicCertification": false,
+    "a2aCertification": false,
+    "agentPortReadyCertification": false,
+    "realBusinessCertification": false,
+    "note": "This proof pack is deterministic host-adoption evidence only; it is not public certification."
+  },
+  "boundaries": {
+    "hostTraceOnly": true,
+    "executesLiveNetwork": false,
+    "containsRawAuthorityTokens": false,
+    "containsRawCredentials": false
+  },
+  "hashes": {
+    "hostTraceSha256": "95903fde0a7e8ffa2a752ecfe583cee5f07ca7137efd2e3fcf72f68767e33ff8",
+    "adoptionReportSha256": "ccf7baf71fe90590b3e50c1494894ff32fad15891be6e31d2a74b134abf69f17",
+    "redactionManifestSha256": "810e50ca358076a5d4efa91c3f7791849405343e8ea17afda7932eabca087eba"
+  }
+}

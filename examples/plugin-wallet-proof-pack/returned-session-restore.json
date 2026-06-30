@@ -1,0 +1,27 @@
+{
+  "type": "agentport.plugin_wallet_returned_session_restore.v0.1",
+  "walletId": "wallet:plugin-wallet-proof-pack",
+  "sessionId": "host-session-returned-demo",
+  "restore": {
+    "sessionClosed": true,
+    "restoredTicketRefs": 1,
+    "loadsModelVisibleSummary": true,
+    "currentStatePresented": false,
+    "requiresGatewayReverifyBeforeCurrent": true,
+    "statusSource": "local_last_known"
+  },
+  "payloadSafety": {
+    "excludesDecryptedLabels": true,
+    "excludesRawAuthorityTokens": true,
+    "excludesReceiptBodies": true,
+    "excludesSignatures": true,
+    "excludesBackendCredentials": true,
+    "excludesCustomerPii": true
+  },
+  "boundaries": {
+    "gatewayCurrentOnly": true,
+    "localLastKnownRequiresReverify": true,
+    "reviewDeliversPendingActions": false,
+    "reviewIsLifecycleTruth": false
+  }
+}

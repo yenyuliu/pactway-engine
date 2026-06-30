@@ -1,0 +1,10 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "../../../dist/adapters/square",
+    "tsBuildInfoFile": "../../../dist/.tsbuildinfo/adapter-square.tsbuildinfo"
+  },
+  "include": ["src/**/*.ts"],
+  "references": [{ "path": "../../core" }]
+}

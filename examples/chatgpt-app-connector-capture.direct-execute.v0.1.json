@@ -1,0 +1,82 @@
+{
+  "$schema": "../schemas/agentport-a2a-host-connector-capture.schema.json",
+  "type": "agentport.a2a_host_connector_capture.v0.1",
+  "version": "0.1",
+  "id": "chatgpt_app_connector_capture_direct_execute",
+  "surface": "chatgpt_app_connector",
+  "expectedStatus": "failed",
+  "expectedFailureIds": ["host_compile_before_execute"],
+  "scenario": "Captured host shortcut that calls send_ticket without first compiling the AgentPort action intent.",
+  "task": "send_ticket",
+  "toolCalls": [
+    {
+      "order": 1,
+      "actor": "frontier_host",
+      "phase": "classify_task",
+      "action": "classify_service_ticket_request",
+      "assertions": {
+        "realWorldServiceTask": true,
+        "hostSelectedBusinessPort": true,
+        "modelMemoryIsNotGatewayTruth": true
+      }
+    },
+    {
+      "order": 2,
+      "name": "get_business_feed",
+      "result": {
+        "type": "business_feed"
+      }
+    },
+    {
+      "order": 3,
+      "actor": "agentport_plugin",
+      "phase": "read_action_model",
+      "action": "read_agentport_action_model",
+      "assertions": {
+        "actionModelRead": true
+      }
+    },
+    {
+      "order": 4,
+      "actor": "frontier_host",
+      "phase": "render_approval",
+      "action": "render_exact_approval_package",
+      "result": {
+        "userConsent": true
+      }
+    },
+    {
+      "order": 5,
+      "name": "send_ticket",
+      "arguments": {
+        "userConsent": true,
+        "authorityEvidenceRef": "agentport-local-delegation:capture"
+      },
+      "result": {
+        "type": "sent",
+        "backendMutation": false
+      },
+      "assertions": {
+        "exactApprovalRendered": true,
+        "userConsent": true,
+        "authorityEvidenceRequired": true,
+        "authorityEvidenceCarried": true
+      }
+    },
+    {
+      "order": 6,
+      "name": "ActionReceipt",
+      "result": {
+        "actionReceiptRef": "agentport://receipt/ticket_delivery_capture_shortcut",
+        "gatewayResultType": "sent"
+      }
+    }
+  ],
+  "boundaries": {
+    "hostTraceOnly": true,
+    "certification": false,
+    "realBusinessEvidence": false,
+    "replacesA2A": false,
+    "executesLiveNetwork": false
+  }
+}

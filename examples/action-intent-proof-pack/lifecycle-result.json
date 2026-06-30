@@ -1,0 +1,30 @@
+{
+  "type": "agentport.action_intent_lifecycle_result.v0.1",
+  "lifecycle": {
+    "intentId": "intent_action_intent_demo",
+    "agentSessionId": "session_action_intent_demo",
+    "status": "succeeded",
+    "resultType": "confirmed",
+    "receiptRef": "gateway-receipt:receipt_action_intent_demo"
+  },
+  "read": {
+    "tool": "get_action_intent_lifecycle",
+    "readableAfterSession": true,
+    "arguments": {
+      "intentId": "intent_action_intent_demo"
+    }
+  },
+  "payloadSafety": {
+    "excludesCustomerPii": true,
+    "excludesRawAuthorityTokens": true,
+    "excludesReceiptBodies": true,
+    "excludesDeliveryBodies": true,
+    "excludesSignatures": true,
+    "excludesBackendCredentials": true
+  },
+  "boundaries": {
+    "lifecycleSourceOfTruth": false,
+    "gatewayCurrentOnly": true,
+    "proofPackIsRegistry": false
+  }
+}

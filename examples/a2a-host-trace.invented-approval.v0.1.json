@@ -1,0 +1,74 @@
+{
+  "$schema": "../schemas/agentport-a2a-host-trace.schema.json",
+  "type": "agentport.a2a_host_trace.v0.1",
+  "version": "0.1",
+  "id": "a2a_host_invented_approval",
+  "bindingArtifact": "artifacts/agentport-a2a-host-binding.v0.1.json",
+  "expectedStatus": "failed",
+  "expectedFailureIds": ["host_exact_approval_before_consent"],
+  "scenario": "The host sets userConsent from task text without rendering the exact AgentPort approval package.",
+  "events": [
+    {
+      "order": 1,
+      "actor": "frontier_host",
+      "phase": "classify_task",
+      "a2aTaskClass": "action.prepare",
+      "assertions": {
+        "realWorldServiceTask": true,
+        "hostSelectedBusinessPort": true
+      }
+    },
+    {
+      "order": 2,
+      "actor": "agentport_plugin",
+      "phase": "discover_gateway",
+      "a2aTaskClass": "business.info",
+      "agentPortPrimitive": "get_business_feed",
+      "assertions": {
+        "agentPortCalled": true
+      }
+    },
+    {
+      "order": 3,
+      "actor": "agentport_plugin",
+      "phase": "read_action_model",
+      "a2aTaskClass": "action.prepare",
+      "assertions": {
+        "actionModelRead": true
+      }
+    },
+    {
+      "order": 4,
+      "actor": "agentport_plugin",
+      "phase": "compile_action_intent",
+      "a2aTaskClass": "action.prepare",
+      "agentPortPrimitive": "compile_action_intent",
+      "preservedFields": ["intentId", "approvedActionIntentHash"],
+      "assertions": {
+        "intentId": "intent_bad_approval",
+        "approvedActionIntentHash": "sha256:bad-approval"
+      }
+    },
+    {
+      "order": 5,
+      "actor": "agentport_gateway",
+      "phase": "execute_action",
+      "a2aTaskClass": "action.execute",
+      "agentPortPrimitive": "book_service",
+      "preservedFields": ["intentId", "approvedActionIntentHash", "userConsent"],
+      "assertions": {
+        "intentId": "intent_bad_approval",
+        "approvedActionIntentHash": "sha256:bad-approval",
+        "userConsent": true,
+        "exactApprovalRendered": false
+      }
+    }
+  ],
+  "boundaries": {
+    "hostTraceOnly": true,
+    "certification": false,
+    "realBusinessEvidence": false,
+    "replacesA2A": false,
+    "executesLiveNetwork": false
+  }
+}

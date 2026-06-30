@@ -1,0 +1,20 @@
+{
+  "delegationId": "del_wrong_action",
+  "issuer": "issuer_test",
+  "userSubject": "user_456",
+  "agentId": "agent_789",
+  "consentId": "consent_cancel_only",
+  "scopes": ["cancel"],
+  "approvedActions": ["cancel_service"],
+  "businessId": "verified-spa",
+  "serviceId": "massage",
+  "audience": "agentport:test",
+  "challengeId": "challenge_wrong_action",
+  "tokenConfirmation": {
+    "method": "session",
+    "sessionId": "session_cancel_only"
+  },
+  "expiresAt": "2026-07-20T00:00:00.000Z",
+  "issuedAt": "2026-06-19T00:00:00.000Z",
+  "assurance": "account"
+}

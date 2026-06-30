@@ -1,0 +1,176 @@
+{
+  "type": "agentport.a2a_host_adoption_report.v0.1",
+  "profile": "a2a-host-adoption",
+  "generatedAt": "2026-06-27T18:43:47.000Z",
+  "input": "examples/a2a-host-proof-pack/host-trace.json",
+  "inputKind": "a2a_host_trace_file",
+  "bindingArtifact": "artifacts/agentport-a2a-host-binding.v0.1.json",
+  "hostTrace": "examples/a2a-host-proof-pack/host-trace.json",
+  "expectedStatus": "passed",
+  "expectedStatusMatches": true,
+  "status": "passed",
+  "ok": true,
+  "certification": {
+    "publicCertification": false,
+    "a2aCertification": false,
+    "agentPortReadyCertification": false,
+    "realBusinessCertification": false,
+    "note": "This report checks frontier-host adoption of the AgentPort A2A binding only; it is not A2A certification or AgentPort Ready certification."
+  },
+  "boundaries": {
+    "hostAdoptionOnly": true,
+    "a2aCertification": false,
+    "publicCertification": false,
+    "realBusinessEvidence": false,
+    "executesLiveNetwork": false
+  },
+  "areas": [
+    {
+      "id": "host_boundary",
+      "ok": true,
+      "requiredCheckIds": [
+        "host_binding_protocol",
+        "host_boundary_declared",
+        "host_preserve_fields_declared",
+        "host_trace_type",
+        "host_trace_boundary"
+      ],
+      "failedCheckIds": []
+    },
+    {
+      "id": "task_classification",
+      "ok": true,
+      "requiredCheckIds": [
+        "host_task_classified",
+        "host_business_port_selected",
+        "host_gateway_called_for_truth"
+      ],
+      "failedCheckIds": []
+    },
+    {
+      "id": "binding_sequence",
+      "ok": true,
+      "requiredCheckIds": [
+        "host_action_model_read_before_execute",
+        "host_compile_before_execute",
+        "host_exact_approval_before_consent",
+        "host_execution_binding_fields"
+      ],
+      "failedCheckIds": []
+    },
+    {
+      "id": "authority_and_receipt",
+      "ok": true,
+      "requiredCheckIds": [
+        "host_authority_when_required",
+        "host_gateway_receipt_only",
+        "host_ack_is_not_receipt_verification"
+      ],
+      "failedCheckIds": []
+    },
+    {
+      "id": "presentation_semantics",
+      "ok": true,
+      "requiredCheckIds": [
+        "host_present_gateway_outcome_without_upgrade"
+      ],
+      "failedCheckIds": []
+    }
+  ],
+  "checks": [
+    {
+      "id": "host_binding_protocol",
+      "ok": true,
+      "detail": "Host binding artifact is the AgentPort A2A host binding."
+    },
+    {
+      "id": "host_boundary_declared",
+      "ok": true,
+      "detail": "Binding keeps host intent ownership separate from AgentPort gateway truth."
+    },
+    {
+      "id": "host_preserve_fields_declared",
+      "ok": true,
+      "detail": "Binding declares the required fields hosts must preserve."
+    },
+    {
+      "id": "host_trace_type",
+      "ok": true,
+      "detail": "Host trace uses the AgentPort A2A host trace format."
+    },
+    {
+      "id": "host_trace_boundary",
+      "ok": true,
+      "detail": "Host trace is non-certifying and does not replace A2A."
+    },
+    {
+      "id": "host_task_classified",
+      "ok": true,
+      "detail": "Host classifies the real-world service task."
+    },
+    {
+      "id": "host_business_port_selected",
+      "ok": true,
+      "detail": "Host selects the business port or gateway endpoint."
+    },
+    {
+      "id": "host_gateway_called_for_truth",
+      "ok": true,
+      "detail": "Host calls AgentPort for business truth instead of relying on model memory."
+    },
+    {
+      "id": "host_action_model_read_before_execute",
+      "ok": true,
+      "detail": "Host reads the AgentPort action model before execution."
+    },
+    {
+      "id": "host_compile_before_execute",
+      "ok": true,
+      "detail": "Host compiles an action intent before state-changing execution."
+    },
+    {
+      "id": "host_exact_approval_before_consent",
+      "ok": true,
+      "detail": "Host renders exact approval before using userConsent."
+    },
+    {
+      "id": "host_execution_binding_fields",
+      "ok": true,
+      "detail": "Execution preserves intentId, approvedActionIntentHash, and userConsent."
+    },
+    {
+      "id": "host_authority_when_required",
+      "ok": true,
+      "detail": "Host carries external authority evidence when the gateway requires it."
+    },
+    {
+      "id": "host_gateway_receipt_only",
+      "ok": true,
+      "detail": "Host accepts only gateway-produced receipt proof."
+    },
+    {
+      "id": "host_ack_is_not_receipt_verification",
+      "ok": true,
+      "detail": "Host does not treat result-delivery acknowledgement as receipt verification."
+    },
+    {
+      "id": "host_present_gateway_outcome_without_upgrade",
+      "ok": true,
+      "detail": "Host presents gateway outcome without upgrading A2A task state into business proof."
+    }
+  ],
+  "failedCheckIds": [],
+  "validator": {
+    "type": "agentport.a2a_host_trace_validation.v0.1",
+    "ok": true,
+    "checkCount": 16,
+    "failedCheckIds": [],
+    "reportSchema": {
+      "type": "agentport.report_schema_validation.v0.1",
+      "schema": "schemas/agentport-a2a-host-adoption-report.schema.json",
+      "ok": true,
+      "errorCount": 0,
+      "errors": []
+    }
+  }
+}

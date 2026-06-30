@@ -1,0 +1,23 @@
+{
+  "type": "agentport.business_port_redaction_manifest.v0.1",
+  "requiredRedactionRuleIds": [
+    "no_customer_pii",
+    "no_raw_authority_tokens",
+    "no_receipt_bodies",
+    "no_signatures",
+    "no_backend_credentials",
+    "no_lifecycle_overclaim"
+  ],
+  "filePolicy": {
+    "credentialsAllowed": false,
+    "customerPiiAllowed": false,
+    "receiptBodiesAllowed": false
+  },
+  "payloadSafety": {
+    "excludesCustomerPii": true,
+    "excludesRawAuthorityTokens": true,
+    "excludesReceiptBodies": true,
+    "excludesSignatures": true,
+    "excludesBackendCredentials": true
+  }
+}

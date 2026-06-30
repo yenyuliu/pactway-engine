@@ -1,0 +1,294 @@
+{
+  "$schema": "../schemas/agentport-agent-gateway-ingress-compatibility-report.schema.json",
+  "type": "agentport.agent_gateway_ingress_compatibility_report.v0.1",
+  "profile": "agent-gateway-ingress",
+  "generatedAt": "2026-06-27T00:00:00.000Z",
+  "status": "passed",
+  "ok": true,
+  "evidence": {
+    "route": "/demo/small-business-digital-twin/agent-ticket-ingress",
+    "harness": [
+      "/demo/small-business-digital-twin/agent-ticket-ingress/harness",
+      "/demo/small-business-digital-twin/agent-ticket-ingress/harness.json",
+      "/demo/small-business-digital-twin/agent-ticket-ingress/schema",
+      "/demo/small-business-digital-twin/agent-ticket-ingress/compatibility"
+    ],
+    "schemas": [
+      "schemas/agentport-agent-ticket-ingress-input.schema.json",
+      "schemas/agentport-agent-gateway-ingress-compatibility-report.schema.json"
+    ],
+    "examples": [
+      "examples/agent-ticket-ingress.accepted.v0.1.json",
+      "examples/agent-ticket-ingress.rejected-destination.v0.1.json"
+    ],
+    "tests": [
+      "test/server/vercel-entrypoint.test.mjs",
+      "test/server/vercel-agent-ticket-ingress-redis.test.mjs"
+    ],
+    "plans": [
+      "docs/agent-ticket-ingress-plan.md",
+      "docs/feedback/agent-ticket-ingress.md",
+      "docs/feedback/agent-gateway-ingress-compatibility-report.md"
+    ],
+    "runtime": [
+      "api/agentport.mjs"
+    ]
+  },
+  "certification": {
+    "publicCertification": false,
+    "agentPortReadyCertification": false,
+    "realBusinessCertification": false,
+    "verifiedBusiness": false,
+    "note": "This report records virtual-store AgentGateway ingress compatibility only. It is not certification, real-business proof, or verified-business evidence."
+  },
+  "boundaries": {
+    "virtualStoreOnly": true,
+    "externalAgentCanPresentEvidence": true,
+    "externalAgentCanMintAuthority": false,
+    "gatewayChecksAuthorityEnvelope": true,
+    "gatewayChecksReplayProtection": true,
+    "gatewayResolvesTicket": true,
+    "gatewayChecksHolderProof": true,
+    "gatewayChecksDestinationBinding": true,
+    "gatewayCreatesBusinessInboxDelivery": true,
+    "backendMutation": false,
+    "agentPortSystemOfRecord": false,
+    "storesRawHolderProof": false,
+    "storesRawAuthorityEvidence": false
+  },
+  "areas": [
+    {
+      "id": "authority_boundary",
+      "ok": true,
+      "requiredCheckIds": [
+        "external_agent_presented_only",
+        "authority_envelope_required",
+        "authority_envelope_audience_checked",
+        "replay_protection_checked",
+        "unsupported_action_rejected",
+        "missing_ticket_ref_rejected"
+      ],
+      "failedCheckIds": []
+    },
+    {
+      "id": "wallet_confirmation",
+      "ok": true,
+      "requiredCheckIds": [
+        "ticket_resolved_by_gateway",
+        "holder_proof_required",
+        "holder_scope_checked",
+        "current_ticket_status_checked"
+      ],
+      "failedCheckIds": []
+    },
+    {
+      "id": "destination_binding",
+      "ok": true,
+      "requiredCheckIds": [
+        "destination_business_required",
+        "matching_destination_accepted",
+        "wrong_destination_rejected"
+      ],
+      "failedCheckIds": []
+    },
+    {
+      "id": "business_inbox_delivery",
+      "ok": true,
+      "requiredCheckIds": [
+        "accepted_ingress_creates_delivery",
+        "delivery_backend_mutation_false",
+        "delivery_visible_in_business_inbox"
+      ],
+      "failedCheckIds": []
+    },
+    {
+      "id": "compatibility_harness",
+      "ok": true,
+      "requiredCheckIds": [
+        "request_schema_published",
+        "safe_examples_published",
+        "live_harness_descriptor_published",
+        "live_harness_page_submits_to_gateway",
+        "store_matrix_published"
+      ],
+      "failedCheckIds": []
+    },
+    {
+      "id": "redaction",
+      "ok": true,
+      "requiredCheckIds": [
+        "response_omits_raw_holder",
+        "stream_omits_raw_holder",
+        "view_omits_raw_holder",
+        "authority_evidence_omitted"
+      ],
+      "failedCheckIds": []
+    },
+    {
+      "id": "durability",
+      "ok": true,
+      "requiredCheckIds": [
+        "rejected_ingress_persisted",
+        "redis_stream_sanitized",
+        "local_jsonl_fallback_available"
+      ],
+      "failedCheckIds": []
+    }
+  ],
+  "checks": [
+    {
+      "id": "external_agent_presented_only",
+      "ok": true,
+      "detail": "Ingress treats the external agent payload as presented ticket evidence, not minted authority."
+    },
+    {
+      "id": "authority_envelope_required",
+      "ok": true,
+      "detail": "Ingress with a ticketRef fails closed unless a scoped authority envelope is present."
+    },
+    {
+      "id": "authority_envelope_audience_checked",
+      "ok": true,
+      "detail": "Authority envelopes must target the AgentGateway ingress audience."
+    },
+    {
+      "id": "replay_protection_checked",
+      "ok": true,
+      "detail": "Accepted envelopes claim a replay key before validation and repeated envelopes are rejected."
+    },
+    {
+      "id": "unsupported_action_rejected",
+      "ok": true,
+      "detail": "Only send_ticket is accepted by this demo ingress path."
+    },
+    {
+      "id": "missing_ticket_ref_rejected",
+      "ok": true,
+      "detail": "Ingress without a ticketRef is rejected and still recorded for review."
+    },
+    {
+      "id": "ticket_resolved_by_gateway",
+      "ok": true,
+      "detail": "Ticket refs are resolved through the gateway ticket registry before delivery."
+    },
+    {
+      "id": "holder_proof_required",
+      "ok": true,
+      "detail": "The current wallet confirmation path requires holder proof for code-based resolution."
+    },
+    {
+      "id": "holder_scope_checked",
+      "ok": true,
+      "detail": "Wrong holder proof is rejected before ticket status or delivery."
+    },
+    {
+      "id": "current_ticket_status_checked",
+      "ok": true,
+      "detail": "Ticket status is checked through the gateway; cancelled tickets cannot be delivered."
+    },
+    {
+      "id": "destination_business_required",
+      "ok": true,
+      "detail": "Ingress records and filters attempted destination business identity."
+    },
+    {
+      "id": "matching_destination_accepted",
+      "ok": true,
+      "detail": "A valid ticket bound to the requested business creates an accepted ingress decision."
+    },
+    {
+      "id": "wrong_destination_rejected",
+      "ok": true,
+      "detail": "A valid ticket cannot be routed into a different business inbox."
+    },
+    {
+      "id": "accepted_ingress_creates_delivery",
+      "ok": true,
+      "detail": "Accepted ingress reuses normal business-inbox ticket delivery."
+    },
+    {
+      "id": "delivery_backend_mutation_false",
+      "ok": true,
+      "detail": "Ticket delivery routes proof and sets backendMutation to false."
+    },
+    {
+      "id": "delivery_visible_in_business_inbox",
+      "ok": true,
+      "detail": "Accepted ingress is visible through the protected business inbox review stream."
+    },
+    {
+      "id": "request_schema_published",
+      "ok": true,
+      "detail": "The harness publishes a narrow schema for external agent ticket-ingress inputs."
+    },
+    {
+      "id": "safe_examples_published",
+      "ok": true,
+      "detail": "Accepted and rejected example payloads use opaque holder-proof placeholders."
+    },
+    {
+      "id": "live_harness_descriptor_published",
+      "ok": true,
+      "detail": "The live harness descriptor lists routes, boundaries, retry semantics, and matrix evidence."
+    },
+    {
+      "id": "live_harness_page_submits_to_gateway",
+      "ok": true,
+      "detail": "The human harness page posts to the same AgentGateway ingress route as external callers."
+    },
+    {
+      "id": "store_matrix_published",
+      "ok": true,
+      "detail": "The harness publishes the multi-store ticket compatibility matrix without search or ranking claims."
+    },
+    {
+      "id": "response_omits_raw_holder",
+      "ok": true,
+      "detail": "Ingress responses omit raw holder proof and holder refs."
+    },
+    {
+      "id": "stream_omits_raw_holder",
+      "ok": true,
+      "detail": "Ingress list responses omit raw holder proof and customer actor fields."
+    },
+    {
+      "id": "view_omits_raw_holder",
+      "ok": true,
+      "detail": "The rendered protected demo view omits raw holder proof and authority material."
+    },
+    {
+      "id": "authority_evidence_omitted",
+      "ok": true,
+      "detail": "Raw authority evidence is not persisted in the reportable ingress surface."
+    },
+    {
+      "id": "rejected_ingress_persisted",
+      "ok": true,
+      "detail": "Rejected ingress records remain visible as sanitized gateway decisions."
+    },
+    {
+      "id": "redis_stream_sanitized",
+      "ok": true,
+      "detail": "Redis-backed ingress review returns sanitized records without live credentials."
+    },
+    {
+      "id": "local_jsonl_fallback_available",
+      "ok": true,
+      "detail": "The local fallback keeps deterministic development and CI behavior."
+    }
+  ],
+  "failedCheckIds": [],
+  "validator": {
+    "type": "agentport.agent_gateway_ingress_validation.v0.1",
+    "ok": true,
+    "checkCount": 28,
+    "failedCheckIds": [],
+    "reportSchema": {
+      "type": "agentport.report_schema_validation.v0.1",
+      "schema": "schemas/agentport-agent-gateway-ingress-compatibility-report.schema.json",
+      "ok": true,
+      "errorCount": 0,
+      "errors": []
+    }
+  }
+}

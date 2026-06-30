@@ -1,0 +1,228 @@
+{
+  "protocol": "agentport-plugin-wallet-returned-session-review",
+  "version": "0.1",
+  "reviewId": "wallet-returned-review-virtual-store",
+  "generatedAt": "2026-06-26T12:30:00.000Z",
+  "walletId": "wallet:virtual-store-example",
+  "sessionId": "host-session-virtual-store-return",
+  "counts": {
+    "totalReturned": 4,
+    "current": 3,
+    "lastKnown": 1,
+    "needsAttention": 3,
+    "pendingConsent": 1,
+    "expiredReview": 1,
+    "reverifyRequired": 1
+  },
+  "sections": {
+    "current": [
+      {
+        "walletTicketId": "wallet_ticket_virtual_current",
+        "businessId": "agentport-virtual-store",
+        "serviceId": "product_demo",
+        "status": "active",
+        "statusSource": "agent_gateway",
+        "verifiedCurrent": true,
+        "reverifyRequired": false,
+        "attentionReasons": [],
+        "deliveryAttemptCount": 0,
+        "lastVerifiedAt": "2026-06-26T12:30:00.000Z",
+        "updatedAt": "2026-06-26T12:30:00.000Z"
+      },
+      {
+        "walletTicketId": "wallet_ticket_virtual_pending_consent",
+        "businessId": "agentport-virtual-store",
+        "serviceId": "product_demo",
+        "status": "active",
+        "statusSource": "agent_gateway",
+        "verifiedCurrent": true,
+        "reverifyRequired": false,
+        "pendingAction": {
+          "action": "send_ticket",
+          "expired": false,
+          "userReviewRequired": false
+        },
+        "attentionReasons": [
+          "pending_action"
+        ],
+        "deliveryAttemptCount": 0,
+        "lastVerifiedAt": "2026-06-26T12:30:00.000Z",
+        "updatedAt": "2026-06-26T12:30:00.000Z"
+      },
+      {
+        "walletTicketId": "wallet_ticket_virtual_expired",
+        "businessId": "agentport-virtual-store",
+        "serviceId": "product_demo",
+        "status": "active",
+        "statusSource": "agent_gateway",
+        "verifiedCurrent": true,
+        "reverifyRequired": false,
+        "pendingAction": {
+          "action": "send_ticket",
+          "expired": true,
+          "userReviewRequired": true
+        },
+        "attentionReasons": [
+          "pending_action_expired"
+        ],
+        "deliveryAttemptCount": 0,
+        "lastVerifiedAt": "2026-06-26T12:30:00.000Z",
+        "updatedAt": "2026-06-26T12:30:00.000Z"
+      }
+    ],
+    "lastKnown": [
+      {
+        "walletTicketId": "wallet_ticket_virtual_last_known",
+        "businessId": "agentport-virtual-store",
+        "serviceId": "product_demo",
+        "status": "active",
+        "statusSource": "local_last_known",
+        "verifiedCurrent": false,
+        "reverifyRequired": true,
+        "attentionReasons": [
+          "reverify_required"
+        ],
+        "deliveryAttemptCount": 0,
+        "lastVerifiedAt": "2026-06-26T12:00:00.000Z",
+        "updatedAt": "2026-06-26T12:00:00.000Z",
+        "reason": "gateway_unavailable"
+      }
+    ],
+    "needsAttention": [
+      {
+        "walletTicketId": "wallet_ticket_virtual_pending_consent",
+        "businessId": "agentport-virtual-store",
+        "serviceId": "product_demo",
+        "status": "active",
+        "statusSource": "agent_gateway",
+        "verifiedCurrent": true,
+        "reverifyRequired": false,
+        "pendingAction": {
+          "action": "send_ticket",
+          "expired": false,
+          "userReviewRequired": false
+        },
+        "attentionReasons": [
+          "pending_action"
+        ],
+        "deliveryAttemptCount": 0,
+        "lastVerifiedAt": "2026-06-26T12:30:00.000Z",
+        "updatedAt": "2026-06-26T12:30:00.000Z"
+      },
+      {
+        "walletTicketId": "wallet_ticket_virtual_expired",
+        "businessId": "agentport-virtual-store",
+        "serviceId": "product_demo",
+        "status": "active",
+        "statusSource": "agent_gateway",
+        "verifiedCurrent": true,
+        "reverifyRequired": false,
+        "pendingAction": {
+          "action": "send_ticket",
+          "expired": true,
+          "userReviewRequired": true
+        },
+        "attentionReasons": [
+          "pending_action_expired"
+        ],
+        "deliveryAttemptCount": 0,
+        "lastVerifiedAt": "2026-06-26T12:30:00.000Z",
+        "updatedAt": "2026-06-26T12:30:00.000Z"
+      },
+      {
+        "walletTicketId": "wallet_ticket_virtual_last_known",
+        "businessId": "agentport-virtual-store",
+        "serviceId": "product_demo",
+        "status": "active",
+        "statusSource": "local_last_known",
+        "verifiedCurrent": false,
+        "reverifyRequired": true,
+        "attentionReasons": [
+          "reverify_required"
+        ],
+        "deliveryAttemptCount": 0,
+        "lastVerifiedAt": "2026-06-26T12:00:00.000Z",
+        "updatedAt": "2026-06-26T12:00:00.000Z",
+        "reason": "gateway_unavailable"
+      }
+    ],
+    "pendingConsent": [
+      {
+        "walletTicketId": "wallet_ticket_virtual_pending_consent",
+        "businessId": "agentport-virtual-store",
+        "serviceId": "product_demo",
+        "status": "active",
+        "statusSource": "agent_gateway",
+        "verifiedCurrent": true,
+        "reverifyRequired": false,
+        "pendingAction": {
+          "action": "send_ticket",
+          "expired": false,
+          "userReviewRequired": false
+        },
+        "attentionReasons": [
+          "pending_action"
+        ],
+        "deliveryAttemptCount": 0,
+        "lastVerifiedAt": "2026-06-26T12:30:00.000Z",
+        "updatedAt": "2026-06-26T12:30:00.000Z"
+      }
+    ],
+    "expiredReview": [
+      {
+        "walletTicketId": "wallet_ticket_virtual_expired",
+        "businessId": "agentport-virtual-store",
+        "serviceId": "product_demo",
+        "status": "active",
+        "statusSource": "agent_gateway",
+        "verifiedCurrent": true,
+        "reverifyRequired": false,
+        "pendingAction": {
+          "action": "send_ticket",
+          "expired": true,
+          "userReviewRequired": true
+        },
+        "attentionReasons": [
+          "pending_action_expired"
+        ],
+        "deliveryAttemptCount": 0,
+        "lastVerifiedAt": "2026-06-26T12:30:00.000Z",
+        "updatedAt": "2026-06-26T12:30:00.000Z"
+      }
+    ],
+    "reverifyRequired": [
+      {
+        "walletTicketId": "wallet_ticket_virtual_last_known",
+        "businessId": "agentport-virtual-store",
+        "serviceId": "product_demo",
+        "status": "active",
+        "statusSource": "local_last_known",
+        "verifiedCurrent": false,
+        "reverifyRequired": true,
+        "attentionReasons": [
+          "reverify_required"
+        ],
+        "deliveryAttemptCount": 0,
+        "lastVerifiedAt": "2026-06-26T12:00:00.000Z",
+        "updatedAt": "2026-06-26T12:00:00.000Z",
+        "reason": "gateway_unavailable"
+      }
+    ]
+  },
+  "payloadSafety": {
+    "excludesDecryptedLabels": true,
+    "excludesCommitments": true,
+    "excludesReceipts": true,
+    "excludesSignatures": true,
+    "excludesBackendConfirmations": true,
+    "excludesDestinationRefs": true,
+    "excludesRawKeyMaterial": true,
+    "excludesRecoverySecrets": true
+  },
+  "boundaries": {
+    "gatewayCurrentOnly": true,
+    "localLastKnownRequiresReverify": true,
+    "reviewDeliversPendingActions": false,
+    "reviewIsLifecycleTruth": false
+  }
+}

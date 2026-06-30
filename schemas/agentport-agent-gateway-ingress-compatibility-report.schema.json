@@ -1,0 +1,201 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-agent-gateway-ingress-compatibility-report.schema.json",
+  "title": "AgentPort AgentGateway Ingress Compatibility Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "type",
+    "profile",
+    "generatedAt",
+    "status",
+    "ok",
+    "evidence",
+    "certification",
+    "boundaries",
+    "areas",
+    "checks",
+    "failedCheckIds",
+    "validator"
+  ],
+  "properties": {
+    "$schema": { "type": "string", "minLength": 1 },
+    "type": { "const": "agentport.agent_gateway_ingress_compatibility_report.v0.1" },
+    "profile": { "const": "agent-gateway-ingress" },
+    "generatedAt": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["passed", "failed"] },
+    "ok": { "type": "boolean" },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["route", "harness", "schemas", "examples", "tests", "plans", "runtime"],
+      "properties": {
+        "route": { "type": "string", "minLength": 1 },
+        "harness": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "schemas": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "examples": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "tests": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "plans": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "runtime": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "certification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "publicCertification",
+        "agentPortReadyCertification",
+        "realBusinessCertification",
+        "verifiedBusiness",
+        "note"
+      ],
+      "properties": {
+        "publicCertification": { "const": false },
+        "agentPortReadyCertification": { "const": false },
+        "realBusinessCertification": { "const": false },
+        "verifiedBusiness": { "const": false },
+        "note": { "type": "string", "minLength": 1 }
+      }
+    },
+    "boundaries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "virtualStoreOnly",
+        "externalAgentCanPresentEvidence",
+        "externalAgentCanMintAuthority",
+        "gatewayChecksAuthorityEnvelope",
+        "gatewayChecksReplayProtection",
+        "gatewayResolvesTicket",
+        "gatewayChecksHolderProof",
+        "gatewayChecksDestinationBinding",
+        "gatewayCreatesBusinessInboxDelivery",
+        "backendMutation",
+        "agentPortSystemOfRecord",
+        "storesRawHolderProof",
+        "storesRawAuthorityEvidence"
+      ],
+      "properties": {
+        "virtualStoreOnly": { "type": "boolean" },
+        "externalAgentCanPresentEvidence": { "type": "boolean" },
+        "externalAgentCanMintAuthority": { "const": false },
+        "gatewayChecksAuthorityEnvelope": { "type": "boolean" },
+        "gatewayChecksReplayProtection": { "type": "boolean" },
+        "gatewayResolvesTicket": { "type": "boolean" },
+        "gatewayChecksHolderProof": { "type": "boolean" },
+        "gatewayChecksDestinationBinding": { "type": "boolean" },
+        "gatewayCreatesBusinessInboxDelivery": { "type": "boolean" },
+        "backendMutation": { "const": false },
+        "agentPortSystemOfRecord": { "const": false },
+        "storesRawHolderProof": { "const": false },
+        "storesRawAuthorityEvidence": { "const": false }
+      }
+    },
+    "areas": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "ok", "requiredCheckIds", "failedCheckIds"],
+        "properties": {
+          "id": {
+            "enum": [
+              "authority_boundary",
+              "wallet_confirmation",
+              "destination_binding",
+              "business_inbox_delivery",
+              "compatibility_harness",
+              "redaction",
+              "durability"
+            ]
+          },
+          "ok": { "type": "boolean" },
+          "requiredCheckIds": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "failedCheckIds": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/check" }
+    },
+    "failedCheckIds": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "validator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "ok", "checkCount", "failedCheckIds", "reportSchema"],
+      "properties": {
+        "type": { "const": "agentport.agent_gateway_ingress_validation.v0.1" },
+        "ok": { "type": "boolean" },
+        "checkCount": { "type": "integer", "minimum": 0 },
+        "failedCheckIds": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "reportSchema": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "schema", "ok", "errorCount", "errors"],
+          "properties": {
+            "type": { "const": "agentport.report_schema_validation.v0.1" },
+            "schema": { "type": "string", "minLength": 1 },
+            "ok": { "type": "boolean" },
+            "errorCount": { "type": "integer", "minimum": 0 },
+            "errors": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "ok", "detail"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "ok": { "type": "boolean" },
+        "detail": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "type": "agentport.business_port_inbound_request.v0.1",
+  "request": {
+    "protocol": "agentport",
+    "requestId": "business_port_request_demo",
+    "intentId": "intent_action_intent_demo",
+    "action": "book_service",
+    "businessId": "agentport-virtual-store",
+    "serviceId": "product_demo",
+    "requestedType": "confirmed"
+  },
+  "payloadSafety": {
+    "excludesCustomerPii": true,
+    "excludesRawAuthorityTokens": true,
+    "excludesReceiptBodies": true,
+    "excludesSignatures": true,
+    "excludesBackendCredentials": true
+  },
+  "boundaries": {
+    "acceptsStandardizedOnly": true,
+    "mintsAuthority": false,
+    "systemOfRecord": false
+  }
+}

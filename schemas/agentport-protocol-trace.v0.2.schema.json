@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-protocol-trace.v0.2.schema.json",
+  "title": "AgentPort Protocol Trace v0.2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["protocol", "version", "traceId", "kind", "scenario", "roles", "objects", "steps", "claims"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "protocol": { "const": "agentport-protocol-trace" },
+    "version": { "const": "0.2" },
+    "traceId": { "type": "string", "minLength": 1 },
+    "kind": { "enum": ["golden", "tamper"] },
+    "scenario": { "type": "string", "minLength": 1 },
+    "expectedFailureCheckId": { "type": "string", "minLength": 1 },
+    "roles": { "type": "object", "additionalProperties": true },
+    "objects": { "type": "object", "additionalProperties": true },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "from", "to", "action"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "from": { "type": "string", "minLength": 1 },
+          "to": { "type": "string", "minLength": 1 },
+          "action": { "type": "string", "minLength": 1 },
+          "objectRef": { "type": "string", "minLength": 1 }
+        }
+      },
+      "minItems": 1
+    },
+    "claims": { "type": "object", "additionalProperties": true }
+  }
+}

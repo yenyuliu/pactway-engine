@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-protocol-external-review-result.schema.json",
+  "title": "AgentPort Protocol External Review Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "protocol",
+    "version",
+    "status",
+    "reviewedAt",
+    "reviewedPackage",
+    "reviewer",
+    "gateResults",
+    "acceptanceResults",
+    "claimBoundary",
+    "stableTagDecision"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "type": { "const": "agentport.protocol_external_review_result.v0.2" },
+    "protocol": { "const": "agentport" },
+    "version": { "const": "0.2" },
+    "status": { "const": "passed" },
+    "reviewedAt": { "const": "2026-06-27T00:00:00.000Z" },
+    "reviewedPackage": { "const": "examples/implementer-kit/protocol-cut.v0.2.json" },
+    "reviewer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "name", "independentThirdParty", "certificationAuthority"],
+      "properties": {
+        "kind": { "const": "local_maintainer_public_package_review" },
+        "name": { "type": "string", "minLength": 1 },
+        "independentThirdParty": { "const": false },
+        "certificationAuthority": { "const": false }
+      }
+    },
+    "gateResults": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["command", "status", "evidence"],
+        "properties": {
+          "command": {
+            "enum": [
+              "npm run public-package-audit",
+              "npm run conformance",
+              "npm test",
+              "git diff --check"
+            ]
+          },
+          "status": { "const": "passed" },
+          "evidence": { "type": "string", "minLength": 1 }
+        }
+      },
+      "minItems": 4,
+      "uniqueItems": true
+    },
+    "acceptanceResults": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["check", "status"],
+        "properties": {
+          "check": { "type": "string", "minLength": 1 },
+          "status": { "const": "passed" }
+        }
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "claimBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "compatibilityOnly",
+        "agentPortCertified",
+        "agentPortVerifiedBusiness",
+        "realBusinessProof",
+        "liveBackendProof",
+        "a2aReplacement"
+      ],
+      "properties": {
+        "compatibilityOnly": { "const": true },
+        "agentPortCertified": { "const": false },
+        "agentPortVerifiedBusiness": { "const": false },
+        "realBusinessProof": { "const": false },
+        "liveBackendProof": { "const": false },
+        "a2aReplacement": { "const": false }
+      }
+    },
+    "stableTagDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision", "stablePublication", "reason"],
+      "properties": {
+        "decision": { "const": "stable_tag_set" },
+        "stablePublication": { "const": true },
+        "reason": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

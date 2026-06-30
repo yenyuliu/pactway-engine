@@ -1,0 +1,322 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-discovery.schema.json",
+  "title": "AgentPort Discovery Descriptor",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "protocol",
+    "version",
+    "artifactId",
+    "resourceUri",
+    "wellKnownPath",
+    "summary",
+    "gateway",
+    "resources",
+    "tools",
+    "businessHintPolicy",
+    "sourcePreference",
+    "agentPath",
+    "stateChangingActions",
+    "trustDistribution",
+    "clientAgentRules"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "protocol": { "const": "agentport-discovery" },
+    "version": { "const": "0.1" },
+    "artifactId": { "const": "agentport-discovery.v0.1" },
+    "resourceUri": { "const": "agentport://discovery" },
+    "wellKnownPath": { "const": "/.well-known/agentport.json" },
+    "summary": { "type": "string", "minLength": 1 },
+    "gateway": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["transport", "mcpEndpoint", "health", "mcpPath"],
+      "properties": {
+        "transport": { "const": "streamable-http" },
+        "mcpEndpoint": { "type": "string", "format": "uri" },
+        "health": { "type": "string", "format": "uri" },
+        "mcpPath": { "type": "string", "pattern": "^/" }
+      }
+    },
+    "resources": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["uri", "purpose"],
+        "properties": {
+          "uri": {
+            "enum": [
+              "agentport://discovery",
+              "agentport://open-standard",
+              "agentport://client-use-policy",
+              "agentport://action-model",
+              "agentport://commitment-format",
+              "agentport://protocol-codes",
+              "agentport://gateway-trust-profile"
+            ]
+          },
+          "purpose": { "type": "string", "minLength": 1 },
+          "optional": { "type": "boolean" }
+        }
+      }
+    },
+    "tools": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "assist",
+          "find_services",
+          "get_business_info",
+          "get_business_feed",
+          "get_readiness_report",
+          "compile_action_intent",
+          "get_action_intent_lifecycle",
+          "poll_action_intent_lifecycles",
+          "check_availability",
+          "book_service",
+          "cancel_service",
+          "reschedule_service"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "businessHintPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["allowedHintFields", "descriptorIsVerification", "rule"],
+      "properties": {
+        "allowedHintFields": {
+          "type": "array",
+          "items": {
+            "enum": ["businessId", "canonicalUrl", "displayName", "locationId"]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "descriptorIsVerification": { "const": false },
+        "rule": { "type": "string", "minLength": 1 }
+      }
+    },
+    "sourcePreference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["policyResource", "rule"],
+      "properties": {
+        "policyResource": { "const": "agentport://client-use-policy" },
+        "rule": { "type": "string", "minLength": 1 }
+      }
+    },
+    "agentPath": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["normal", "preferredTool", "preferredMode", "implementer", "cacheableResources", "rule"],
+      "properties": {
+        "normal": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "read_discovery_descriptor",
+              "call_get_business_feed_compact",
+              "call_get_readiness_report_for_owner_or_pilot_context",
+              "compile_action_intent_before_state_change",
+              "answer_or_call_action_tool_if_needed"
+            ]
+          },
+          "minItems": 3
+        },
+        "preferredTool": { "const": "get_business_feed" },
+        "preferredMode": { "const": "compact" },
+        "implementer": {
+          "type": "array",
+          "items": {
+            "enum": ["read_open_standard", "read_schemas", "run_conformance_tests"]
+          },
+          "minItems": 3
+        },
+        "cacheableResources": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "agentport://open-standard",
+              "agentport://client-use-policy",
+              "agentport://action-model",
+              "agentport://commitment-format",
+              "agentport://protocol-codes"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "rule": { "type": "string", "minLength": 1 }
+      }
+    },
+    "stateChangingActions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actionModelResource", "rule"],
+      "properties": {
+        "actionModelResource": { "const": "agentport://action-model" },
+        "rule": { "type": "string", "minLength": 1 }
+      }
+    },
+    "trustDistribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "descriptorIsTrust",
+        "productionTransport",
+        "rule",
+        "gatewayReceiptTrust",
+        "issuerReadinessTrust"
+      ],
+      "properties": {
+        "descriptorIsTrust": { "const": false },
+        "productionTransport": { "const": "https-required" },
+        "rule": { "type": "string", "minLength": 1 },
+        "gatewayReceiptTrust": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["domain", "order", "artifacts"],
+          "properties": {
+            "domain": { "const": "gateway_receipt_trust" },
+            "order": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "apply_gateway_trust_root_emergency_denylist",
+                  "verify_gateway_trust_root_bundle",
+                  "verify_signed_gateway_trust_profile",
+                  "verify_gateway_action_receipt"
+                ]
+              },
+              "minItems": 4
+            },
+            "artifacts": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["emergencyDenyList", "trustRootBundle", "signedTrustProfile", "receipt"],
+              "properties": {
+                "emergencyDenyList": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["protocol", "hostedEndpoint", "optional"],
+                  "properties": {
+                    "protocol": { "const": "agentport-gateway-trust-root-emergency-denylist-envelope" },
+                    "hostedEndpoint": { "type": "string", "format": "uri" },
+                    "optional": { "const": true }
+                  }
+                },
+                "trustRootBundle": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["protocol", "hostedEndpoint", "optional"],
+                  "properties": {
+                    "protocol": { "const": "agentport-gateway-trust-root-bundle-envelope" },
+                    "hostedEndpoint": { "type": "string", "format": "uri" },
+                    "optional": { "const": true }
+                  }
+                },
+                "signedTrustProfile": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["protocol", "mcpResource", "optional"],
+                  "properties": {
+                    "protocol": { "const": "agentport-gateway-trust-profile-envelope" },
+                    "mcpResource": { "const": "agentport://gateway-trust-profile" },
+                    "optional": { "const": true }
+                  }
+                },
+                "receipt": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["source", "type"],
+                  "properties": {
+                    "source": { "const": "tool_result" },
+                    "type": { "const": "ActionReceipt" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "issuerReadinessTrust": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["domain", "issuerMetadataPath", "order", "artifacts"],
+          "properties": {
+            "domain": { "const": "issuer_readiness_trust" },
+            "issuerMetadataPath": { "const": "/.well-known/agentport-issuer.json" },
+            "order": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "apply_issuer_readiness_root_emergency_denylist",
+                  "verify_issuer_readiness_trust_root_bundle",
+                  "verify_signed_issuer_readiness",
+                  "validate_issuer_readiness_report"
+                ]
+              },
+              "minItems": 4
+            },
+            "artifacts": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["emergencyDenyList", "signedTrustRootBundle", "signedReadiness", "readinessReport"],
+              "properties": {
+                "emergencyDenyList": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["protocol", "hostedEndpoint", "optional"],
+                  "properties": {
+                    "protocol": { "const": "agentport-issuer-readiness-trust-root-emergency-denylist-envelope" },
+                    "hostedEndpoint": { "type": "string", "format": "uri" },
+                    "optional": { "const": true }
+                  }
+                },
+                "signedTrustRootBundle": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["protocol", "issuerMetadataField", "optional"],
+                  "properties": {
+                    "protocol": { "const": "agentport-issuer-readiness-trust-root-bundle-envelope" },
+                    "issuerMetadataField": { "const": "readinessTrustRootSigned" },
+                    "optional": { "const": true }
+                  }
+                },
+                "signedReadiness": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["protocol", "issuerMetadataField", "optional"],
+                  "properties": {
+                    "protocol": { "const": "agentport-issuer-production-readiness-envelope" },
+                    "issuerMetadataField": { "const": "readinessSigned" },
+                    "optional": { "const": true }
+                  }
+                },
+                "readinessReport": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["issuerMetadataField", "type"],
+                  "properties": {
+                    "issuerMetadataField": { "const": "readiness" },
+                    "type": { "const": "agentport-issuer-production-readiness-v0.1" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "clientAgentRules": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    }
+  }
+}

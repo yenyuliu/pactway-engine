@@ -1,0 +1,72 @@
+{
+  "$schema": "../../schemas/agentport-protocol-external-review-result.schema.json",
+  "type": "agentport.protocol_external_review_result.v0.2",
+  "protocol": "agentport",
+  "version": "0.2",
+  "status": "passed",
+  "reviewedAt": "2026-06-27T00:00:00.000Z",
+  "reviewedPackage": "examples/implementer-kit/protocol-cut.v0.2.json",
+  "reviewer": {
+    "kind": "local_maintainer_public_package_review",
+    "name": "AgentPort maintainer public package review",
+    "independentThirdParty": false,
+    "certificationAuthority": false
+  },
+  "gateResults": [
+    {
+      "command": "npm run public-package-audit",
+      "status": "passed",
+      "evidence": "Public package contains every cut-manifest ref and excludes internal feedback, plan, hosted-only, and vendor-artifact paths."
+    },
+    {
+      "command": "npm run conformance",
+      "status": "passed",
+      "evidence": "Reference conformance suite and v0.2 tamper harness passed."
+    },
+    {
+      "command": "npm test",
+      "status": "passed",
+      "evidence": "Full repository test suite passed."
+    },
+    {
+      "command": "git diff --check",
+      "status": "passed",
+      "evidence": "Diff whitespace check passed."
+    }
+  ],
+  "acceptanceResults": [
+    {
+      "check": "every_cut_manifest_ref_is_packed",
+      "status": "passed"
+    },
+    {
+      "check": "internal_feedback_and_plan_docs_are_not_public_cut_refs",
+      "status": "passed"
+    },
+    {
+      "check": "virtual_store_evidence_is_compatibility_only",
+      "status": "passed"
+    },
+    {
+      "check": "a2a_host_adoption_evidence_is_compatibility_only",
+      "status": "passed"
+    },
+    {
+      "check": "claim_boundaries_preserved",
+      "status": "passed"
+    }
+  ],
+  "claimBoundary": {
+    "compatibilityOnly": true,
+    "agentPortCertified": false,
+    "agentPortVerifiedBusiness": false,
+    "realBusinessProof": false,
+    "liveBackendProof": false,
+    "a2aReplacement": false
+  },
+  "stableTagDecision": {
+    "decision": "stable_tag_set",
+    "stablePublication": true,
+    "reason": "The v0.2 cut is marked for the stable protocol tag agentport-protocol-v0.2. This does not imply certification, verified-business status, real-business proof, or live-backend proof."
+  }
+}

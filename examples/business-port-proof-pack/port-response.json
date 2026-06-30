@@ -1,0 +1,24 @@
+{
+  "type": "agentport.business_port_response.v0.1",
+  "response": {
+    "source": "agent_gateway",
+    "requestId": "business_port_request_demo",
+    "resultType": "confirmed"
+  },
+  "refs": {
+    "gatewayReceiptRef": "gateway-receipt:receipt_action_intent_demo",
+    "commitmentRef": "commitment:commitment_action_intent_demo",
+    "lifecycleRef": "lifecycle:intent_action_intent_demo"
+  },
+  "payloadSafety": {
+    "excludesCustomerPii": true,
+    "excludesRawAuthorityTokens": true,
+    "excludesReceiptBodies": true,
+    "excludesSignatures": true,
+    "excludesBackendCredentials": true
+  },
+  "boundaries": {
+    "lifecycleSourceOfTruth": false,
+    "systemOfRecord": false
+  }
+}

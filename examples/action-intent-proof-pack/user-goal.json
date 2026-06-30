@@ -1,0 +1,22 @@
+{
+  "type": "agentport.action_intent_user_goal.v0.1",
+  "goal": {
+    "text": "Book the virtual store product demo for the selected slot.",
+    "agentSessionId": "session_action_intent_demo",
+    "stateChangingRequested": true,
+    "userConsentPresent": false
+  },
+  "payloadSafety": {
+    "excludesCustomerPii": true,
+    "excludesRawAuthorityTokens": true,
+    "excludesReceiptBodies": true,
+    "excludesDeliveryBodies": true,
+    "excludesSignatures": true,
+    "excludesBackendCredentials": true
+  },
+  "boundaries": {
+    "rawAuthorityEvidencePresent": false,
+    "mintsAuthority": false,
+    "realBusinessEvidence": false
+  }
+}

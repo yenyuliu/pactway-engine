@@ -1,0 +1,178 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-action-model.schema.json",
+  "title": "AgentPort Action Model",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "protocol",
+    "version",
+    "artifactId",
+    "resourceUri",
+    "parties",
+    "targetAgents",
+    "summary",
+    "safeCallSequence",
+    "approvalCard",
+    "delegation",
+    "receipt",
+    "actions",
+    "clientAgentRules"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "protocol": { "const": "agentport-action-model" },
+    "version": { "type": "string" },
+    "artifactId": { "type": "string" },
+    "resourceUri": { "const": "agentport://action-model" },
+    "parties": {
+      "type": "array",
+      "items": { "enum": ["client_user", "client_agent", "business_gateway"] },
+      "minItems": 3,
+      "uniqueItems": true
+    },
+    "targetAgents": {
+      "type": "array",
+      "items": {
+        "enum": ["claude", "chatgpt", "gemini", "custom_mobile_agent", "custom_hosted_agent"]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "summary": { "type": "string" },
+    "safeCallSequence": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "approvalCard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["purpose", "requiredDisplayFields", "consentTemplate", "clientAgentRule"],
+      "properties": {
+        "purpose": { "type": "string" },
+        "requiredDisplayFields": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "consentTemplate": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "clientAgentRule": { "type": "string" }
+      }
+    },
+    "delegation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["proof", "suppliedBy", "normalizedAuthority", "tokenConfirmationMethods", "issuerEndpoints", "currentEngineBoundary"],
+      "properties": {
+        "proof": { "const": "DelegationProof" },
+        "suppliedBy": { "type": "string" },
+        "normalizedAuthority": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "evidenceKinds", "assuranceLevels", "localProfile"],
+          "properties": {
+            "type": { "const": "AuthorityContext" },
+            "evidenceKinds": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "agentport-local-delegation",
+                  "ap2-mandate",
+                  "ucp-http-signature",
+                  "acp-checkout"
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "assuranceLevels": {
+              "type": "array",
+              "items": { "enum": ["none", "signed", "verified-mandate"] },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "localProfile": { "type": "string" }
+          }
+        },
+        "tokenConfirmationMethods": {
+          "type": "array",
+          "items": { "enum": ["session", "dpop", "mtls", "wallet"] },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "issuerEndpoints": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["metadata", "jwks", "createRequest", "approvalPage", "approveRequest", "status", "revoke"],
+          "properties": {
+            "metadata": { "type": "string" },
+            "jwks": { "type": "string" },
+            "createRequest": { "type": "string" },
+            "approvalPage": { "type": "string" },
+            "approveRequest": { "type": "string" },
+            "status": { "type": "string" },
+            "revoke": { "type": "string" }
+          }
+        },
+        "currentEngineBoundary": { "type": "string" }
+      }
+    },
+    "receipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "issuer", "rule", "authorityBinding", "trustProfileResource", "verificationHint", "currentEngineBoundary"],
+      "properties": {
+        "type": { "const": "ActionReceipt" },
+        "issuer": { "const": "business_gateway" },
+        "rule": { "type": "string" },
+        "authorityBinding": { "type": "string" },
+        "trustProfileResource": { "type": "string" },
+        "verificationHint": { "type": "string" },
+        "currentEngineBoundary": { "type": "string" }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["tool", "layer", "stateChanging", "consentRequired", "expectedUse"],
+        "properties": {
+          "tool": {
+            "enum": [
+              "assist",
+              "find_services",
+              "get_business_info",
+              "compile_action_intent",
+              "get_action_intent_lifecycle",
+              "poll_action_intent_lifecycles",
+              "check_availability",
+              "book_service",
+              "cancel_service",
+              "reschedule_service"
+            ]
+          },
+          "layer": { "enum": ["read", "availability", "lead", "commit", "manage", "funds"] },
+          "when": { "type": "string" },
+          "stateChanging": { "type": "boolean" },
+          "consentRequired": { "type": "boolean" },
+          "approvalCardRequired": { "type": "boolean" },
+          "expectedUse": { "type": "string" }
+        }
+      }
+    },
+    "clientAgentRules": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    }
+  }
+}

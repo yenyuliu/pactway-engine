@@ -1,0 +1,80 @@
+{
+  "$schema": "../schemas/agentport-a2a-host-event-log.schema.json",
+  "type": "agentport.a2a_host_event_log.v0.1",
+  "version": "0.1",
+  "id": "chatgpt_app_connector_restore_ticket_status",
+  "bindingArtifact": "artifacts/agentport-a2a-host-binding.v0.1.json",
+  "expectedStatus": "passed",
+  "expectedFailureIds": [],
+  "scenario": "A returned session restores ticket status from AgentPort/plugin state instead of relying on model memory.",
+  "events": [
+    {
+      "order": 1,
+      "actor": "frontier_host",
+      "phase": "classify_task",
+      "taskClass": "proof.receipt",
+      "action": "classify_returned_session_ticket_status",
+      "preservedFields": ["commitmentRef"],
+      "assertions": {
+        "realWorldServiceTask": true,
+        "hostSelectedBusinessPort": true,
+        "modelMemoryIsNotGatewayTruth": true
+      }
+    },
+    {
+      "order": 2,
+      "actor": "agentport_plugin",
+      "phase": "discover_gateway",
+      "taskClass": "business.info",
+      "tool": "get_business_feed",
+      "preservedFields": ["gatewayResultType"],
+      "assertions": {
+        "agentPortCalled": true,
+        "verifiedFactsFromGateway": true
+      }
+    },
+    {
+      "order": 3,
+      "actor": "agentport_plugin",
+      "phase": "read_action_model",
+      "taskClass": "proof.receipt",
+      "action": "read_agentport_restore_policy",
+      "preservedFields": ["commitmentRef"],
+      "assertions": {
+        "actionModelRead": true
+      }
+    },
+    {
+      "order": 4,
+      "actor": "agentport_plugin",
+      "phase": "receive_receipt",
+      "taskClass": "proof.receipt",
+      "tool": "ActionReceipt",
+      "fields": ["actionReceiptRef", "commitmentRef", "gatewayResultType"],
+      "assertions": {
+        "gatewayProducedReceipt": true,
+        "clientMintedReceipt": false,
+        "businessOutcomeFromGateway": true
+      }
+    },
+    {
+      "order": 5,
+      "actor": "frontier_host",
+      "phase": "present_result",
+      "taskClass": "proof.receipt",
+      "action": "present_restored_gateway_status",
+      "fields": ["actionReceiptRef", "commitmentRef", "gatewayResultType"],
+      "assertions": {
+        "taskStatePresentedAsOrchestrationOnly": true,
+        "gatewayOutcomeNotUpgraded": true
+      }
+    }
+  ],
+  "boundaries": {
+    "hostTraceOnly": true,
+    "certification": false,
+    "realBusinessEvidence": false,
+    "replacesA2A": false,
+    "executesLiveNetwork": false
+  }
+}

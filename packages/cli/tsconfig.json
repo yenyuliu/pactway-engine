@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "../../dist/cli",
+    "tsBuildInfoFile": "../../dist/.tsbuildinfo/cli.tsbuildinfo"
+  },
+  "include": ["src/**/*.ts"],
+  "references": [
+    { "path": "../core" },
+    { "path": "../server" },
+    { "path": "../adapters/manual" },
+    { "path": "../adapters/square" }
+  ]
+}

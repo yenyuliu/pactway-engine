@@ -1,0 +1,211 @@
+{
+  "$schema": "../schemas/agentport-a2a-gateway-compatibility-report.schema.json",
+  "type": "agentport.a2a_gateway_compatibility_report.v0.1",
+  "profile": "a2a-gateway",
+  "generatedAt": "2026-06-27T00:00:00.000Z",
+  "input": "examples/a2a-gateway-trace-suite.v0.1.json",
+  "inputKind": "a2a_gateway_trace_suite_file",
+  "profileArtifact": "artifacts/agentport-a2a-gateway-profile.v0.1.json",
+  "traceSuite": "examples/a2a-gateway-trace-suite.v0.1.json",
+  "status": "passed",
+  "ok": true,
+  "certification": {
+    "publicCertification": false,
+    "a2aCertification": false,
+    "agentPortReadyCertification": false,
+    "realBusinessCertification": false,
+    "note": "This report checks the AgentPort A2A gateway profile artifacts only; it is not public certification or real-business evidence."
+  },
+  "boundaries": {
+    "a2aProfileOnly": true,
+    "agentGatewayAlreadyExists": true,
+    "replacesA2A": false,
+    "createsNewGateway": false,
+    "executesLiveNetwork": false
+  },
+  "areas": [
+    {
+      "id": "profile_boundary",
+      "ok": true,
+      "requiredCheckIds": [
+        "profile_protocol",
+        "profile_a2a_boundary",
+        "profile_gateway_boundary",
+        "profile_not_certification",
+        "trace_profile_only",
+        "trace_not_replacement"
+      ],
+      "failedCheckIds": []
+    },
+    {
+      "id": "primitive_mapping",
+      "ok": true,
+      "requiredCheckIds": [
+        "prepare_maps_compile",
+        "execute_maps_state_changing",
+        "receipt_maps_action_receipt",
+        "golden_primitive_sequence"
+      ],
+      "failedCheckIds": []
+    },
+    {
+      "id": "safe_sequence",
+      "ok": true,
+      "requiredCheckIds": [
+        "compile_before_state_change",
+        "approval_before_execute",
+        "execution_binding_required",
+        "receipt_after_execute"
+      ],
+      "failedCheckIds": []
+    },
+    {
+      "id": "tamper_coverage",
+      "ok": true,
+      "requiredCheckIds": [
+        "tamper_direct_execute_without_compile",
+        "tamper_invented_approval",
+        "tamper_missing_authority_for_confirm",
+        "tamper_forged_receipt",
+        "tamper_ack_as_verification"
+      ],
+      "failedCheckIds": []
+    },
+    {
+      "id": "result_semantics",
+      "ok": true,
+      "requiredCheckIds": [
+        "task_state_separate",
+        "business_outcome_gateway",
+        "receipt_gateway_produced"
+      ],
+      "failedCheckIds": []
+    }
+  ],
+  "checks": [
+    {
+      "id": "profile_protocol",
+      "ok": true,
+      "detail": "Profile protocol is agentport-a2a-gateway-profile."
+    },
+    {
+      "id": "profile_a2a_boundary",
+      "ok": true,
+      "detail": "Profile declares that AgentPort does not replace A2A."
+    },
+    {
+      "id": "profile_gateway_boundary",
+      "ok": true,
+      "detail": "Profile treats AgentPort as the existing gateway boundary."
+    },
+    {
+      "id": "profile_not_certification",
+      "ok": true,
+      "detail": "Profile is not certification."
+    },
+    {
+      "id": "trace_profile_only",
+      "ok": true,
+      "detail": "Trace suite is profile-only and not certification."
+    },
+    {
+      "id": "trace_not_replacement",
+      "ok": true,
+      "detail": "Trace suite does not replace A2A."
+    },
+    {
+      "id": "prepare_maps_compile",
+      "ok": true,
+      "detail": "A2A action.prepare maps to compile_action_intent."
+    },
+    {
+      "id": "execute_maps_state_changing",
+      "ok": true,
+      "detail": "A2A action.execute maps to state-changing gateway tools."
+    },
+    {
+      "id": "receipt_maps_action_receipt",
+      "ok": true,
+      "detail": "A2A proof.receipt maps to AgentPort ActionReceipt."
+    },
+    {
+      "id": "golden_primitive_sequence",
+      "ok": true,
+      "detail": "Golden trace follows discovery/feed, compile, lifecycle, execute, receipt sequence."
+    },
+    {
+      "id": "compile_before_state_change",
+      "ok": true,
+      "detail": "compile_action_intent appears before every state-changing primitive."
+    },
+    {
+      "id": "approval_before_execute",
+      "ok": true,
+      "detail": "State-changing execution is gated by exact approval."
+    },
+    {
+      "id": "execution_binding_required",
+      "ok": true,
+      "detail": "Execution requires intentId, approvedActionIntentHash, and userConsent."
+    },
+    {
+      "id": "receipt_after_execute",
+      "ok": true,
+      "detail": "ActionReceipt appears after gateway execution."
+    },
+    {
+      "id": "task_state_separate",
+      "ok": true,
+      "detail": "A2A task state is separate from business outcome."
+    },
+    {
+      "id": "business_outcome_gateway",
+      "ok": true,
+      "detail": "Business outcome comes from AgentPort gateway results."
+    },
+    {
+      "id": "receipt_gateway_produced",
+      "ok": true,
+      "detail": "Receipt proof is gateway-produced and backend-bound."
+    },
+    {
+      "id": "tamper_direct_execute_without_compile",
+      "ok": true,
+      "detail": "Tamper case direct_execute_without_compile rejects with missing_compiled_action_intent."
+    },
+    {
+      "id": "tamper_invented_approval",
+      "ok": true,
+      "detail": "Tamper case invented_approval rejects with consent_required."
+    },
+    {
+      "id": "tamper_missing_authority_for_confirm",
+      "ok": true,
+      "detail": "Tamper case missing_authority_for_confirm rejects with delegation_required."
+    },
+    {
+      "id": "tamper_forged_receipt",
+      "ok": true,
+      "detail": "Tamper case forged_receipt rejects with client_receipt_untrusted."
+    },
+    {
+      "id": "tamper_ack_as_verification",
+      "ok": true,
+      "detail": "Tamper case ack_as_verification rejects with delivery_verification_required."
+    }
+  ],
+  "failedCheckIds": [],
+  "validator": {
+    "type": "agentport.a2a_gateway_trace_validation.v0.1",
+    "ok": true,
+    "checkCount": 22,
+    "failedCheckIds": [],
+    "reportSchema": {
+      "type": "agentport.report_schema_validation.v0.1",
+      "schema": "schemas/agentport-a2a-gateway-compatibility-report.schema.json",
+      "ok": true,
+      "errorCount": 0,
+      "errors": []
+    }
+  }
+}

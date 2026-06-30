@@ -1,0 +1,34 @@
+{
+  "type": "agentport.registry_event_history.v0.1",
+  "commitmentId": "commitment_action_intent_demo",
+  "events": [
+    {
+      "eventId": "event_action_intent_created",
+      "sequence": 1,
+      "eventType": "created",
+      "toStatus": "active"
+    },
+    {
+      "eventId": "event_action_intent_approved",
+      "sequence": 2,
+      "eventType": "approved",
+      "toStatus": "approved"
+    },
+    {
+      "eventId": "event_action_intent_confirmed",
+      "sequence": 3,
+      "eventType": "confirmed",
+      "toStatus": "confirmed"
+    }
+  ],
+  "payloadSafety": {
+    "excludesCustomerPii": true,
+    "excludesRawAuthorityTokens": true,
+    "excludesReceiptBodies": true,
+    "excludesBackendCredentials": true
+  },
+  "boundaries": {
+    "appendOnly": true,
+    "rewritesHistory": false
+  }
+}

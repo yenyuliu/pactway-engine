@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-delivery-receipt.v0.2.schema.json",
+  "title": "AgentPort Delivery Receipt v0.2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "protocol",
+    "version",
+    "deliveryId",
+    "commitmentId",
+    "destination",
+    "result",
+    "backendMutation",
+    "actors",
+    "proofLevel",
+    "issuedBy"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "protocol": { "const": "agentport-delivery-receipt" },
+    "version": { "const": "0.2" },
+    "deliveryId": { "type": "string", "minLength": 1 },
+    "commitmentId": { "type": "string", "minLength": 1 },
+    "destination": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "targetRef", "businessPortRef"],
+      "properties": {
+        "kind": { "enum": ["business_inbox", "venue_verifier", "issuer_queue", "support_channel", "webhook"] },
+        "targetRef": { "type": "string", "minLength": 1 },
+        "businessPortRef": { "type": "string", "minLength": 1 }
+      }
+    },
+    "result": { "enum": ["sent", "handoff", "rejected", "failed"] },
+    "reason": { "type": "string", "minLength": 1 },
+    "backendMutation": { "const": false },
+    "actors": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requestedActor", "customerActor", "gatewayActor"],
+      "properties": {
+        "requestedActor": { "$ref": "#/$defs/actor" },
+        "customerActor": { "$ref": "#/$defs/actor" },
+        "gatewayActor": { "$ref": "#/$defs/actor" }
+      }
+    },
+    "proofLevel": { "enum": ["commitment_ref", "receipt_ref", "receipt_hash", "signed_receipt"] },
+    "issuedBy": { "const": "agentport-gateway" },
+    "receiptRef": { "type": "string", "minLength": 1 }
+  },
+  "$defs": {
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actorKind", "principalId"],
+      "properties": {
+        "actorKind": {
+          "enum": ["frontier_host", "plugin_host", "customer_holder", "business_operator", "gateway"]
+        },
+        "principalId": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

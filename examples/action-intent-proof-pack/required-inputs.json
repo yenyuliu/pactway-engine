@@ -1,0 +1,32 @@
+{
+  "type": "agentport.action_intent_required_inputs.v0.1",
+  "compile": {
+    "status": "needs_required_input",
+    "missingFields": [
+      "slotStart"
+    ],
+    "approvalCardPresent": false
+  },
+  "resolve": {
+    "tool": "check_availability",
+    "resultPath": "slots[].start",
+    "arguments": {
+      "businessId": "agentport-virtual-store",
+      "serviceId": "product_demo",
+      "bindingId": "fixture#0"
+    }
+  },
+  "payloadSafety": {
+    "excludesCustomerPii": true,
+    "excludesRawAuthorityTokens": true,
+    "excludesReceiptBodies": true,
+    "excludesDeliveryBodies": true,
+    "excludesSignatures": true,
+    "excludesBackendCredentials": true
+  },
+  "boundaries": {
+    "finalApprovalBlocked": true,
+    "userConsentPresent": false,
+    "guessedInputAllowed": false
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-gateway-trust-profile.schema.json",
+  "title": "AgentPort Gateway Trust Profile",
+  "oneOf": [
+    { "$ref": "#/$defs/profile" },
+    { "$ref": "#/$defs/signedEnvelope" }
+  ],
+  "$defs": {
+    "profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["protocol", "version", "gatewayIssuer", "receipt"],
+      "properties": {
+        "protocol": { "const": "agentport-gateway-trust-profile" },
+        "version": { "const": "0.1" },
+        "gatewayIssuer": { "type": "string", "minLength": 1 },
+        "receipt": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["requireSignature", "algorithm", "publicKeys"],
+          "properties": {
+            "requireSignature": { "type": "boolean" },
+            "algorithm": { "const": "EdDSA" },
+            "publicKeys": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/$defs/receiptPublicKey" }
+            }
+          }
+        }
+      }
+    },
+    "receiptPublicKey": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kid", "alg", "use", "jwk"],
+      "properties": {
+        "kid": { "type": "string", "minLength": 1 },
+        "alg": { "const": "EdDSA" },
+        "use": { "const": "sig" },
+        "status": { "enum": ["active", "retired", "revoked"] },
+        "notBefore": { "type": "string", "format": "date-time" },
+        "expiresAt": { "type": "string", "format": "date-time" },
+        "jwk": { "$ref": "#/$defs/publicJwk" }
+      }
+    },
+    "publicJwk": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["kty"],
+      "properties": {
+        "kty": { "type": "string" },
+        "crv": { "type": "string" },
+        "x": { "type": "string" },
+        "kid": { "type": "string" },
+        "use": { "type": "string" },
+        "alg": { "type": "string" }
+      }
+    },
+    "signedEnvelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["protocol", "version", "profile", "signature"],
+      "properties": {
+        "protocol": { "const": "agentport-gateway-trust-profile-envelope" },
+        "version": { "const": "0.1" },
+        "profile": { "$ref": "#/$defs/profile" },
+        "signature": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["issuer", "keyId", "alg", "signature"],
+          "properties": {
+            "issuer": { "type": "string", "minLength": 1 },
+            "keyId": { "type": "string", "minLength": 1 },
+            "alg": { "const": "EdDSA" },
+            "signedAt": { "type": "string", "format": "date-time" },
+            "signature": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    }
+  }
+}

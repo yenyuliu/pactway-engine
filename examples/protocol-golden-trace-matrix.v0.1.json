@@ -1,0 +1,111 @@
+{
+  "type": "agentport.protocol_golden_trace_matrix.v0.1",
+  "version": "0.1",
+  "allowed": [
+    {
+      "id": "goal_to_compiled_intent",
+      "from": "user_goal",
+      "to": "compiled_intent",
+      "actor": "frontier_or_plugin",
+      "allowed": true,
+      "requiredEvidence": [
+        "verified_business_info",
+        "no_user_consent_yet"
+      ]
+    },
+    {
+      "id": "required_input_to_approval_ready",
+      "from": "needs_required_input",
+      "to": "approval_ready",
+      "actor": "frontier_or_plugin",
+      "allowed": true,
+      "requiredEvidence": [
+        "required_input_resolved",
+        "approval_card_hash"
+      ]
+    },
+    {
+      "id": "approval_to_gateway_execution",
+      "from": "approval_ready",
+      "to": "gateway_execution",
+      "actor": "agent_gateway",
+      "allowed": true,
+      "requiredEvidence": [
+        "exact_user_approval",
+        "approved_action_intent_hash",
+        "user_consent"
+      ]
+    },
+    {
+      "id": "gateway_execution_to_registry_event",
+      "from": "gateway_execution",
+      "to": "registry_event_history",
+      "actor": "commitment_registry",
+      "allowed": true,
+      "requiredEvidence": [
+        "gateway_result",
+        "receipt_ref"
+      ]
+    },
+    {
+      "id": "terminal_result_to_restored_session",
+      "from": "terminal_result",
+      "to": "returned_session_current_state",
+      "actor": "plugin_wallet_and_gateway",
+      "allowed": true,
+      "requiredEvidence": [
+        "commitment_ref",
+        "gateway_or_registry_current_read"
+      ]
+    }
+  ],
+  "forbidden": [
+    {
+      "id": "execute_without_consent",
+      "from": "approval_ready",
+      "to": "gateway_execution",
+      "actor": "agent_gateway",
+      "allowed": false,
+      "rejectReason": "consent_required"
+    },
+    {
+      "id": "execute_with_argument_drift",
+      "from": "approval_ready",
+      "to": "gateway_execution",
+      "actor": "agent_gateway",
+      "allowed": false,
+      "rejectReason": "approved_action_intent_hash_mismatch"
+    },
+    {
+      "id": "business_port_claims_lifecycle_truth",
+      "from": "gateway_response",
+      "to": "current_lifecycle_truth",
+      "actor": "business_port_endpoint",
+      "allowed": false,
+      "rejectReason": "role_overclaim"
+    },
+    {
+      "id": "registry_executes_backend_action",
+      "from": "registry_event_history",
+      "to": "business_backend_mutation",
+      "actor": "commitment_registry",
+      "allowed": false,
+      "rejectReason": "registry_not_backend"
+    }
+  ],
+  "claims": {
+    "allowed": "Passes AgentPort protocol golden trace compatibility check.",
+    "forbidden": [
+      "AgentPort Certified",
+      "AgentPort Verified",
+      "Real-business proof",
+      "Adapter coverage"
+    ]
+  },
+  "boundaries": {
+    "goldenTraceOnly": true,
+    "realBusinessEvidence": false,
+    "certification": false,
+    "adapterCoverage": false
+  }
+}

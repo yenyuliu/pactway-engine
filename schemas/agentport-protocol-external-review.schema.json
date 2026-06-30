@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-protocol-external-review.schema.json",
+  "title": "AgentPort Protocol External Review Packet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "protocol",
+    "version",
+    "status",
+    "checklist",
+    "reviewInputs",
+    "requiredGates",
+    "roleChecks",
+    "acceptance",
+    "forbiddenConclusions"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "type": { "const": "agentport.protocol_external_review.v0.2" },
+    "protocol": { "const": "agentport" },
+    "version": { "const": "0.2" },
+    "status": { "const": "ready_for_external_review" },
+    "checklist": { "$ref": "#/$defs/fileRef" },
+    "reviewInputs": { "$ref": "#/$defs/fileRefArray" },
+    "requiredGates": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "npm run public-package-audit",
+          "npm run conformance",
+          "npm test",
+          "git diff --check"
+        ]
+      },
+      "minItems": 4,
+      "uniqueItems": true
+    },
+    "roleChecks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role", "command", "allowedClaim"],
+        "properties": {
+          "role": {
+            "enum": [
+              "agent_gateway",
+              "plugin_wallet",
+              "action_intent",
+              "business_port_endpoint",
+              "commitment_registry",
+              "protocol_trace",
+              "a2a_host_binding"
+            ]
+          },
+          "command": { "type": "string", "minLength": 1 },
+          "allowedClaim": { "type": "string", "minLength": 1 }
+        }
+      },
+      "minItems": 7,
+      "uniqueItems": true
+    },
+    "acceptance": { "$ref": "#/$defs/stringList" },
+    "forbiddenConclusions": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "AgentPort Certified",
+          "AgentPort Verified business",
+          "real-business proof",
+          "live-backend proof",
+          "A2A replacement",
+          "gateway authority for plugins",
+          "backend confirmation authority for business ports"
+        ]
+      },
+      "minItems": 7,
+      "uniqueItems": true
+    }
+  },
+  "$defs": {
+    "fileRef": { "type": "string", "minLength": 1 },
+    "fileRefArray": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/fileRef" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "stringList": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1,
+      "uniqueItems": true
+    }
+  }
+}

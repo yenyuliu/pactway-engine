@@ -1,0 +1,140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-a2a-gateway-compatibility-report.schema.json",
+  "title": "AgentPort A2A Gateway Compatibility Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "profile",
+    "generatedAt",
+    "input",
+    "inputKind",
+    "profileArtifact",
+    "traceSuite",
+    "status",
+    "ok",
+    "certification",
+    "boundaries",
+    "areas",
+    "checks",
+    "failedCheckIds",
+    "validator"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "type": { "const": "agentport.a2a_gateway_compatibility_report.v0.1" },
+    "profile": { "const": "a2a-gateway" },
+    "generatedAt": { "type": "string", "minLength": 1 },
+    "input": { "type": "string", "minLength": 1 },
+    "inputKind": { "const": "a2a_gateway_trace_suite_file" },
+    "profileArtifact": { "type": "string", "minLength": 1 },
+    "traceSuite": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["passed", "failed"] },
+    "ok": { "type": "boolean" },
+    "certification": { "$ref": "#/$defs/certification" },
+    "boundaries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "a2aProfileOnly",
+        "agentGatewayAlreadyExists",
+        "replacesA2A",
+        "createsNewGateway",
+        "executesLiveNetwork"
+      ],
+      "properties": {
+        "a2aProfileOnly": { "type": "boolean" },
+        "agentGatewayAlreadyExists": { "type": "boolean" },
+        "replacesA2A": { "type": "boolean" },
+        "createsNewGateway": { "type": "boolean" },
+        "executesLiveNetwork": { "type": "boolean" }
+      }
+    },
+    "areas": { "$ref": "#/$defs/areas" },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/check" }
+    },
+    "failedCheckIds": { "type": "array", "items": { "type": "string" } },
+    "validator": { "$ref": "#/$defs/validator" }
+  },
+  "$defs": {
+    "certification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "publicCertification",
+        "a2aCertification",
+        "agentPortReadyCertification",
+        "realBusinessCertification",
+        "note"
+      ],
+      "properties": {
+        "publicCertification": { "const": false },
+        "a2aCertification": { "const": false },
+        "agentPortReadyCertification": { "const": false },
+        "realBusinessCertification": { "const": false },
+        "note": { "type": "string", "minLength": 1 }
+      }
+    },
+    "areas": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "ok", "requiredCheckIds", "failedCheckIds"],
+        "properties": {
+          "id": {
+            "enum": [
+              "profile_boundary",
+              "primitive_mapping",
+              "safe_sequence",
+              "tamper_coverage",
+              "result_semantics"
+            ]
+          },
+          "ok": { "type": "boolean" },
+          "requiredCheckIds": { "type": "array", "items": { "type": "string" } },
+          "failedCheckIds": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "ok", "detail"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "ok": { "type": "boolean" },
+        "detail": { "type": "string", "minLength": 1 }
+      }
+    },
+    "validator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "ok", "checkCount", "failedCheckIds"],
+      "properties": {
+        "type": { "const": "agentport.a2a_gateway_trace_validation.v0.1" },
+        "ok": { "type": "boolean" },
+        "checkCount": { "type": "integer", "minimum": 0 },
+        "failedCheckIds": { "type": "array", "items": { "type": "string" } },
+        "reportSchema": { "$ref": "#/$defs/reportSchemaValidation" }
+      }
+    },
+    "reportSchemaValidation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "schema", "ok", "errorCount", "errors"],
+      "properties": {
+        "type": { "const": "agentport.report_schema_validation.v0.1" },
+        "schema": { "type": "string", "minLength": 1 },
+        "ok": { "type": "boolean" },
+        "errorCount": { "type": "integer", "minimum": 0 },
+        "errors": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "tenants": [
+    {
+      "id": "sample-salon",
+      "name": "Sample Salon",
+      "description": "A local salon configured through the manual handoff adapter.",
+      "address": "123 Main St, Newton, MA",
+      "lat": 42.337,
+      "lng": -71.209,
+      "bindings": [
+        {
+          "platform": "manual",
+          "bookingUrl": "https://example.com/sample-salon/book",
+          "phone": "+1-617-555-0100",
+          "staticServices": [
+            {
+              "id": "haircut",
+              "name": "Haircut",
+              "description": "Classic wash, cut, and style.",
+              "durationMin": 45,
+              "price": {
+                "amount": 6500,
+                "currency": "USD"
+              }
+            },
+            {
+              "id": "color",
+              "name": "Color",
+              "description": "Single-process color appointment.",
+              "durationMin": 90,
+              "price": {
+                "amount": 12500,
+                "currency": "USD"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "verified-spa",
+      "name": "Verified Day Spa",
+      "address": "456 Wellness Ave, Newton, MA",
+      "lat": 42.34,
+      "lng": -71.21,
+      "verification": {
+        "status": "verified",
+        "verifiedBy": "agentport",
+        "verifiedAt": "2026-06-01T00:00:00.000Z",
+        "method": "fixture-confirm-probe"
+      },
+      "bindings": [
+        {
+          "platform": "fixture",
+          "staticServices": [
+            {
+              "id": "massage",
+              "name": "Swedish Massage",
+              "durationMin": 60,
+              "price": {
+                "amount": 9000,
+                "currency": "USD"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "tenants": [
+    {
+      "id": "agentport-virtual-store",
+      "name": "AgentPort Virtual Store",
+      "description": "A fixture-backed virtual storefront for validating general-agent action flows.",
+      "address": "1 Protocol Way, Newton, MA",
+      "lat": 42.337,
+      "lng": -71.209,
+      "profile": {
+        "website": "https://example.com/agentport-virtual-store",
+        "hours": {
+          "wednesday": "10:00-18:00",
+          "thursday": "10:00-18:00",
+          "friday": "10:00-18:00"
+        },
+        "summary": "A virtual store used to prove that external agents can read the action model, request approval, and complete a backend-confirmed action."
+      },
+      "verification": {
+        "status": "verified",
+        "verifiedBy": "agentport",
+        "verifiedAt": "2026-06-20T00:00:00.000Z",
+        "method": "fixture-virtual-store-probe"
+      },
+      "bindings": [
+        {
+          "id": "virtual-store-fixture",
+          "platform": "fixture",
+          "staticServices": [
+            {
+              "id": "product_demo",
+              "name": "Product Demo Appointment",
+              "description": "A fixture-confirmed appointment for a virtual store product walkthrough.",
+              "durationMin": 60,
+              "price": {
+                "amount": 0,
+                "currency": "USD"
+              }
+            },
+            {
+              "id": "pickup_consult",
+              "name": "Pickup Consultation",
+              "description": "A fixture-confirmed pickup planning session.",
+              "durationMin": 30,
+              "price": {
+                "amount": 0,
+                "currency": "USD"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

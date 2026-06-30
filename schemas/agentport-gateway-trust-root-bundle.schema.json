@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-gateway-trust-root-bundle.schema.json",
+  "title": "AgentPort Gateway Trust Root Bundle",
+  "oneOf": [
+    { "$ref": "#/$defs/bundle" },
+    { "$ref": "#/$defs/signedEnvelope" }
+  ],
+  "$defs": {
+    "bundle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["protocol", "version", "authorities"],
+      "properties": {
+        "protocol": { "const": "agentport-gateway-trust-root-bundle" },
+        "version": { "const": "0.1" },
+        "bundleId": { "type": "string", "minLength": 1 },
+        "sequence": { "type": "integer", "minimum": 0 },
+        "issuedAt": { "type": "string", "format": "date-time" },
+        "notBefore": { "type": "string", "format": "date-time" },
+        "expiresAt": { "type": "string", "format": "date-time" },
+        "authorities": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/profileAuthority" }
+        }
+      }
+    },
+    "signedEnvelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["protocol", "version", "bundle", "signature"],
+      "properties": {
+        "protocol": { "const": "agentport-gateway-trust-root-bundle-envelope" },
+        "version": { "const": "0.1" },
+        "bundle": { "$ref": "#/$defs/bundle" },
+        "signature": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["issuer", "keyId", "alg", "signature"],
+          "properties": {
+            "issuer": { "type": "string", "minLength": 1 },
+            "keyId": { "type": "string", "minLength": 1 },
+            "alg": { "const": "EdDSA" },
+            "signedAt": { "type": "string", "format": "date-time" },
+            "signature": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "profileAuthority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["issuer", "publicKeys"],
+      "properties": {
+        "issuer": { "type": "string", "minLength": 1 },
+        "publicKeys": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/profileAuthorityPublicKey" }
+        }
+      }
+    },
+    "profileAuthorityPublicKey": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kid", "alg", "use", "jwk"],
+      "properties": {
+        "kid": { "type": "string", "minLength": 1 },
+        "alg": { "const": "EdDSA" },
+        "use": { "const": "sig" },
+        "status": { "enum": ["active", "retired", "revoked"] },
+        "notBefore": { "type": "string", "format": "date-time" },
+        "expiresAt": { "type": "string", "format": "date-time" },
+        "jwk": { "$ref": "#/$defs/publicJwk" }
+      }
+    },
+    "publicJwk": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["kty"],
+      "properties": {
+        "kty": { "type": "string" },
+        "crv": { "type": "string" },
+        "x": { "type": "string" },
+        "kid": { "type": "string" },
+        "use": { "type": "string" },
+        "alg": { "type": "string" }
+      }
+    }
+  }
+}

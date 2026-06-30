@@ -1,0 +1,40 @@
+{
+  "type": "agentport.plugin_wallet_ticket_save.v0.1",
+  "walletId": "wallet:plugin-wallet-proof-pack",
+  "walletTicketId": "wallet_ticket_virtual_store_demo",
+  "commitmentId": "commitment_virtual_store_demo",
+  "storedRefs": {
+    "businessId": "agentport-virtual-store",
+    "serviceId": "product_demo",
+    "commitmentId": "commitment_virtual_store_demo",
+    "receiptIds": [
+      "receipt_virtual_store_demo"
+    ],
+    "gatewayReceiptRefs": [
+      "gateway-receipt:receipt_virtual_store_demo"
+    ],
+    "backendOutcomeRefs": [
+      "backend-outcome:fixture-product_demo-0001"
+    ]
+  },
+  "localState": {
+    "statusSource": "local_last_known",
+    "verifiedCurrent": false,
+    "lastKnownStatus": "confirmed",
+    "requiresGatewayReverify": true
+  },
+  "payloadSafety": {
+    "excludesDecryptedLabels": true,
+    "excludesRawAuthorityTokens": true,
+    "excludesReceiptBodies": true,
+    "excludesSignatures": true,
+    "excludesBackendCredentials": true,
+    "excludesCustomerPii": true
+  },
+  "boundaries": {
+    "refsOnly": true,
+    "walletIsLifecycleAuthority": false,
+    "walletSignsReceipts": false,
+    "storesFullReceiptBodies": false
+  }
+}

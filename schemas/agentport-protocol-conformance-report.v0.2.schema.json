@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-protocol-conformance-report.v0.2.schema.json",
+  "title": "AgentPort Protocol Conformance Report v0.2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["protocol", "version", "ok", "input", "generatedAt", "summary", "roleProfiles", "traces", "certification"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "protocol": { "const": "agentport-protocol-conformance-report" },
+    "version": { "const": "0.2" },
+    "ok": { "type": "boolean" },
+    "input": { "type": "string", "minLength": 1 },
+    "generatedAt": { "type": "string", "minLength": 1 },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["goldenPassed", "goldenFailed", "tamperPassedAsExpected", "tamperUnexpectedPass"],
+      "properties": {
+        "goldenPassed": { "type": "integer", "minimum": 0 },
+        "goldenFailed": { "type": "integer", "minimum": 0 },
+        "tamperPassedAsExpected": { "type": "integer", "minimum": 0 },
+        "tamperUnexpectedPass": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "roleProfiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "profileId",
+          "role",
+          "ok",
+          "requiredCheckIds",
+          "summary",
+          "allowedClaim",
+          "forbiddenClaims",
+          "failingTraceIds"
+        ],
+        "properties": {
+          "profileId": { "type": "string", "minLength": 1 },
+          "role": { "type": "string", "minLength": 1 },
+          "ok": { "type": "boolean" },
+          "requiredCheckIds": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 },
+            "minItems": 1
+          },
+          "summary": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["goldenPassed", "goldenFailed", "tamperPassedAsExpected", "tamperUnexpectedPass"],
+            "properties": {
+              "goldenPassed": { "type": "integer", "minimum": 0 },
+              "goldenFailed": { "type": "integer", "minimum": 0 },
+              "tamperPassedAsExpected": { "type": "integer", "minimum": 0 },
+              "tamperUnexpectedPass": { "type": "integer", "minimum": 0 }
+            }
+          },
+          "allowedClaim": { "type": "string", "minLength": 1 },
+          "forbiddenClaims": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "failingTraceIds": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "traces": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["traceId", "kind", "ok", "failedCheckIds"],
+        "properties": {
+          "traceId": { "type": "string", "minLength": 1 },
+          "kind": { "enum": ["golden", "tamper"] },
+          "ok": { "type": "boolean" },
+          "expectedFailureCheckId": { "type": "string" },
+          "failedCheckIds": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "certification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["agentPortCertified", "agentPortVerifiedBusiness", "realBusinessProof"],
+      "properties": {
+        "agentPortCertified": { "const": false },
+        "agentPortVerifiedBusiness": { "const": false },
+        "realBusinessProof": { "const": false }
+      }
+    }
+  }
+}

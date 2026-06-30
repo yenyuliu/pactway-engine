@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.example/schemas/agentport-business-port-trust-root-bundle.schema.json",
+  "title": "AgentPort Business Port Trust Root Bundle",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["protocol", "version", "bundleId", "sequence", "issuedBy", "issuedAt", "authorities"],
+  "properties": {
+    "protocol": { "const": "agentport-business-port-trust-root-bundle" },
+    "version": { "const": "0.1" },
+    "bundleId": { "type": "string", "minLength": 1 },
+    "sequence": { "type": "integer", "minimum": 0 },
+    "issuedBy": { "type": "string", "minLength": 1 },
+    "issuedAt": { "type": "string", "format": "date-time" },
+    "notBefore": { "type": "string", "format": "date-time" },
+    "expiresAt": { "type": "string", "format": "date-time" },
+    "authorities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["issuer", "publicKeys"],
+        "properties": {
+          "issuer": { "type": "string", "minLength": 1 },
+          "displayName": { "type": "string" },
+          "publicKeys": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["keyId", "alg", "use", "status", "publicKey"],
+              "properties": {
+                "keyId": { "type": "string", "minLength": 1 },
+                "alg": { "const": "EdDSA" },
+                "use": { "const": "sig" },
+                "status": { "enum": ["active", "stale", "revoked"] },
+                "notBefore": { "type": "string", "format": "date-time" },
+                "expiresAt": { "type": "string", "format": "date-time" },
+                "publicKey": {
+                  "oneOf": [
+                    { "type": "string", "minLength": 1 },
+                    { "type": "object", "additionalProperties": true }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

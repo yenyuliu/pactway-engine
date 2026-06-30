@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-protocol-codes.schema.json",
+  "title": "AgentPort Protocol Codes",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["protocol", "version", "codeFamilies", "wireShape"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "protocol": { "const": "agentport-protocol-codes" },
+    "version": { "const": "0.1" },
+    "codeFamilies": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "verificationStatus",
+        "tier",
+        "actionLayer",
+        "authorityAssurance",
+        "commitmentStatus",
+        "commitmentEventType",
+        "commitmentRight",
+        "authorityEvidenceKind",
+        "resultType",
+        "reason",
+        "readiness",
+        "presentation",
+        "businessCopilot"
+      ],
+      "properties": {
+        "verificationStatus": { "$ref": "#/$defs/stringList" },
+        "tier": { "$ref": "#/$defs/stringList" },
+        "actionLayer": { "$ref": "#/$defs/stringList" },
+        "authorityAssurance": { "$ref": "#/$defs/stringList" },
+        "commitmentStatus": { "$ref": "#/$defs/stringList" },
+        "commitmentEventType": { "$ref": "#/$defs/stringList" },
+        "commitmentRight": { "$ref": "#/$defs/stringList" },
+        "authorityEvidenceKind": { "$ref": "#/$defs/stringList" },
+        "resultType": { "$ref": "#/$defs/stringList" },
+        "reason": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/stringList" },
+          "minProperties": 1
+        },
+        "readiness": { "$ref": "#/$defs/readinessCodes" },
+        "presentation": { "$ref": "#/$defs/presentationCodes" },
+        "businessCopilot": { "$ref": "#/$defs/businessCopilotCodes" }
+      }
+    },
+    "wireShape": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prefer", "avoidByDefault"],
+      "properties": {
+        "prefer": { "$ref": "#/$defs/stringList" },
+        "avoidByDefault": { "$ref": "#/$defs/stringList" }
+      }
+    }
+  },
+  "$defs": {
+    "stringList": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "presentationCodes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "step",
+        "artifact",
+        "action",
+        "gate",
+        "runIssue",
+        "evidenceIssue",
+        "evidenceBoundary"
+      ],
+      "properties": {
+        "step": { "$ref": "#/$defs/stringList" },
+        "artifact": { "$ref": "#/$defs/stringList" },
+        "action": { "$ref": "#/$defs/stringList" },
+        "gate": { "$ref": "#/$defs/stringList" },
+        "runIssue": { "$ref": "#/$defs/stringList" },
+        "evidenceIssue": { "$ref": "#/$defs/stringList" },
+        "evidenceBoundary": { "$ref": "#/$defs/stringList" }
+      }
+    },
+    "readinessCodes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tier", "protocolInputKind", "protocolInputStatus", "gap", "nextBestAction"],
+      "properties": {
+        "tier": { "$ref": "#/$defs/stringList" },
+        "protocolInputKind": { "$ref": "#/$defs/stringList" },
+        "protocolInputStatus": { "$ref": "#/$defs/stringList" },
+        "gap": { "$ref": "#/$defs/stringList" },
+        "nextBestAction": { "$ref": "#/$defs/stringList" }
+      }
+    },
+    "businessCopilotCodes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "retention", "validationIssue"],
+      "properties": {
+        "state": { "$ref": "#/$defs/stringList" },
+        "retention": { "$ref": "#/$defs/stringList" },
+        "validationIssue": { "$ref": "#/$defs/stringList" }
+      }
+    }
+  }
+}

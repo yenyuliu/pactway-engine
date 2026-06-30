@@ -1,0 +1,212 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-business-port-proof-pack.schema.json",
+  "title": "AgentPort Business Port Proof Pack",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "inboundRequest": { "$ref": "#/$defs/inboundRequest" },
+    "gatewayForward": { "$ref": "#/$defs/gatewayForward" },
+    "gatewayResponse": { "$ref": "#/$defs/gatewayResponse" },
+    "portResponse": { "$ref": "#/$defs/portResponse" },
+    "redactionManifest": { "$ref": "#/$defs/redactionManifest" },
+    "summary": { "$ref": "#/$defs/summary" }
+  },
+  "$defs": {
+    "payloadSafety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["excludesCustomerPii", "excludesRawAuthorityTokens", "excludesReceiptBodies", "excludesSignatures", "excludesBackendCredentials"],
+      "properties": {
+        "excludesCustomerPii": { "const": true },
+        "excludesRawAuthorityTokens": { "const": true },
+        "excludesReceiptBodies": { "const": true },
+        "excludesSignatures": { "const": true },
+        "excludesBackendCredentials": { "const": true }
+      }
+    },
+    "inboundRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "request", "payloadSafety", "boundaries"],
+      "properties": {
+        "type": { "const": "agentport.business_port_inbound_request.v0.1" },
+        "request": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["protocol", "requestId", "intentId", "action", "businessId", "serviceId", "requestedType"],
+          "properties": {
+            "protocol": { "const": "agentport" },
+            "requestId": { "type": "string", "minLength": 1 },
+            "intentId": { "type": "string", "minLength": 1 },
+            "action": { "const": "book_service" },
+            "businessId": { "type": "string", "minLength": 1 },
+            "serviceId": { "type": "string", "minLength": 1 },
+            "requestedType": { "enum": ["confirmed", "request", "handoff"] }
+          }
+        },
+        "payloadSafety": { "$ref": "#/$defs/payloadSafety" },
+        "boundaries": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["acceptsStandardizedOnly", "mintsAuthority", "systemOfRecord"],
+          "properties": {
+            "acceptsStandardizedOnly": { "const": true },
+            "mintsAuthority": { "const": false },
+            "systemOfRecord": { "const": false }
+          }
+        }
+      }
+    },
+    "gatewayForward": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "forward", "payloadSafety", "boundaries"],
+      "properties": {
+        "type": { "const": "agentport.business_port_gateway_forward.v0.1" },
+        "forward": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["target", "requestId", "intentId", "forwardedUnmodified"],
+          "properties": {
+            "target": { "const": "agent_gateway" },
+            "requestId": { "type": "string", "minLength": 1 },
+            "intentId": { "type": "string", "minLength": 1 },
+            "forwardedUnmodified": { "const": true }
+          }
+        },
+        "payloadSafety": { "$ref": "#/$defs/payloadSafety" },
+        "boundaries": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["businessPortExecutedBackend", "businessPortMintedReceipt"],
+          "properties": {
+            "businessPortExecutedBackend": { "const": false },
+            "businessPortMintedReceipt": { "const": false }
+          }
+        }
+      }
+    },
+    "gatewayResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "gatewayResult", "refs", "payloadSafety"],
+      "properties": {
+        "type": { "const": "agentport.business_port_gateway_response.v0.1" },
+        "gatewayResult": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["source", "requestedType", "resultType", "upgradedByBusinessPort"],
+          "properties": {
+            "source": { "const": "agent_gateway" },
+            "requestedType": { "enum": ["confirmed", "request", "handoff"] },
+            "resultType": { "enum": ["confirmed", "request", "handoff", "failed", "rejected"] },
+            "upgradedByBusinessPort": { "const": false }
+          }
+        },
+        "refs": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["gatewayReceiptRef", "commitmentRef", "lifecycleRef"],
+          "properties": {
+            "gatewayReceiptRef": { "type": "string", "minLength": 1 },
+            "commitmentRef": { "type": "string", "minLength": 1 },
+            "lifecycleRef": { "type": "string", "minLength": 1 }
+          }
+        },
+        "payloadSafety": { "$ref": "#/$defs/payloadSafety" }
+      }
+    },
+    "portResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "response", "refs", "payloadSafety", "boundaries"],
+      "properties": {
+        "type": { "const": "agentport.business_port_response.v0.1" },
+        "response": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["source", "requestId", "resultType"],
+          "properties": {
+            "source": { "const": "agent_gateway" },
+            "requestId": { "type": "string", "minLength": 1 },
+            "resultType": { "enum": ["confirmed", "request", "handoff", "failed", "rejected"] }
+          }
+        },
+        "refs": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["gatewayReceiptRef", "commitmentRef", "lifecycleRef"],
+          "properties": {
+            "gatewayReceiptRef": { "type": "string", "minLength": 1 },
+            "commitmentRef": { "type": "string", "minLength": 1 },
+            "lifecycleRef": { "type": "string", "minLength": 1 }
+          }
+        },
+        "payloadSafety": { "$ref": "#/$defs/payloadSafety" },
+        "boundaries": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["lifecycleSourceOfTruth", "systemOfRecord"],
+          "properties": {
+            "lifecycleSourceOfTruth": { "const": false },
+            "systemOfRecord": { "const": false }
+          }
+        }
+      }
+    },
+    "redactionManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "requiredRedactionRuleIds", "filePolicy", "payloadSafety"],
+      "properties": {
+        "type": { "const": "agentport.business_port_redaction_manifest.v0.1" },
+        "requiredRedactionRuleIds": { "type": "array", "items": { "type": "string" } },
+        "filePolicy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["credentialsAllowed", "customerPiiAllowed", "receiptBodiesAllowed"],
+          "properties": {
+            "credentialsAllowed": { "const": false },
+            "customerPiiAllowed": { "const": false },
+            "receiptBodiesAllowed": { "const": false }
+          }
+        },
+        "payloadSafety": { "$ref": "#/$defs/payloadSafety" }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "profile", "ok", "claims", "boundaries"],
+      "properties": {
+        "type": { "const": "agentport.business_port_proof_summary.v0.1" },
+        "profile": { "const": "business-port" },
+        "ok": { "const": true },
+        "claims": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["allowed", "forbidden"],
+          "properties": {
+            "allowed": { "type": "string", "minLength": 1 },
+            "forbidden": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "boundaries": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["businessPortOnly", "gatewayAuthority", "registryAuthority", "systemOfRecord", "realBusinessEvidence", "executesBusinessBackend", "mintsReceipts"],
+          "properties": {
+            "businessPortOnly": { "const": true },
+            "gatewayAuthority": { "const": false },
+            "registryAuthority": { "const": false },
+            "systemOfRecord": { "const": false },
+            "realBusinessEvidence": { "const": false },
+            "executesBusinessBackend": { "const": false },
+            "mintsReceipts": { "const": false }
+          }
+        }
+      }
+    }
+  }
+}

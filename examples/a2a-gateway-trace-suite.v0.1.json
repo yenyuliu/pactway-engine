@@ -1,0 +1,85 @@
+{
+  "type": "agentport.a2a_gateway_trace_suite.v0.1",
+  "version": "0.1",
+  "profileArtifact": "artifacts/agentport-a2a-gateway-profile.v0.1.json",
+  "golden": {
+    "id": "a2a_prepare_approve_execute_receipt",
+    "steps": [
+      {
+        "order": 1,
+        "a2aTaskClass": "business.info",
+        "agentPortPrimitive": "get_business_feed",
+        "gate": "verified_business_truth",
+        "expected": "Return compact business facts, capability state, and cannot-do limits without claiming action authority."
+      },
+      {
+        "order": 2,
+        "a2aTaskClass": "action.prepare",
+        "agentPortPrimitive": "compile_action_intent",
+        "gate": "bounded_action_intent",
+        "expected": "Return intentId, approval package, approvedActionIntentHash, lifecycle refs, and required inputs if any."
+      },
+      {
+        "order": 3,
+        "a2aTaskClass": "action.lifecycle",
+        "agentPortPrimitive": "get_action_intent_lifecycle",
+        "gate": "approval_state_resume",
+        "expected": "Expose pending or ready lifecycle state without treating it as backend execution."
+      },
+      {
+        "order": 4,
+        "a2aTaskClass": "action.execute",
+        "agentPortPrimitive": "book_service",
+        "gate": "exact_approval_authority_consent_capability",
+        "expected": "Execute only with intentId, approvedActionIntentHash, userConsent true, and accepted authority evidence when required."
+      },
+      {
+        "order": 5,
+        "a2aTaskClass": "proof.receipt",
+        "agentPortPrimitive": "ActionReceipt",
+        "gate": "gateway_outcome_binding",
+        "expected": "Report the gateway result exactly and preserve receipt refs without upgrading request or handoff to confirmed."
+      }
+    ],
+    "assertions": [
+      "A2A task progress is separate from business outcome.",
+      "compile_action_intent precedes every state-changing action.",
+      "userConsent appears only after exact approval.",
+      "state-changing execution carries intentId and approvedActionIntentHash.",
+      "ActionReceipt is gateway-produced and binds the backend result."
+    ]
+  },
+  "tamper": [
+    {
+      "id": "direct_execute_without_compile",
+      "mutation": "A2A caller sends action.execute directly to book_service without prior compile_action_intent.",
+      "expectedRejection": "missing_compiled_action_intent"
+    },
+    {
+      "id": "invented_approval",
+      "mutation": "A2A caller sets userConsent true from task text without rendering the approval package to the user.",
+      "expectedRejection": "consent_required"
+    },
+    {
+      "id": "missing_authority_for_confirm",
+      "mutation": "A2A caller requests confirmed execution while authority assurance remains none.",
+      "expectedRejection": "delegation_required"
+    },
+    {
+      "id": "forged_receipt",
+      "mutation": "A2A caller includes client-minted ActionReceipt fields in the task payload.",
+      "expectedRejection": "client_receipt_untrusted"
+    },
+    {
+      "id": "ack_as_verification",
+      "mutation": "A2A caller acknowledges a result delivery before configured receipt or delivery trust verification.",
+      "expectedRejection": "delivery_verification_required"
+    }
+  ],
+  "boundaries": {
+    "a2aProfileOnly": true,
+    "certification": false,
+    "realBusinessEvidence": false,
+    "replacesA2A": false
+  }
+}

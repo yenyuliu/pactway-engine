@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentport.dev/schemas/agentport-protocol-cut-manifest.schema.json",
+  "title": "AgentPort Protocol Cut Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "protocol",
+    "version",
+    "status",
+    "standardDraft",
+    "governancePolicy",
+    "publicationStatus",
+    "packageRoot",
+    "scope",
+    "roles",
+    "artifacts",
+    "commands",
+    "claims",
+    "boundaries",
+    "releaseGates"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "type": { "const": "agentport.protocol_cut_manifest.v0.2" },
+    "protocol": { "const": "agentport" },
+    "version": { "const": "0.2" },
+    "status": { "const": "cut_readiness" },
+    "standardDraft": { "$ref": "#/$defs/fileRef" },
+    "governancePolicy": { "$ref": "#/$defs/fileRef" },
+    "publicationStatus": { "$ref": "#/$defs/fileRef" },
+    "packageRoot": { "const": "examples/implementer-kit" },
+    "scope": { "type": "string", "minLength": 1 },
+    "roles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "doc", "proof"],
+        "properties": {
+          "id": {
+            "enum": [
+              "frontier_host",
+              "plugin_wallet",
+              "business_port_endpoint",
+              "agent_gateway",
+              "adapter",
+              "commitment_registry",
+              "a2a_host_binding"
+            ]
+          },
+          "doc": { "$ref": "#/$defs/fileRef" },
+          "proof": { "type": "string", "minLength": 1 }
+        }
+      },
+      "minItems": 7,
+      "uniqueItems": true
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["docs", "schemas", "reports", "examples", "scripts"],
+      "properties": {
+        "docs": { "$ref": "#/$defs/fileRefArray" },
+        "schemas": { "$ref": "#/$defs/fileRefArray" },
+        "reports": { "$ref": "#/$defs/fileRefArray" },
+        "examples": { "$ref": "#/$defs/fileRefArray" },
+        "scripts": { "$ref": "#/$defs/fileRefArray" }
+      }
+    },
+    "commands": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "command", "validates"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "command": { "type": "string", "minLength": 1 },
+          "validates": { "type": "string", "minLength": 1 }
+        }
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["allowed", "forbidden"],
+      "properties": {
+        "allowed": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "forbidden": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "AgentPort Certified",
+              "AgentPort Verified business",
+              "real-business proof",
+              "live-backend proof",
+              "A2A replacement",
+              "gateway authority for plugins",
+              "backend confirmation authority for business ports"
+            ]
+          },
+          "minItems": 7,
+          "uniqueItems": true
+        }
+      }
+    },
+    "boundaries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "agentPortCertified",
+        "agentPortVerifiedBusiness",
+        "realBusinessProof",
+        "liveBackendProof",
+        "a2aReplacement",
+        "hostedCredentialVault",
+        "businessSystemOfRecord"
+      ],
+      "properties": {
+        "agentPortCertified": { "const": false },
+        "agentPortVerifiedBusiness": { "const": false },
+        "realBusinessProof": { "const": false },
+        "liveBackendProof": { "const": false },
+        "a2aReplacement": { "const": false },
+        "hostedCredentialVault": { "const": false },
+        "businessSystemOfRecord": { "const": false }
+      }
+    },
+    "releaseGates": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "npm run public-package-audit",
+          "npm run conformance",
+          "npm test",
+          "git diff --check"
+        ]
+      },
+      "minItems": 4,
+      "uniqueItems": true
+    }
+  },
+  "$defs": {
+    "fileRef": { "type": "string", "minLength": 1 },
+    "fileRefArray": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/fileRef" },
+      "minItems": 1,
+      "uniqueItems": true
+    }
+  }
+}

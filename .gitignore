@@ -1,0 +1,24 @@
+node_modules/
+dist/
+coverage/
+tmp/
+.DS_Store
+*.log
+.env
+.vercel/
+.claude/
+data/virtual-store-proof-command-test/
+data/virtual-store-live-test/*/
+
+# codex bridge transient artifacts (regenerated each round)
+bridge/result.json
+bridge/diff.patch
+bridge/last-message.txt
+bridge/history.jsonl
+bridge/state.json
+bridge/feedback.md
+bridge/verdicts.md
+bridge/critique.json
+bridge/.critique-schema.json
+.vercel/
+.env.local

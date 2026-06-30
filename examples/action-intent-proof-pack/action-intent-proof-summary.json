@@ -1,0 +1,72 @@
+{
+  "type": "agentport.action_intent_proof_summary.v0.1",
+  "profile": "action-intent",
+  "ok": true,
+  "checks": [
+    {
+      "id": "user_goal_capture",
+      "ok": true
+    },
+    {
+      "id": "compiled_intent_shape",
+      "ok": true
+    },
+    {
+      "id": "required_input_gating",
+      "ok": true
+    },
+    {
+      "id": "bounded_approval_package",
+      "ok": true
+    },
+    {
+      "id": "approved_execution_binding",
+      "ok": true
+    },
+    {
+      "id": "consent_rejection_gate",
+      "ok": true
+    },
+    {
+      "id": "lifecycle_and_result_delivery",
+      "ok": true
+    },
+    {
+      "id": "receipt_refs_and_redaction",
+      "ok": true
+    },
+    {
+      "id": "role_claim_boundary",
+      "ok": true
+    }
+  ],
+  "claims": {
+    "allowed": "Passes AgentPort Action Intent compatibility check.",
+    "forbidden": [
+      "AgentPort Certified",
+      "AgentPort Verified",
+      "Gateway compliant",
+      "Plugin Wallet compliant",
+      "Registry compliant",
+      "Real-business proof"
+    ]
+  },
+  "payloadSafety": {
+    "excludesCustomerPii": true,
+    "excludesRawAuthorityTokens": true,
+    "excludesReceiptBodies": true,
+    "excludesDeliveryBodies": true,
+    "excludesSignatures": true,
+    "excludesBackendCredentials": true
+  },
+  "boundaries": {
+    "actionIntentOnly": true,
+    "gatewayAuthority": false,
+    "pluginWalletAuthority": false,
+    "registryAuthority": false,
+    "lifecycleSourceOfTruth": false,
+    "realBusinessEvidence": false,
+    "storesPrivatePayloads": false,
+    "mintsAuthority": false
+  }
+}
