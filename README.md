@@ -1,16 +1,18 @@
 # Pactway Engine
 
-Open Apache-2.0 protocol engine for agent-ready service businesses.
+Open gateway engine for AI assistants to safely act through verified
+service-business ports.
 
 Read `docs/SIMPLE_BLUEPRINT.md` first.
 
-> Pactway gives frontier models durable action memory for service tickets,
-> while a neutral gateway verifies and standardizes the commitment lifecycle.
+> Pactway lets a user's assistant find, request, book, follow up, and remember
+> real-world service work through owner-approved business ports without
+> replacing existing websites, booking systems, inboxes, or backends.
 
-Pactway is not a booking platform or a marketplace. It is the trust and
-lifecycle layer underneath — an open protocol any gateway can implement to make
-a service business safely actionable by AI agents, with ticket state that
-survives session resets, model upgrades, and provider switches.
+Pactway is not a booking platform or a marketplace. It is the trust and action
+bridge between frontier-model UX and existing service operations: verified
+business ports, exact user approval, honest capability tiers, and receipts that
+survive session resets, model upgrades, and provider switches.
 
 Rename boundary: Pactway is the product name. The current package, CLI, schema,
 artifact, and MCP resource identifiers still use `agentport` as legacy

@@ -1,7 +1,7 @@
 {
   "name": "@agentport/engine",
   "version": "0.2.0-alpha.0",
-  "description": "Open Pactway MCP engine for truthful booking adapters.",
+  "description": "Open gateway engine for AI assistants to safely act through verified service-business ports.",
   "license": "Apache-2.0",
   "type": "module",
   "repository": {
