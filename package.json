@@ -6,12 +6,12 @@
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yenyuliu/agentport.git"
+    "url": "git+https://github.com/yenyuliu/pactway-engine.git"
   },
   "bugs": {
-    "url": "https://github.com/yenyuliu/agentport/issues"
+    "url": "https://github.com/yenyuliu/pactway-engine/issues"
   },
-  "homepage": "https://github.com/yenyuliu/agentport#readme",
+  "homepage": "https://github.com/yenyuliu/pactway-engine#readme",
   "keywords": [
     "agentport",
     "pactway",

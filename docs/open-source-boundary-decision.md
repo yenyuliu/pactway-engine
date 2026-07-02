@@ -128,7 +128,10 @@ Use two distributions.
 
 ### 1. Public open repo/package
 
-Name: `@agentport/engine` or `@agentport/protocol-engine`.
+Public GitHub repository: `yenyuliu/pactway-engine`.
+
+Npm package: `@agentport/engine`, kept as the legacy compatibility package until
+a versioned `pactway` package alias exists.
 
 Include:
 
@@ -157,7 +160,7 @@ Do not include by default:
 
 ### 2. Private hosted repo/package
 
-Name: internal, for example `agentport-hosted` or `agentport-cloud`.
+Name: internal, for example `pactway-hosted` or `pactway-cloud`.
 
 Own:
 

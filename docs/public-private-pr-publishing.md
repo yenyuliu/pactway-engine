@@ -153,14 +153,14 @@ conversion/verification exports are unavailable, and runs the installed
 4. Generate and validate the public source export when publishing GitHub source:
 
 ```bash
-npm run public-source-export -- --out /tmp/agentport-public-source --validate
+npm run public-source-export -- --out /tmp/pactway-engine-public-source --validate
 ```
 
 5. Merge public PR.
 6. Publish only from the public release branch or public package workspace.
 7. Tag the release.
-8. Push the validated public source export to the public GitHub repository or
-   export branch.
+8. Push the validated public source export to the public GitHub repository
+   `yenyuliu/pactway-engine` or its export branch.
 9. Upgrade the private hosted repo dependency.
 10. Run private hosted CI and deployment checks.
 

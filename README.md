@@ -17,6 +17,10 @@ artifact, and MCP resource identifiers still use `agentport` as legacy
 compatibility names. Do not rename those wire identifiers without a versioned
 alias plan and tests.
 
+Public source boundary: the public GitHub source repo should use the
+product-facing name `pactway-engine`. The npm package remains
+`@agentport/engine` until the versioned `pactway` package alias exists.
+
 ## Role Split
 
 | Role | Responsibility |
